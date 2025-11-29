@@ -1,0 +1,64 @@
+@inherits LayoutComponentBase
+@inject AuthenticationStateService AuthState
+@inject INavigationService NavigationService
+@inject IJSRuntime JSRuntime
+
+<div class="app-container">
+    @if (AuthState.IsAuthenticated)
+    {
+        <!-- 1. SIDEBAR (Floating Drawer) -->
+        <!-- Note: onclick se sidebar band hoga agar user ghalti se sidebar par click kare (optional) -->
+        <div class="sidebar-drawer @(sidebarOpen ? "open" : "")">
+            <NavMenu />
+        </div>
+
+        <!-- 2. OVERLAY BACKDROP (Jab sidebar khula ho to peeche wala area dim ho jaye) -->
+        @if (sidebarOpen)
+        {
+            <div class="drawer-backdrop" @onclick="ToggleSidebar"></div>
+        }
+
+        <!-- 3. MAIN CONTENT (Full Screen Background) -->
+        <main class="main-view">
+            <!-- Header (Sticky Top) -->
+            <header class="top-bar">
+                <button class="menu-btn" @onclick="ToggleSidebar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <span class="app-title">Everything at Work</span>
+            </header>
+
+            <!-- Page Content (Scrollable) -->
+            <div class="content-scroll-area">
+                @Body
+            </div>
+        </main>
+    }
+    else
+    {
+        <!-- Login Screen -->
+        <main class="main-view">
+            <div class="content-scroll-area full-height">
+                @Body
+            </div>
+        </main>
+    }
+</div>
+
+@code {
+    private bool sidebarOpen = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(millisecondsDelay: 500);
+            await JSRuntime.InvokeVoidAsync("hideLoadingScreen");
+        }
+    }
+
+    private void ToggleSidebar()
+    {
+        sidebarOpen = !sidebarOpen;
+    }
+}

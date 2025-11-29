@@ -1,0 +1,519 @@
+@page "/profile"
+@inject AuthenticationStateService AuthState
+@inject IUserDataService UserService
+@inject IFileUploadService FileUploadService
+@inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-back" @onclick="GoBack">
+            <span class="oi oi-arrow-left"></span>
+        </button>
+        <h1>My Profile</h1>
+        <div class="header-actions">
+            <button class="btn-icon" @onclick="ToggleEditMode" disabled="@isLoading">
+                <span class="oi @(isEditMode ? "oi-x" : "oi-pencil")"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="page-content">
+        @if (isLoading)
+        {
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading profile...</p>
+            </div>
+        }
+        else if (userProfile != null)
+        {
+            <!-- Profile Photo Section -->
+            <div class="profile-photo-section">
+                <div class="photo-container">
+                    @if (!string.IsNullOrEmpty(userProfile.ProfilePhotoUrl))
+                    {
+                        <img src="@userProfile.ProfilePhotoUrl" alt="Profile Photo" class="profile-photo" />
+                    }
+                    else
+                    {
+                        <div class="profile-photo-placeholder">
+                            <span class="oi oi-person"></span>
+                        </div>
+                    }
+                    @if (isEditMode)
+                    {
+                        <button class="btn-change-photo" @onclick="ChangePhoto">
+                            <span class="oi oi-camera"></span>
+                        </button>
+                    }
+                </div>
+                <div class="profile-name">
+                    <h2>@userProfile.FullName</h2>
+                    <p>@userProfile.JobTitle</p>
+                    <p class="department">@userProfile.Department</p>
+                </div>
+            </div>
+
+            <!-- Profile Information -->
+            <div class="profile-sections">
+                <!-- Personal Information -->
+                <div class="profile-section">
+                    <h3>Personal Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Employee ID</label>
+                            <span class="value">@userProfile.EmployeeId</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            @if (isEditMode)
+                            {
+                                <input type="email" class="form-control" @bind="userProfile.Email" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.Email</span>
+                            }
+                        </div>
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            @if (isEditMode)
+                            {
+                                <input type="tel" class="form-control" @bind="userProfile.PhoneNumber" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.PhoneNumber</span>
+                            }
+                        </div>
+                        <div class="info-item">
+                            <label>Date of Birth</label>
+                            @if (isEditMode)
+                            {
+                                <input type="date" class="form-control" @bind="userProfile.DateOfBirth" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.DateOfBirth?.ToString("MMM dd, yyyy")</span>
+                            }
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Address</label>
+                            @if (isEditMode)
+                            {
+                                <textarea class="form-control" rows="3" @bind="userProfile.Address"></textarea>
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.Address</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employment Information -->
+                <div class="profile-section">
+                    <h3>Employment Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Job Title</label>
+                            <span class="value">@userProfile.JobTitle</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Department</label>
+                            <span class="value">@userProfile.Department</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Manager</label>
+                            <span class="value">@userProfile.ManagerName</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Hire Date</label>
+                            <span class="value">@userProfile.HireDate?.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Employment Status</label>
+                            <span class="value status-@userProfile.EmploymentStatus?.ToLower()">
+                                @userProfile.EmploymentStatus
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <label>Work Location</label>
+                            <span class="value">@userProfile.WorkLocation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="profile-section">
+                    <h3>Emergency Contact</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Contact Name</label>
+                            @if (isEditMode)
+                            {
+                                <input type="text" class="form-control" @bind="userProfile.EmergencyContactName" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.EmergencyContactName</span>
+                            }
+                        </div>
+                        <div class="info-item">
+                            <label>Relationship</label>
+                            @if (isEditMode)
+                            {
+                                <input type="text" class="form-control" @bind="userProfile.EmergencyContactRelationship" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.EmergencyContactRelationship</span>
+                            }
+                        </div>
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            @if (isEditMode)
+                            {
+                                <input type="tel" class="form-control" @bind="userProfile.EmergencyContactPhone" />
+                            }
+                            else
+                            {
+                                <span class="value">@userProfile.EmergencyContactPhone</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            @if (isEditMode)
+            {
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" @onclick="CancelEdit" disabled="@isSaving">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary" @onclick="SaveProfile" disabled="@isSaving">
+                        @if (isSaving)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            <span> Saving...</span>
+                        }
+                        else
+                        {
+                            <span>Save Changes</span>
+                        }
+                    </button>
+                </div>
+            }
+        }
+
+        <!-- Error Messages -->
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">
+                @errorMessage
+            </div>
+        }
+
+        <!-- Success Messages -->
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success">
+                @successMessage
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background: #667eea;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-back {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        margin-right: 15px;
+        cursor: pointer;
+    }
+
+    .page-header h1 {
+        flex: 1;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-icon {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .page-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+    }
+
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .profile-photo-section {
+        background: white;
+        border-radius: 8px;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .photo-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #667eea;
+    }
+
+    .profile-photo-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        border: 4px solid #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #667eea;
+    }
+
+    .btn-change-photo {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #667eea;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-name h2 {
+        margin: 0 0 5px 0;
+        color: #333;
+    }
+
+    .profile-name p {
+        margin: 0 0 5px 0;
+        color: #666;
+    }
+
+    .department {
+        color: #667eea !important;
+        font-weight: 500;
+    }
+
+    .profile-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .profile-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .profile-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-item label {
+        font-weight: 500;
+        color: #666;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .info-item .value {
+        color: #333;
+        font-size: 16px;
+    }
+
+    .status-active {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .status-inactive {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .form-control {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        padding: 20px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: #5a67d8;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #5a6268;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+
+    .alert-danger {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    @@media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .profile-photo, .profile-photo-placeholder {
+            width: 100px;
+            height: 100px;
+        }
+    }
+</style>

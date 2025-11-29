@@ -1,0 +1,177 @@
+@inject IMainPageDataService MainPageService
+@inject AuthenticationStateService AuthState
+@inject INavigationService NavigationService
+@using MauiHybridApp.Models.DataObjects
+
+<div class="nav-menu">
+    <div class="user-profile">
+        @if (AuthState.CurrentUser != null)
+        {
+            <div class="profile-image">
+                @if (!string.IsNullOrEmpty(AuthState.CurrentUser.ProfilePicture))
+                {
+                    <img src="@AuthState.CurrentUser.ProfilePicture" alt="Profile" />
+                }
+                else
+                {
+                    <div class="profile-placeholder">@GetInitials()</div>
+                }
+            </div>
+            <div class="profile-info">
+                <h3>@AuthState.CurrentUser.FullName</h3>
+                <p>@AuthState.CurrentUser.Position</p>
+            </div>
+        }
+    </div>
+
+    <nav class="flex-column">
+        @if (menuItems != null)
+        {
+            @foreach (var item in menuItems)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@item.Route" Match="NavLinkMatch.All">
+                        <span class="@item.Icon" aria-hidden="true"></span> @item.Title
+                    </NavLink>
+                </div>
+            }
+        }
+
+        <div class="nav-item px-3">
+            <button class="nav-link btn-logout" @onclick="Logout">
+                <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+            </button>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private List<MenuItem>? menuItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMenuItems();
+    }
+
+    private async Task LoadMenuItems()
+    {
+        try
+        {
+            // For demo mode, return static menu items to avoid API calls
+            menuItems = new List<MenuItem>
+            {
+                new MenuItem { Title = "Dashboard", Route = "/dashboard", Icon = "oi oi-dashboard" },
+                new MenuItem { Title = "Leave", Route = "/leave", Icon = "oi oi-calendar" },
+                new MenuItem { Title = "Overtime", Route = "/overtime", Icon = "oi oi-clock" },
+                new MenuItem { Title = "Official Business", Route = "/official-business", Icon = "oi oi-briefcase" },
+                new MenuItem { Title = "Time Entry", Route = "/time-entry", Icon = "oi oi-clock" },
+                new MenuItem { Title = "Approvals", Route = "/approvals", Icon = "oi oi-check" },
+                new MenuItem { Title = "Attendance", Route = "/attendance", Icon = "oi oi-target" },
+                new MenuItem { Title = "Profile", Route = "/profile", Icon = "oi oi-person" }
+            };
+
+            // PRODUCTION CODE (commented out for demo):
+            /*
+            // Load menu items from service
+            var response = await MainPageService.GetMenuItemsAsync();
+            if (response != null && response.Any())
+            {
+                menuItems = response.Cast<MenuItemModel>().Select(m => new MenuItem
+                {
+                    Title = m.MenuName,
+                    Route = GetRouteFromMenuName(m.MenuName),
+                    Icon = GetIconFromMenuName(m.MenuName)
+                }).ToList();
+            }
+            */
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading menu: {ex.Message}");
+            // Fallback to static menu
+            menuItems = new List<MenuItem>
+            {
+                new MenuItem { Title = "Dashboard", Route = "/dashboard", Icon = "oi oi-dashboard" },
+                new MenuItem { Title = "Profile", Route = "/profile", Icon = "oi oi-person" }
+            };
+        }
+    }
+
+    private string GetRouteFromMenuName(string menuName)
+    {
+        return menuName.ToLower() switch
+        {
+            "dashboard" => "/dashboard",
+            "leave" => "/leave",
+            "overtime" => "/overtime",
+            "official business" => "/official-business",
+            "time entry" => "/time-entry",
+            "approvals" => "/approvals",
+            "attendance" => "/attendance",
+            "payroll" => "/payroll",
+            "performance" => "/performance",
+            "employee relations" => "/employee-relations",
+            "profile" => "/profile",
+            _ => "/"
+        };
+    }
+
+    private string GetIconFromMenuName(string menuName)
+    {
+        return menuName.ToLower() switch
+        {
+            "dashboard" => "oi oi-dashboard",
+            "leave" => "oi oi-calendar",
+            "overtime" => "oi oi-clock",
+            "official business" => "oi oi-briefcase",
+            "time entry" => "oi oi-timer",
+            "approvals" => "oi oi-check",
+            "attendance" => "oi oi-people",
+            "payroll" => "oi oi-dollar",
+            "performance" => "oi oi-graph",
+            "employee relations" => "oi oi-comment-square",
+            "profile" => "oi oi-person",
+            _ => "oi oi-menu"
+        };
+    }
+
+    private string GetInitials()
+    {
+        if (AuthState.CurrentUser == null) return "?";
+        
+        // Use FullName if available, otherwise use Username
+        var fullName = !string.IsNullOrEmpty(AuthState.CurrentUser.FullName) 
+            ? AuthState.CurrentUser.FullName 
+            : AuthState.CurrentUser.Username;
+        
+        if (string.IsNullOrEmpty(fullName)) return "?";
+        
+        var names = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (names.Length == 0) return "?";
+        
+        if (names.Length > 1)
+        {
+            return $"{names[0][0]}{names[^1][0]}".ToUpper();
+        }
+        else
+        {
+            return names[0].Length > 1 
+                ? $"{names[0][0]}{names[0][1]}".ToUpper() 
+                : $"{names[0][0]}".ToUpper();
+        }
+    }
+
+    private async Task Logout()
+    {
+        await AuthState.LogoutAsync();
+        await NavigationService.NavigateToAsync("/login");
+    }
+
+    private class MenuItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Route { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+    }
+}
+

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!-- 🔥 FIX 1: Viewport-fit for Safe Area -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Everything at Work</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="MauiHybridApp.styles.css" />
+</head>
+
+<script>
+    // Jab bhi input focus ho, usay view mein lao
+    window.addEventListener('focusin', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            setTimeout(() => {
+                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300); // Keyboard khulne ka wait karo
+        }
+    });
+</script>
+
+
+
+<body>
+    <!-- 🔥 FIX 2: Loading Container #app ke bahar hona chahiye -->
+    <div id="app">
+        <!-- Blazor ka main component yahan load hoga -->
+        <div class="status-bar-safe-area"></div>
+        <div class="full-screen-app">Loading...</div>
+    </div>
+    
+    <!-- Loading Screen (CSS mein isay hide karte hain) -->
+    <div id="app-loading-overlay" class="loading-container show">
+        <div class="loading-spinner"></div>
+        <p>Loading Everything at Work...</p>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // JS Function to hide the loading screen
+        function hideLoadingScreen() {
+            const overlay = document.getElementById('app-loading-overlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+

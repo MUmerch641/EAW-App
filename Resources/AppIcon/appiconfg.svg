@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Foreground Icon - Clean Professional Symbol -->
+  <g transform="translate(128, 128)">
+    <!-- Main Briefcase -->
+    <rect x="32" y="96" width="192" height="128" rx="16" ry="16" fill="#FFFFFF" stroke="none"/>
+    
+    <!-- Handle -->
+    <rect x="80" y="64" width="96" height="32" rx="16" ry="16" fill="none" stroke="#FFFFFF" stroke-width="8"/>
+    
+    <!-- Lock Detail -->
+    <rect x="112" y="128" width="32" height="24" rx="4" ry="4" fill="#512BD4"/>
+    
+    <!-- Document Lines -->
+    <line x1="64" y1="160" x2="192" y2="160" stroke="#512BD4" stroke-width="4"/>
+    <line x1="64" y1="176" x2="160" y2="176" stroke="#512BD4" stroke-width="4"/>
+    <line x1="64" y1="192" x2="176" y2="192" stroke="#512BD4" stroke-width="4"/>
+    
+    <!-- Success Badge -->
+    <circle cx="200" cy="112" r="24" fill="#FFD700" stroke="#FFFFFF" stroke-width="4"/>
+    <path d="M 190 112 L 198 120 L 210 104" stroke="#512BD4" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Brand Text -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#FFFFFF">EaW</text>
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" ry="64" fill="#512BD4"/>
+  
+  <!-- Main Icon - Professional Briefcase -->
+  <g transform="translate(128, 128)">
+    <!-- Briefcase Body -->
+    <rect x="32" y="96" width="192" height="128" rx="16" ry="16" fill="#FFFFFF" stroke="none"/>
+    
+    <!-- Briefcase Handle -->
+    <rect x="80" y="64" width="96" height="32" rx="16" ry="16" fill="none" stroke="#FFFFFF" stroke-width="8"/>
+    
+    <!-- Briefcase Lock -->
+    <rect x="112" y="128" width="32" height="24" rx="4" ry="4" fill="#512BD4"/>
+    
+    <!-- Work Document Lines -->
+    <line x1="64" y1="160" x2="192" y2="160" stroke="#512BD4" stroke-width="4"/>
+    <line x1="64" y1="176" x2="160" y2="176" stroke="#512BD4" stroke-width="4"/>
+    <line x1="64" y1="192" x2="176" y2="192" stroke="#512BD4" stroke-width="4"/>
+    
+    <!-- Professional Badge -->
+    <circle cx="200" cy="112" r="24" fill="#FFD700" stroke="#FFFFFF" stroke-width="4"/>
+    <text x="200" y="120" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#512BD4">✓</text>
+  </g>
+  
+  <!-- Company Branding -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#FFFFFF">EaW</text>
+  <text x="256" y="460" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#CCCCCC">Everything at Work</text>
+</svg>

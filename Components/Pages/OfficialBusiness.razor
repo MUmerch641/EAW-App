@@ -1,0 +1,420 @@
+@page "/official-business"
+@inject AuthenticationStateService AuthState
+@inject IOfficialBusinessDataService OfficialBusinessService
+@inject OfficialBusinessStateService OfficialBusinessState
+@inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-back" @onclick="GoBack">
+            <span class="oi oi-arrow-left"></span>
+        </button>
+        <h1>Official Business</h1>
+    </div>
+
+    <div class="page-content">
+        @if (isLoading)
+        {
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading official business form...</p>
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@officialBusinessRequest" OnValidSubmit="@SubmitRequest">
+                <DataAnnotationsValidator />
+                
+                <div class="form-card">
+                    <div class="form-section">
+                        <h3>Travel Details</h3>
+                        
+                        <!-- Date Range -->
+                        <!-- === YEH HISSA THEEK KIYA GAYA HAI === -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">Start Date *</label>
+                                <input id="startDate" type="date" class="form-control"
+                                       value="@(((DateTime)officialBusinessRequest.StartDate).ToString("yyyy-MM-dd"))"
+                                       @onchange="OnStartDateChanged" />
+                                <ValidationMessage For="@(() => officialBusinessRequest.StartDate)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">End Date *</label>
+                                <input id="endDate" type="date" class="form-control"
+                                       value="@(((DateTime)officialBusinessRequest.EndDate).ToString("yyyy-MM-dd"))"
+                                       @onchange="OnEndDateChanged" />
+                                <ValidationMessage For="@(() => officialBusinessRequest.EndDate)" />
+                            </div>
+                        </div>
+                        <!-- ===================================== -->
+
+                        <!-- Time Range -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startTime">Start Time *</label>
+                                <input id="startTime" type="time" class="form-control"
+                                       value="@startTimeString"
+                                       @onchange="OnStartTimeChanged" />
+                                <ValidationMessage For="@(() => officialBusinessRequest.StartTime)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="endTime">End Time *</label>
+                                <input id="endTime" type="time" class="form-control"
+                                       value="@endTimeString"
+                                       @onchange="OnEndTimeChanged" />
+                                <ValidationMessage For="@(() => officialBusinessRequest.EndTime)" />
+                            </div>
+                        </div>
+
+                        <!-- Destination -->
+                        <div class="form-group">
+                            <label for="destination">Destination *</label>
+                            <input id="destination" type="text" class="form-control" 
+                                   @bind="officialBusinessRequest.Destination" 
+                                   placeholder="Enter destination" />
+                            <ValidationMessage For="@(() => officialBusinessRequest.Destination)" />
+                        </div>
+
+                        <!-- Purpose -->
+                        <div class="form-group">
+                            <label for="purpose">Purpose *</label>
+                            <textarea id="purpose" class="form-control" rows="3" 
+                                      @bind="officialBusinessRequest.Purpose" 
+                                      placeholder="Enter purpose of official business"></textarea>
+                            <ValidationMessage For="@(() => officialBusinessRequest.Purpose)" />
+                        </div>
+
+                        <!-- Transportation -->
+                        <div class="form-group">
+                            <label for="transportation">Mode of Transportation</label>
+                            <select id="transportation" class="form-control" @bind="officialBusinessRequest.Transportation">
+                                <option value="">Select transportation</option>
+                                <option value="Company Vehicle">Company Vehicle</option>
+                                <option value="Personal Vehicle">Personal Vehicle</option>
+                                <option value="Public Transportation">Public Transportation</option>
+                                <option value="Flight">Flight</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- With Allowance -->
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" @bind="officialBusinessRequest.WithAllowance" />
+                                <span class="checkmark"></span>
+                                With Travel Allowance
+                            </label>
+                        </div>
+
+                        <!-- Estimated Cost -->
+                        @if (officialBusinessRequest.WithAllowance == true)
+                        {
+                            <div class="form-group">
+                                <label for="estimatedCost">Estimated Cost</label>
+                                <input id="estimatedCost" type="number" step="0.01" class="form-control" 
+                                       @bind="officialBusinessRequest.EstimatedCost" 
+                                       placeholder="0.00" />
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Travel Summary -->
+                    @if (travelSummary != null)
+                    {
+                        <div class="form-section">
+                            <h3>Travel Summary</h3>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <span class="label">Total Days:</span>
+                                    <!-- 🔥 FIX: Direct Access (No dynamic) -->
+                                    <span class="value">@travelSummary.TotalDays</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="label">Total Hours:</span>
+                                    <!-- 🔥 FIX: Direct Access -->
+                                    <span class="value">@travelSummary.TotalHours.ToString("0.##")</span>
+                                </div>
+                                
+                                @if (officialBusinessRequest.WithAllowance == true && officialBusinessRequest.EstimatedCost.HasValue)
+                                {
+                                    <div class="summary-item">
+                                        <span class="label">Estimated Cost:</span>
+                                        <span class="value">₱@officialBusinessRequest.EstimatedCost.Value.ToString("N2")</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Error Messages -->
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            @errorMessage
+                        </div>
+                    }
+
+                    <!-- Success Messages -->
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success">
+                            @successMessage
+                        </div>
+                    }
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" @onclick="SaveDraft" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                <span> Saving...</span>
+                            }
+                            else
+                            {
+                                <span>Save as Draft</span>
+                            }
+                        </button>
+                        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                <span> Submitting...</span>
+                            }
+                            else
+                            {
+                                <span>Submit Request</span>
+                            }
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+<style>
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background: #667eea;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-back {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        margin-right: 15px;
+        cursor: pointer;
+    }
+
+    .page-header h1 {
+        flex: 1;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .page-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+    }
+
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        margin-right: 8px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .summary-item .label {
+        font-weight: 500;
+        color: #666;
+    }
+
+    .summary-item .value {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: #5a6fd8;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #5a6268;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .alert-danger {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .page-content {
+            padding: 15px;
+        }
+    }
+</style>
+
