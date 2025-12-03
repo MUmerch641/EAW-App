@@ -66,3 +66,9 @@ public class OfficialBusinessModel
     public bool? WithAllowance { get; set; }
     public decimal? EstimatedCost { get; set; }
 }
+
+public class OBSummary
+{
+    public int TotalDays { get; set; }
+    public decimal TotalHours { get; set; }
+}

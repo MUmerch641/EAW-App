@@ -1,135 +1,137 @@
 @page "/attendance"
-@inject AuthenticationStateService AuthState
-@inject IAttendanceDataService AttendanceService
-@inject NavigationManager NavManager
-@inject IJSRuntime JSRuntime
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models.Attendance
+@inject AttendanceViewModel ViewModel
+@implements IDisposable
 
 <div class="page-container">
-    <div class="page-header">
-        <button class="btn-back" @onclick="GoBack">
-            <span class="oi oi-arrow-left"></span>
-        </button>
-        <h1>Attendance</h1>
-        <div class="header-actions">
-            <button class="btn-icon" @onclick="RefreshAttendance" disabled="@isLoading">
-                <span class="oi oi-reload"></span>
-            </button>
-        </div>
-    </div>
-
-    <div class="page-content">
-        @if (isLoading)
-        {
-            <div class="loading-container">
-                <div class="spinner"></div>
-                <p>Loading attendance records...</p>
-            </div>
-        }
-        else
-        {
-            <!-- Date Filter -->
+    <PageHeader 
+        Title="Attendance" 
+        Subtitle="View your attendance records" 
+        IconClass="fa-calendar-check" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading..." />
+    }
+    else
+    {
+        <div class="content-section">
+            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+            {
+                <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
+            }
+            
+            <!-- Date Range Filter -->
             <div class="filter-section">
-                <!-- === YEH HISSA THEEK KIYA GAYA HAI === -->
-                <div class="date-filters">
-                    <div class="form-group">
-                        <label for="startDate">From Date</label>
-                        <input id="startDate" type="date" class="form-control"
-                               value="@startDate.ToString("yyyy-MM-dd")"
-                               @onchange="OnStartDateChanged" />
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">To Date</label>
-                        <input id="endDate" type="date" class="form-control"
-                               value="@endDate.ToString("yyyy-MM-dd")"
-                               @onchange="OnEndDateChanged" />
-                    </div>
-                </div>
-                <!-- ===================================== -->
+                <h3 class="section-title">
+                    <i class="fa fa-filter"></i>
+                    Filter by Date Range
+                </h3>
                 
+                <div class="date-filters">
+                    <FormGroup Label="Start Date" For="startDate">
+                        <input type="date" 
+                               id="startDate"
+                               class="form-control"
+                               @bind="ViewModel.StartDate" />
+                    </FormGroup>
+
+                    <FormGroup Label="End Date" For="endDate">
+                        <input type="date" 
+                               id="endDate"
+                               class="form-control"
+                               @bind="ViewModel.EndDate" />
+                    </FormGroup>
+                </div>
+
                 <div class="quick-filters">
-                    <button class="btn btn-filter @(selectedPeriod == "today" ? "active" : "")"
-                            @onclick="@(() => SetQuickFilter("today"))">Today</button>
-                    <button class="btn btn-filter @(selectedPeriod == "week" ? "active" : "")"
-                            @onclick="@(() => SetQuickFilter("week"))">This Week</button>
-                    <button class="btn btn-filter @(selectedPeriod == "month" ? "active" : "")"
-                            @onclick="@(() => SetQuickFilter("month"))">This Month</button>
+                    <ActionButton Text="Today"
+                                IconClass="fa-calendar-day"
+                                OnClick="@(() => ViewModel.SetQuickFilterCommand.Execute("today"))"
+                                IsPrimary="false" />
+                    <ActionButton Text="This Week"
+                                IconClass="fa-calendar-week"
+                                OnClick="@(() => ViewModel.SetQuickFilterCommand.Execute("week"))"
+                                IsPrimary="false" />
+                    <ActionButton Text="This Month"
+                                IconClass="fa-calendar-alt"
+                                OnClick="@(() => ViewModel.SetQuickFilterCommand.Execute("month"))"
+                                IsPrimary="false" />
                 </div>
             </div>
 
             <!-- Attendance Summary -->
-            @if (attendanceSummary != null)
+            @if (ViewModel.AttendanceSummary != null)
             {
-                <div class="summary-card">
-                    <h3>Summary</h3>
+                <div class="summary-section">
+                    <h3 class="section-title">
+                        <i class="fa fa-chart-bar"></i>
+                        Attendance Summary
+                    </h3>
+                    
                     <div class="summary-grid">
-                        <div class="summary-item">
-                            <span class="label">Total Days:</span>
-                            <span class="value">@attendanceSummary.TotalDays</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="label">Present:</span>
-                            <span class="value present">@attendanceSummary.PresentDays</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="label">Absent:</span>
-                            <span class="value absent">@attendanceSummary.AbsentDays</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="label">Late:</span>
-                            <span class="value late">@attendanceSummary.LateDays</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="label">Total Hours:</span>
-                            <span class="value">@attendanceSummary.TotalHours.ToString("F1")</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="label">Avg Hours/Day:</span>
-                            <span class="value">@attendanceSummary.AverageHoursPerDay.ToString("F1")</span>
-                        </div>
+                        <StatusCard Title="Total Days"
+                                  Value="@ViewModel.AttendanceSummary.TotalDays.ToString()"
+                                  IconClass="fa-calendar" />
+                        <StatusCard Title="Present Days"
+                                  Value="@ViewModel.AttendanceSummary.PresentDays.ToString()"
+                                  IconClass="fa-check-circle" />
+                        <StatusCard Title="Absent Days"
+                                  Value="@ViewModel.AttendanceSummary.AbsentDays.ToString()"
+                                  IconClass="fa-times-circle" />
+                        <StatusCard Title="Late Days"
+                                  Value="@ViewModel.AttendanceSummary.LateDays.ToString()"
+                                  IconClass="fa-clock" />
+                        <StatusCard Title="Total Hours"
+                                  Value="@ViewModel.AttendanceSummary.TotalHours.ToString("F1")"
+                                  IconClass="fa-hourglass-half" />
+                        <StatusCard Title="Avg Hours/Day"
+                                  Value="@ViewModel.AttendanceSummary.AverageHoursPerDay.ToString("F1")"
+                                  IconClass="fa-chart-line" />
                     </div>
                 </div>
             }
 
             <!-- Attendance Records -->
-            <div class="records-card">
-                <h3>Attendance Records</h3>
+            <div class="history-section">
+                <h3 class="section-title">
+                    <i class="fa fa-list"></i>
+                    Attendance Records (@ViewModel.AttendanceRecords.Count)
+                </h3>
                 
-                @if (attendanceRecords != null && attendanceRecords.Any())
+                @if (ViewModel.HasRecords)
                 {
-                    <div class="records-list">
-                        @foreach (var record in attendanceRecords)
+                    <div class="entry-list">
+                        @foreach (var record in ViewModel.AttendanceRecords)
                         {
-                            <div class="record-item">
+                            <div class="record-card">
                                 <div class="record-date">
-                                    <div class="date">@record.Date.ToString("MMM dd")</div>
-                                    <div class="day">@record.Date.ToString("ddd")</div>
+                                    <span class="day">@record.Date.ToString("dd")</span>
+                                    <span class="month">@record.Date.ToString("MMM")</span>
                                 </div>
-                                
-                                <div class="record-times">
-                                    <div class="time-entry">
-                                        <span class="label">In:</span>
-                                        <span class="value">@(record.TimeIn?.ToString("HH:mm") ?? "--:--")</span>
-                                    </div>
-                                    <div class="time-entry">
-                                        <span class="label">Out:</span>
-                                        <span class="value">@(record.TimeOut?.ToString("HH:mm") ?? "--:--")</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="record-info">
-                                    <div class="hours">
-                                        @if (record.TotalHours.HasValue)
-                                        {
-                                            <span>@record.TotalHours.Value.ToString("F1")h</span>
-                                        }
-                                        else
-                                        {
-                                            <span>--h</span>
-                                        }
-                                    </div>
-                                    <div class="status status-@record.Status?.ToLower()">
+                                <div class="record-details">
+                                    <div class="record-status @record.Status?.ToLower()">
+                                        <i class="fa @GetStatusIcon(record.Status)"></i>
                                         @record.Status
                                     </div>
+                                    <div class="record-times">
+                                        @if (record.TimeIn.HasValue)
+                                        {
+                                            <span>In: @record.TimeIn.Value.ToString("hh:mm tt")</span>
+                                        }
+                                        @if (record.TimeOut.HasValue)
+                                        {
+                                            <span>Out: @record.TimeOut.Value.ToString("hh:mm tt")</span>
+                                        }
+                                    </div>
+                                    @if (record.TotalHours.HasValue)
+                                    {
+                                        <div class="record-hours">
+                                            @record.TotalHours.Value.ToString("F1") hours
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         }
@@ -137,361 +139,46 @@
                 }
                 else
                 {
-                    <div class="no-records">
-                        <span class="oi oi-info"></span>
-                        <h4>No attendance records</h4>
-                        <p>No attendance records found for the selected period.</p>
-                    </div>
+                    <EmptyState 
+                        Message="No attendance records found for the selected date range" 
+                        IconClass="fa-calendar-times" />
                 }
             </div>
-        }
-
-        <!-- Error Messages -->
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="alert alert-danger">
-                @errorMessage
-            </div>
-        }
-    </div>
+        </div>
+    }
 </div>
 
-<style>
-    .page-container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-    }
+@code {
+    private PropertyChangedEventHandler? _propertyChangedHandler;
 
-    .page-header {
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-        background: #667eea;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+        
+        await ViewModel.InitializeAsync();
     }
-
-    .btn-back {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 18px;
-        margin-right: 15px;
-        cursor: pointer;
-    }
-
-    .page-header h1 {
-        flex: 1;
-        margin: 0;
-        font-size: 20px;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    .btn-icon {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 5px;
-    }
-
-    .page-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        background: #f8f9fa;
-    }
-
-    .loading-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-    }
-
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 15px;
-    }
-
-    @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .filter-section {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .date-filters {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .quick-filters {
-        display: flex;
-        gap: 10px;
-    }
-
-    .btn-filter {
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        background: white;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-filter:hover {
-        border-color: #667eea;
-        color: #667eea;
-    }
-
-    .btn-filter.active {
-        background: #667eea;
-        color: white;
-        border-color: #667eea;
-    }
-
-    .summary-card, .records-card {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .summary-card h3, .records-card h3 {
-        margin-bottom: 20px;
-        color: #333;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 10px;
-    }
-
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-    }
-
-    .summary-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 4px;
-    }
-
-    .summary-item .label {
-        font-size: 12px;
-        color: #666;
-        margin-bottom: 5px;
-    }
-
-    .summary-item .value {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .summary-item .value.present {
-        color: #28a745;
-    }
-
-    .summary-item .value.absent {
-        color: #dc3545;
-    }
-
-    .summary-item .value.late {
-        color: #ffc107;
-    }
-
-    .records-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .record-item {
-        display: grid;
-        grid-template-columns: 80px 1fr 1fr 100px;
-        align-items: center;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 4px;
-        gap: 15px;
-    }
-
-    .record-date {
-        text-align: center;
-    }
-
-    .record-date .date {
-        font-weight: bold;
-        color: #333;
-        font-size: 14px;
-    }
-
-    .record-date .day {
-        font-size: 12px;
-        color: #666;
-        text-transform: uppercase;
-    }
-
-    .record-times {
-        display: flex;
-        gap: 20px;
-    }
-
-    .time-entry {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .time-entry .label {
-        font-size: 12px;
-        color: #666;
-        margin-bottom: 2px;
-    }
-
-    .time-entry .value {
-        font-weight: bold;
-        color: #333;
-    }
-
-    .record-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .hours {
-        font-weight: bold;
-        color: #667eea;
-    }
-
-    .status {
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-
-    .status-present {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .status-absent {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .status-late {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .status-partial {
-        background: #cce5ff;
-        color: #004085;
-    }
-
-    .no-records {
-        text-align: center;
-        padding: 60px 20px;
-        color: #666;
-    }
-
-    .no-records .oi {
-        font-size: 48px;
-        margin-bottom: 20px;
-        display: block;
-        color: #ccc;
-    }
-
-    .no-records h4 {
-        margin-bottom: 10px;
-        color: #333;
-    }
-
-    .alert {
-        padding: 12px 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-
-    .alert-danger {
-        background: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
-
-    @@media (max-width: 768px) {
-        .date-filters {
-            grid-template-columns: 1fr;
+    
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null && ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
         }
         
-        .quick-filters {
-            flex-wrap: wrap;
-        }
-        
-        .summary-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        
-        .record-item {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 10px;
-        }
-        
-        .record-times {
-            justify-content: center;
-        }
+        ViewModel?.Dispose();
     }
-</style>
+
+    private string GetStatusIcon(string? status)
+    {
+        return status?.ToLower() switch
+        {
+            "present" => "fa-check-circle",
+            "absent" => "fa-times-circle",
+            "late" => "fa-clock",
+            "half-day" => "fa-adjust",
+            _ => "fa-question-circle"
+        };
+    }
+}

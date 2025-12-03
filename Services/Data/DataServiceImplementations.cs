@@ -395,6 +395,103 @@ public class OvertimeDataService : IOvertimeDataService
     public Task<OvertimeSummary> CalculateOvertimeSummaryAsync(DateTime d, DateTime s, DateTime e) => Task.FromResult(new OvertimeSummary());
 }
 
+// =====================
+// Expense Data Service
+// =====================
+public class ExpenseDataService : IExpenseDataService
+{
+    private readonly IGenericRepository _repository;
+
+    public ExpenseDataService(IGenericRepository repository)
+    {
+        _repository = repository;
+    }
+
+    // 1. LIST MANGWANA
+    public async Task<List<ExpenseModel>> GetExpensesAsync()
+    {
+        try
+        {
+            var profileIdStr = await SecureStorage.GetAsync("profile_id");
+            
+            // Swagger: GET api/v1/expense/list?ProfileId=...
+            var url = $"{ApiEndpoints.GetExpenseList}?ProfileId={profileIdStr}&Page=1&Rows=50&SortOrder=desc";
+            
+            // Response Wrapper (List + IsSuccess)
+            var response = await _repository.GetAsync<ExpenseListResponseWrapper>(url);
+            
+            return response?.ListData ?? new List<ExpenseModel>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expense List Error: {ex.Message}");
+            return new List<ExpenseModel>();
+        }
+    }
+
+    // 2. SUBMIT EXPENSE
+    public async Task<SaveResult> SubmitExpenseAsync(ExpenseModel request)
+    {
+        try
+        {
+            // Profile ID Fix
+            if (request.ProfileId == 0)
+            {
+                var pid = await SecureStorage.GetAsync("profile_id");
+                if (long.TryParse(pid, out long id)) request.ProfileId = id;
+            }
+
+            request.DateFiled = DateTime.UtcNow;
+            request.ExpenseDate = request.ExpenseDate.Date;
+
+            // 🔥 WRAPPER LOGIC (Same as Leave/OT/OB)
+            var payload = new 
+            { 
+                data = request,
+                proceed = true // Swagger aksar ye flag maangta hai
+            };
+
+            var response = await _repository.PostAsync<object, LeaveApiResponse>(ApiEndpoints.CreateExpense, payload);
+
+            if (response != null)
+            {
+                if (response.IsSuccess || response.Model != null)
+                    return new SaveResult { Success = true };
+                else
+                    return new SaveResult { Success = false, ErrorMessage = response.ValidationMessage ?? "Submission failed." };
+            }
+
+            return new SaveResult { Success = false, ErrorMessage = "Server returned no response" };
+        }
+        catch (Exception ex)
+        {
+            return new SaveResult { Success = false, ErrorMessage = ex.Message };
+        }
+    }
+
+    // 3. GET TYPES (Dropdown)
+    public async Task<List<SelectableListModel>> GetExpenseTypesAsync()
+    {
+        try
+        {
+            // Swagger: GET api/v1/expense/expense-setup-list
+            var response = await _repository.GetAsync<List<SelectableListModel>>(ApiEndpoints.GetExpenseSetup);
+            return response ?? new List<SelectableListModel>();
+        }
+        catch
+        {
+            return new List<SelectableListModel>();
+        }
+    }
+}
+
+// Helper Class for List Response (File ke end mein daal do)
+public class ExpenseListResponseWrapper
+{
+    public List<ExpenseModel> ListData { get; set; }
+    public bool IsSuccess { get; set; }
+}
+
 
 
 
@@ -881,16 +978,56 @@ public class PayrollDataService : IPayrollDataService
         _repository = repository;
     }
 
+    // 1. GET LIST
     public async Task<List<object>> GetPayslipsAsync()
     {
-        await Task.Delay(100);
-        return new List<object>();
+        // Note: Interface return type 'List<object>' hai, humein usay cast karna parega
+        // ya interface change karna parega. Filhal main object return kar raha hoon
+        // lekin UI mein hum cast kar lenge.
+        
+        try
+        {
+            var profileIdStr = await SecureStorage.GetAsync("profile_id");
+            
+            // Parameters Xamarin code jese: Page=1, Rows=20, SortOrder=1 (Desc)
+            var url = $"{ApiEndpoints.GetPayslipList}?ProfileId={profileIdStr}&Page=1&Rows=50&SortOrder=1";
+
+            var response = await _repository.GetAsync<PayslipListResponse>(url);
+
+            if (response != null && response.ListData != null)
+            {
+                // Cast to object list because interface demands it
+                return response.ListData.Cast<object>().ToList();
+            }
+            
+            return new List<object>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Payslip List Error: {ex.Message}");
+            return new List<object>();
+        }
     }
 
+    // 2. GET DETAIL
     public async Task<object> GetPayslipDetailAsync(long id)
     {
-        await Task.Delay(100);
-        return new { };
+        try
+        {
+            var profileIdStr = await SecureStorage.GetAsync("profile_id");
+            
+            // URL Format: api/v1/payslip/{profileId}/{id}/detail
+            var url = string.Format(ApiEndpoints.GetPayslipDetail, profileIdStr, id);
+
+            var response = await _repository.GetAsync<PayslipDetailModel>(url);
+
+            return response ?? new PayslipDetailModel();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Payslip Detail Error: {ex.Message}");
+            return null;
+        }
     }
 }
 

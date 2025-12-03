@@ -1,0 +1,61 @@
+@* Reusable Empty State Component *@
+<div class="empty-state @CssClass">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <div class="empty-state-icon">
+            <span class="oi oi-@Icon"></span>
+        </div>
+    }
+    <h3 class="empty-state-title">@Title</h3>
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <p class="empty-state-message">@Message</p>
+    }
+    @if (!string.IsNullOrEmpty(ActionText))
+    {
+        <button class="btn btn-primary" @onclick="OnAction">
+            @ActionText
+        </button>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Title text
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "No Data";
+
+    /// <summary>
+    /// Message text
+    /// </summary>
+    [Parameter]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// Icon name (without 'oi-' prefix)
+    /// </summary>
+    [Parameter]
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// Action button text
+    /// </summary>
+    [Parameter]
+    public string? ActionText { get; set; }
+
+    /// <summary>
+    /// Action button click handler
+    /// </summary>
+    [Parameter]
+    public EventCallback OnAction { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    // Compatibility parameters
+    [Parameter] public string IconClass { get => Icon; set => Icon = value; }
+}

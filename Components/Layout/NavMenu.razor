@@ -1,6 +1,8 @@
 @inject IMainPageDataService MainPageService
 @inject AuthenticationStateService AuthState
 @inject INavigationService NavigationService
+@inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
 @using MauiHybridApp.Models.DataObjects
 
 <div class="nav-menu">
@@ -30,9 +32,9 @@
             @foreach (var item in menuItems)
             {
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="@item.Route" Match="NavLinkMatch.All">
+                    <a class="nav-link" href="@item.Route" @onclick:preventDefault="true" @onclick="() => OnNavigate(item.Route)">
                         <span class="@item.Icon" aria-hidden="true"></span> @item.Title
-                    </NavLink>
+                    </a>
                 </div>
             }
         }
@@ -65,7 +67,9 @@
                 new MenuItem { Title = "Overtime", Route = "/overtime", Icon = "oi oi-clock" },
                 new MenuItem { Title = "Official Business", Route = "/official-business", Icon = "oi oi-briefcase" },
                 new MenuItem { Title = "Time Entry", Route = "/time-entry", Icon = "oi oi-clock" },
+                new MenuItem { Title = "Expenses", Route = "/expenses", Icon = "oi oi-dollar" },
                 new MenuItem { Title = "Approvals", Route = "/approvals", Icon = "oi oi-check" },
+                new MenuItem { Title = "Payslips", Route = "/payslips", Icon = "oi oi-document" },
                 new MenuItem { Title = "Attendance", Route = "/attendance", Icon = "oi oi-target" },
                 new MenuItem { Title = "Profile", Route = "/profile", Icon = "oi oi-person" }
             };
@@ -107,11 +111,13 @@
             "official business" => "/official-business",
             "time entry" => "/time-entry",
             "approvals" => "/approvals",
+            "payslips" => "/payslips",
             "attendance" => "/attendance",
             "payroll" => "/payroll",
             "performance" => "/performance",
             "employee relations" => "/employee-relations",
             "profile" => "/profile",
+            "expenses" => "/expenses",
             _ => "/"
         };
     }
@@ -126,7 +132,9 @@
             "official business" => "oi oi-briefcase",
             "time entry" => "oi oi-timer",
             "approvals" => "oi oi-check",
+            "payslips" => "oi oi-document",
             "attendance" => "oi oi-people",
+            "expenses" => "oi oi-dollar",
             "payroll" => "oi oi-dollar",
             "performance" => "oi oi-graph",
             "employee relations" => "oi oi-comment-square",
@@ -165,6 +173,29 @@
     {
         await AuthState.LogoutAsync();
         await NavigationService.NavigateToAsync("/login");
+    }
+
+    private async Task OnNavigate(string route)
+    {
+        try
+        {
+            // Navigate first using NavigationManager
+            NavManager.NavigateTo(route, forceLoad: false);
+
+            // Then close the sidebar via JS interop (await to catch errors)
+            await JSRuntime.InvokeVoidAsync("blazorHelpers.closeSidebar").AsTask().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log and show a temporary alert via JS so the user sees something helpful
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("console.error", $"Navigation error: {ex.Message}");
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Navigation failed: " + ex.Message);
+            }
+            catch { /* swallow */ }
+        }
     }
 
     private class MenuItem

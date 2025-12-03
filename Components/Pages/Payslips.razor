@@ -1,0 +1,123 @@
+@page "/payslips"
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@inject PayslipsViewModel ViewModel
+@implements IDisposable
+
+<div class="page-container">
+    <PageHeader 
+        Title="My Payslips" 
+        Subtitle="View your payment history" 
+        IconClass="fa-file-invoice-dollar" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading payslips..." />
+    }
+    else if (ViewModel.ShowEmptyState)
+    {
+        <EmptyState 
+            Message="No payslips found" 
+            IconClass="fa-file-invoice" />
+    }
+    else
+    {
+        <div class="payslip-list">
+            @foreach (var payslip in ViewModel.Payslips)
+            {
+                <div class="payslip-card" @onclick="() => ViewModel.ViewDetailCommand.Execute(payslip)">
+                    <div class="card-left">
+                        <span class="payroll-type">@payslip.PayrollType</span>
+                        <span class="date">@payslip.IssuedDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="card-right">
+                        <span class="amount">₱@payslip.NetPay.ToString("N2")</span>
+                        <span class="status">View <i class="fa fa-chevron-right"></i></span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (ViewModel.IsDetailModalOpen && ViewModel.SelectedPayslipDetail != null)
+{
+    <div class="modal-overlay" @onclick="() => ViewModel.CloseModalCommand.Execute(null)">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <h3>Payslip Details</h3>
+                <button class="btn-close" @onclick="() => ViewModel.CloseModalCommand.Execute(null)">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="summary-box">
+                    <div class="row">
+                        <span>Payroll Type:</span>
+                        <strong>@ViewModel.SelectedPayslipDetail.PayrollType</strong>
+                    </div>
+                    <div class="row">
+                        <span>Reference:</span>
+                        <strong>@ViewModel.SelectedPayslipDetail.ReferenceNumber</strong>
+                    </div>
+                    <div class="row">
+                        <span>Issued:</span>
+                        <strong>@ViewModel.SelectedPayslipDetail.IssuedDate?.ToString("MMM dd, yyyy")</strong>
+                    </div>
+                    <div class="row total">
+                        <span>Net Pay:</span>
+                        <strong>₱@ViewModel.SelectedPayslipDetail.NetPay.ToString("N2")</strong>
+                    </div>
+                </div>
+
+                @if (ViewModel.SelectedPayslipDetail.Earnings?.Any() == true)
+                {
+                    <h4>Earnings</h4>
+                    @foreach (var item in ViewModel.SelectedPayslipDetail.Earnings)
+                    {
+                        <div class="detail-row">
+                            <span>@item.Description</span>
+                            <span>₱@item.Amount.ToString("N2")</span>
+                        </div>
+                    }
+                }
+
+                @if (ViewModel.SelectedPayslipDetail.Deductions?.Any() == true)
+                {
+                    <h4>Deductions</h4>
+                    @foreach (var item in ViewModel.SelectedPayslipDetail.Deductions)
+                    {
+                        <div class="detail-row">
+                            <span>@item.Description</span>
+                            <span>₱@item.Amount.ToString("N2")</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+
+        await ViewModel.InitializeAsync();
+    }
+
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        // dispose the ViewModel to cleanup any resources/subscriptions
+        ViewModel.Dispose();
+    }
+}

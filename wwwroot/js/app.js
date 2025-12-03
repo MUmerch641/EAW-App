@@ -49,61 +49,59 @@ window.blazorHelpers = {
 
 // Initialize Blazor with error handling
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded, Blazor should auto-start...');
+    console.log('DOM fully loaded, waiting for Blazor...');
     
-    // Check if required elements exist
-    const appElement = document.getElementById('app');
     const loadingContainer = document.querySelector('.loading-container');
     
-    console.log('App element:', appElement);
-    console.log('Loading container:', loadingContainer);
+    // Poll for Blazor availability
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds (100ms interval)
     
-    // Check if Blazor is available
-    if (typeof Blazor === 'undefined') {
-        console.error('Blazor is not defined - blazor.webview.js may not have loaded');
-        if (loadingContainer) {
-            loadingContainer.innerHTML = `
-                <div class="error-message">
-                    <h3>Application Error</h3>
-                    <p>Blazor framework not found.</p>
-                    <p>The application files may not be properly installed.</p>
-                    <p>Please try reinstalling the application.</p>
-                    <button onclick="location.reload()">Retry</button>
-                </div>
-            `;
-        }
-        return;
-    }
-    
-    console.log('Blazor is available, waiting for auto-start...');
-    
-    // Fallback: try to start Blazor manually after a delay if it hasn't started
-    setTimeout(() => {
-        if (!window.Blazor._internal || !window.Blazor._internal.runtime) {
-            console.log('Blazor auto-start may have failed, trying manual start...');
-            try {
-                Blazor.start().then(() => {
-                    console.log('Blazor started successfully via fallback');
-                    // Hide loading screen
-                    if (loadingContainer) {
-                        loadingContainer.style.display = 'none';
+    const checkInterval = setInterval(() => {
+        attempts++;
+        
+        if (typeof Blazor !== 'undefined') {
+            clearInterval(checkInterval);
+            console.log('Blazor script loaded!');
+            
+            // Blazor is loaded. It should auto-start.
+            // We set a safety timeout to check if it actually started
+            setTimeout(() => {
+                // Check if Blazor has started (runtime is initialized)
+                const isStarted = window.Blazor && window.Blazor._internal && window.Blazor._internal.runtime;
+                
+                if (!isStarted) {
+                    console.log('Blazor loaded but not started. Attempting manual start...');
+                    try {
+                        Blazor.start().then(() => {
+                            console.log('Blazor started manually.');
+                        }).catch(e => {
+                            console.error('Manual start failed:', e);
+                        });
+                    } catch (e) {
+                        console.error('Exception during manual start:', e);
                     }
-                }).catch((error) => {
-                    console.error('Fallback Blazor start failed:', error);
-                    showError(error);
-                });
-            } catch (error) {
-                console.error('Exception during fallback Blazor startup:', error);
-                showError(error);
-            }
-        } else {
-            console.log('Blazor appears to be running from auto-start');
-            // Hide loading screen
+                } else {
+                    console.log('Blazor appears to have auto-started successfully.');
+                }
+            }, 1000);
+            
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Blazor failed to load after 5 seconds.');
+            
             if (loadingContainer) {
-                loadingContainer.style.display = 'none';
+                loadingContainer.innerHTML = `
+                    <div class="error-message">
+                        <h3>Application Error</h3>
+                        <p>Blazor framework failed to load.</p>
+                        <p>The application environment may be unstable.</p>
+                        <button onclick="location.reload()">Retry</button>
+                    </div>
+                `;
             }
         }
-    }, 3000); // Wait 3 seconds for auto-start
+    }, 100);
 });
 
 function showError(error) {

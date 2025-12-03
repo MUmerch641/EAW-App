@@ -1,0 +1,108 @@
+@* Reusable Action Button Component *@
+<button class="action-btn @CssClass @SizeClass @VariantClass" 
+        @onclick="OnClick" 
+        disabled="@(IsDisabled || IsLoading)"
+        type="@ButtonType">
+    @if (IsLoading)
+    {
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+        <span>@LoadingText</span>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <span class="oi oi-@Icon"></span>
+        }
+        <span>@Text</span>
+    }
+</button>
+
+@code {
+    /// <summary>
+    /// Button text
+    /// </summary>
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Text to show when loading
+    /// </summary>
+    [Parameter]
+    public string LoadingText { get; set; } = "Loading...";
+
+    /// <summary>
+    /// Icon name (without 'oi-' prefix)
+    /// </summary>
+    [Parameter]
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// Button type (button, submit, reset)
+    /// </summary>
+    [Parameter]
+    public string ButtonType { get; set; } = "button";
+
+    /// <summary>
+    /// Button variant (primary, secondary, danger, success, warning)
+    /// </summary>
+    [Parameter]
+    public string Variant { get; set; } = "primary";
+
+    /// <summary>
+    /// Button size (small, medium, large)
+    /// </summary>
+    [Parameter]
+    public string Size { get; set; } = "medium";
+
+    /// <summary>
+    /// Whether button is disabled
+    /// </summary>
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    /// <summary>
+    /// Whether button is in loading state
+    /// </summary>
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Click handler
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private string SizeClass => Size switch
+    {
+        "small" => "btn-sm",
+        "large" => "btn-lg",
+        _ => ""
+    };
+
+    private string VariantClass => Variant switch
+    {
+        "primary" => "btn-primary",
+        "secondary" => "btn-secondary",
+        "danger" => "btn-danger",
+        "success" => "btn-success",
+        "warning" => "btn-warning",
+        "info" => "btn-info",
+        _ => "btn-primary"
+    };
+
+    // Compatibility parameters
+    [Parameter] public string IconClass { get => Icon; set => Icon = value; }
+    [Parameter] 
+    public bool IsPrimary 
+    { 
+        get => Variant == "primary"; 
+        set => Variant = value ? "primary" : "secondary"; 
+    }
+}

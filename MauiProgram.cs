@@ -100,6 +100,7 @@ public static class MauiProgram
         services.AddScoped<ITimeEntryDataService, TimeEntryDataService>();
         services.AddScoped<IApprovalDataService, ApprovalDataService>();
         services.AddScoped<IAttendanceDataService, AttendanceDataService>();
+    services.AddScoped<IExpenseDataService, ExpenseDataService>();
         services.AddScoped<IPayrollDataService, PayrollDataService>();
         services.AddScoped<IPerformanceDataService, PerformanceDataService>();
         services.AddScoped<IEmployeeRelationsDataService, EmployeeRelationsDataService>();
@@ -109,6 +110,9 @@ public static class MauiProgram
         // Additional services
         services.AddSingleton<ISQLiteDataService, SQLiteDataService>();
         services.AddSingleton<IFileUploadService, FileUploadService>();
+
+        // Common services - Logging
+        services.AddSingleton<MauiHybridApp.Services.Common.ILoggingService, MauiHybridApp.Services.Common.LoggingService>();
 
         // Performance services
         services.AddSingleton<MauiHybridApp.Services.Performance.ICacheService, MauiHybridApp.Services.Performance.CacheService>();
@@ -121,6 +125,18 @@ public static class MauiProgram
 
     private static void RegisterStateServices(IServiceCollection services)
     {
+        // ViewModels - MVVM Pattern Implementation
+        services.AddTransient<MauiHybridApp.ViewModels.DashboardViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ProfileViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.LeaveViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.TimeEntryViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.OvertimeViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.OfficialBusinessViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.PayslipsViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ExpensesViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.AttendanceViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ApprovalsViewModel>();
+        
         // State management services for Blazor components
         services.AddScoped<AuthenticationStateService>();
         services.AddScoped<DashboardStateService>();

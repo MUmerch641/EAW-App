@@ -398,10 +398,48 @@ a, .btn-link {
 }
 
     .main-content-area .top-row ::deep a, .main-content-area .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
+        color: #333;
     }
+
+/* --- SHARED PAGE STYLES --- */
+.page-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: #667eea;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* Sticky Top fix */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.page-content-container {
+    padding: 20px;
+    padding-bottom: 100px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Expense Specific */
+.expense-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-left: 5px solid #667eea;
+}
 
     .main-content-area .top-row ::deep a:hover, .main-content-area .top-row ::deep .btn-link:hover {
         text-decoration: underline;

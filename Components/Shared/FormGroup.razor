@@ -1,0 +1,69 @@
+@* Reusable Form Group Component *@
+<div class="form-group @CssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@Id">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="text-danger">*</span>
+            }
+        </label>
+    }
+    
+    @ChildContent
+
+    @if (!string.IsNullOrEmpty(HelpText))
+    {
+        <small class="form-text text-muted">@HelpText</small>
+    }
+    
+    @if (!string.IsNullOrEmpty(ErrorText))
+    {
+        <div class="invalid-feedback d-block">@ErrorText</div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Form field ID
+    /// </summary>
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// Label text
+    /// </summary>
+    [Parameter]
+    public string? Label { get; set; }
+
+    /// <summary>
+    /// Whether field is required
+    /// </summary>
+    [Parameter]
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    /// Help text below input
+    /// </summary>
+    [Parameter]
+    public string? HelpText { get; set; }
+
+    /// <summary>
+    /// Error message
+    /// </summary>
+    [Parameter]
+    public string? ErrorText { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Input field content
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

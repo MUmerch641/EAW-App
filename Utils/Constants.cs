@@ -321,6 +321,18 @@ public const string GetUserProfile = "api/v1/employee/{0}";
     public const string DeleteFile = "api/files/{0}";
     public const string DownloadFile = "api/files/{0}/download";
     public const string GetMaxFileSize = "api/files/max-size";
+
+
+    // payslip endpoints
+    public const string GetPayslipList = "api/v1/payslip/list"; 
+    
+    // Xamarin logic: ApiConstants.MyPayslipDetail (Format: {0}=profileId, {1}=id)
+    public const string GetPayslipDetail = "api/v1/payslip/{0}/{1}/detail"; 
+
+    // EXPENSES
+    public const string GetExpenseList = "api/v1/expense/list";
+    public const string CreateExpense = "api/v1/expense";
+    public const string GetExpenseSetup = "api/v1/expense/expense-setup-list"; // Dropdown ke liye
 }
 
 public enum SourceEnum

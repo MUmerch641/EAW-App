@@ -1,0 +1,86 @@
+@* Reusable Status Card Component *@
+<div class="card stat-card @CssClass">
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <div class="stat-icon @IconColor">
+                <span class="oi oi-@Icon"></span>
+            </div>
+        }
+        <div class="stat-content">
+            <h3>@Value</h3>
+            <p>@Label</p>
+            @if (!string.IsNullOrEmpty(SubLabel))
+            {
+                <small class="text-muted">@SubLabel</small>
+            }
+            @if (ChildContent != null)
+            {
+                <div class="stat-child-content">
+                    @ChildContent
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Main value to display
+    /// </summary>
+    [Parameter]
+    public string Value { get; set; } = "0";
+
+    /// <summary>
+    /// Label text
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Optional sub-label
+    /// </summary>
+    [Parameter]
+    public string? SubLabel { get; set; }
+
+    /// <summary>
+    /// Icon name (without 'oi-' prefix)
+    /// </summary>
+    [Parameter]
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// Icon color class (bg-primary, bg-danger, bg-success, etc.)
+    /// </summary>
+    [Parameter]
+    public string IconColor { get; set; } = "bg-primary";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Optional click handler
+    /// </summary>
+    /// <summary>
+    /// Optional click handler
+    /// </summary>
+    /// <summary>
+    /// Optional click handler
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    /// <summary>
+    /// Child content to render inside the card
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    // Compatibility parameters to match usage in TimeEntry.razor
+    [Parameter] public string Title { get => Label; set => Label = value; }
+    [Parameter] public string IconClass { get => Icon; set => Icon = value; }
+    [Parameter] public string AdditionalClass { get => CssClass; set => CssClass = value; }
+}

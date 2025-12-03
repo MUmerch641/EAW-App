@@ -1,261 +1,136 @@
 @page "/dashboard"
-@using MauiHybridApp.Models 
-@inject AuthenticationStateService AuthState
-@inject IDashboardDataService DashboardService
-@inject NavigationManager NavManager
+@using MauiHybridApp.ViewModels
+@inject DashboardViewModel ViewModel
+@implements IDisposable
 
 <div class="dashboard-container">
+    <!-- Header Section -->
     <div class="dashboard-header">
-        <h1>Welcome back!</h1>
-        <p class="text-muted">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+        <h1>@ViewModel.UserGreeting</h1>
+        <p class="text-muted">@ViewModel.CurrentDate</p>
     </div>
 
-    @if (isLoading)
+    <!-- Loading State -->
+    @if (ViewModel.IsBusy)
     {
-        <div class="text-center" style="margin-top:50px;">
-            <p>Loading Dashboard...</p>
-        </div>
+        <LoadingIndicator Message="@ViewModel.BusyText" />
     }
-    else
+    
+    <!-- Error State -->
+    @if (ViewModel.HasError)
     {
+        <AlertMessage Type="danger" Message="@ViewModel.ErrorMessage" />
+    }
+
+    <!-- Dashboard Content -->
+    @if (!ViewModel.IsBusy && !ViewModel.HasError)
+    {
+        <!-- Statistics Grid -->
         <div class="dashboard-grid">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-icon bg-primary">
-                        <span class="oi oi-calendar"></span>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@((dashboardData.VacationLeaveBalance.InfoboxValue + dashboardData.SickLeaveBalance.InfoboxValue).ToString("0.##"))</h3>
-                        <p>Total Leave Balance</p>
-                    </div>
-                </div>
-            </div>
+            <StatusCard 
+                Value="@ViewModel.TotalLeaveBalance"
+                Label="Total Leave Balance"
+                SubLabel="Vacation + Sick Leave"
+                Icon="calendar"
+                IconColor="bg-primary"
+                OnClick="@(() => ViewModel.NavigateToLeaveCommand.Execute(null))" />
 
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-icon bg-danger">
-                        <span class="oi oi-warning"></span>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@dashboardData.AbsencesMTD.InfoboxValue.ToString("0.##")</h3>
-                        <p>Absences (This Month)</p>
-                    </div>
-                </div>
-            </div>
+            <StatusCard 
+                Value="@ViewModel.AbsencesThisMonth"
+                Label="Absences"
+                SubLabel="This Month"
+                Icon="warning"
+                IconColor="bg-danger" />
 
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-icon bg-warning">
-                        <span class="oi oi-timer"></span>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@dashboardData.TardinessMTD.InfoboxValue.ToString("0.##")</h3>
-                        <p>Late Arrivals (MTD)</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="stat-icon bg-success">
-                        <span class="oi oi-clock"></span>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@dashboardData.TotalOvertimeMTD.InfoboxValue.ToString("0.##")</h3>
-                        <p>Overtime Hours</p>
-                    </div>
-                </div>
+            <StatusCard 
+                Value="@ViewModel.TardinessThisMonth"
+                Label="Late Arrivals"
+                SubLabel="This Month"
+                Icon="timer"
+                IconColor="bg-warning" />
+
+            <StatusCard 
+                Value="@ViewModel.OvertimeThisMonth"
+                Label="Overtime Hours"
+                SubLabel="This Month"
+                Icon="clock"
+                IconColor="bg-success"
+                OnClick="@(() => ViewModel.NavigateToOvertimeCommand.Execute(null))" />
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-section">
+            <h2>Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <ActionButton 
+                    Text="Time Entry"
+                    Icon="clock"
+                    Variant="primary"
+                    OnClick="@(() => ViewModel.NavigateToTimeEntryCommand.Execute(null))" />
+
+                <ActionButton 
+                    Text="Request Leave"
+                    Icon="calendar"
+                    Variant="success"
+                    OnClick="@(() => ViewModel.NavigateToLeaveCommand.Execute(null))" />
+
+                <ActionButton 
+                    Text="Overtime Request"
+                    Icon="plus"
+                    Variant="warning"
+                    OnClick="@(() => ViewModel.NavigateToOvertimeCommand.Execute(null))" />
+
+                <ActionButton 
+                    Text="View Attendance"
+                    Icon="list-rich"
+                    Variant="info"
+                    OnClick="@(() => ViewModel.NavigateToAttendanceCommand.Execute(null))" />
             </div>
         </div>
 
-        <div class="section">
-            <h2>Quick Actions</h2>
-            <div class="quick-actions">
-                <button class="action-btn" @onclick="NavigateToLeave">
-                    <span class="oi oi-calendar"></span>
-                    <span>Request Leave</span>
-                </button>
-                <button class="action-btn" @onclick="NavigateToOvertime">
-                    <span class="oi oi-clock"></span>
-                    <span>Request Overtime</span>
-                </button>
-                <button class="action-btn" @onclick="NavigateToAttendance">
-                    <span class="oi oi-target"></span>
-                    <span>Clock In/Out</span>
-                </button>
-            </div>
+        <!-- Refresh Button -->
+        <div class="refresh-section">
+            <ActionButton 
+                Text="Refresh Data"
+                Icon="reload"
+                Variant="secondary"
+                OnClick="@(() => ViewModel.RefreshCommand.Execute(null))"
+                IsDisabled="@ViewModel.IsBusy" />
         </div>
     }
 </div>
 
-<style>
-    :global(html), :global(body) {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: #f0f2f5;
-    }
-
-    .dashboard-container {
-        padding: 20px;
-        background-color: #f0f2f5;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .dashboard-header {
-        margin-bottom: 20px;
-        padding: 10px 5px;
-    }
-
-    .dashboard-header h1 {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1a1a1a;
-        margin: 0;
-    }
-
-    .dashboard-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 0;
-        border: none;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-    }
-
-    .stat-card .card-body {
-        display: flex;
-        align-items: center;
-        padding: 15px;
-        width: 100%;
-    }
-
-    .stat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 15px;
-        color: white;
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-
-    .stat-content {
-        flex: 1;
-    }
-
-    .stat-content h3 {
-        font-size: 20px;
-        margin: 0;
-        font-weight: 700;
-        color: #2d3436;
-    }
-
-    .stat-content p {
-        margin: 2px 0 0 0;
-        color: #888;
-        font-size: 13px;
-    }
-
-    .bg-primary { background: linear-gradient(135deg, #667eea, #764ba2); }
-    .bg-danger  { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
-    .bg-warning { background: linear-gradient(135deg, #f6d365, #fda085); }
-    .bg-success { background: linear-gradient(135deg, #2af598, #009efd); }
-
-    .section {
-        margin-bottom: 20px;
-    }
-
-    .section h2 {
-        font-size: 18px;
-        font-weight: 600;
-        color: #2d3436;
-        margin-bottom: 15px;
-    }
-
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
-    }
-
-    .action-btn {
-        background: white;
-        border: none;
-        border-radius: 12px;
-        padding: 20px 15px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        color: #2d3436;
-    }
-
-    .action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        background: #f8f9fa;
-    }
-
-    .action-btn span:first-child {
-        font-size: 24px;
-        margin-bottom: 8px;
-        color: #667eea;
-    }
-
-    .action-btn span:last-child {
-        font-size: 12px;
-        font-weight: 500;
-        text-align: center;
-    }
-
-</style>
-
 @code {
-    private DashboardResponse dashboardData = new DashboardResponse();
-    private bool isLoading = true;
-
+    /// <summary>
+    /// Component initialization - loads dashboard data
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        try 
-        {
-            isLoading = true;
-            var response = await DashboardService.GetDashboardAsync();
-            if(response != null)
-            {
-                dashboardData = response;
-            }
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-        }
-        finally
-        {
-            isLoading = false;
-        }
+        // Subscribe to ViewModel property changes for UI updates
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        
+        // Initialize the ViewModel (loads data)
+        await ViewModel.InitializeAsync();
     }
 
-    private void NavigateToLeave() => NavManager.NavigateTo("/leave");
-    private void NavigateToOvertime() => NavManager.NavigateTo("/overtime");
-    private void NavigateToAttendance() => NavManager.NavigateTo("/attendance");
-}
+    /// <summary>
+    /// Handle ViewModel property changes and refresh UI
+    /// This is the data binding mechanism in Blazor
+    /// </summary>
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        // Refresh the UI when ViewModel properties change
+        InvokeAsync(StateHasChanged);
+    }
 
+    /// <summary>
+    /// Cleanup when component is disposed
+    /// </summary>
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

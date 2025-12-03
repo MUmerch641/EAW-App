@@ -1,0 +1,62 @@
+@* Reusable Alert Message Component *@
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-@AlertType @CssClass alert-dismissible fade show" role="alert">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <span class="oi oi-@Icon me-2"></span>
+        }
+        @Message
+        @if (IsDismissible)
+        {
+            <button type="button" class="btn-close" @onclick="Dismiss" aria-label="Close"></button>
+        }
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Alert message
+    /// </summary>
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Alert type (success, danger, warning, info)
+    /// </summary>
+    [Parameter]
+    public string AlertType { get; set; } = "info";
+
+    /// <summary>
+    /// Icon name (without 'oi-' prefix)
+    /// </summary>
+    [Parameter]
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// Whether alert can be dismissed
+    /// </summary>
+    [Parameter]
+    public bool IsDismissible { get; set; } = true;
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Callback when dismissed
+    /// </summary>
+    [Parameter]
+    public EventCallback OnDismiss { get; set; }
+
+    private async Task Dismiss()
+    {
+        Message = string.Empty;
+        await OnDismiss.InvokeAsync();
+    }
+
+    // Compatibility parameters
+    [Parameter] public string Type { get => AlertType; set => AlertType = value; }
+}

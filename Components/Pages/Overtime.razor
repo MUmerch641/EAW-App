@@ -1,396 +1,119 @@
 @page "/overtime"
-@inject AuthenticationStateService AuthState
-@inject IOvertimeDataService OvertimeService
-@inject OvertimeStateService OvertimeState
-@inject NavigationManager NavManager
-@inject IJSRuntime JSRuntime
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@inject OvertimeViewModel ViewModel
+@implements IDisposable
 
 <div class="page-container">
-    <div class="page-header">
-        <button class="btn-back" @onclick="GoBack">
-            <span class="oi oi-arrow-left"></span>
-        </button>
-        <h1>Overtime Request</h1>
-    </div>
-
-    <div class="page-content">
-        @if (isLoading)
-        {
-            <div class="loading-container">
-                <div class="spinner"></div>
-                <p>Loading overtime form...</p>
-            </div>
-        }
-        else
-        {
-            <EditForm Model="@overtimeRequest" OnValidSubmit="@SubmitRequest">
-                <DataAnnotationsValidator />
+    <PageHeader 
+        Title="Overtime Request" 
+        Subtitle="Submit overtime hours" 
+        IconClass="fa-clock" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading..." />
+    }
+    else
+    {
+        <div class="form-container">
+            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+            {
+                <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
+            }
+            
+            @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+            {
+                <AlertMessage Type="success" Message="@ViewModel.SuccessMessage" />
+            }
+            
+            <div class="form-section">
+                <h3 class="section-title">Overtime Details</h3>
                 
-                <div class="form-card">
-                    <div class="form-section">
-                        <h3>Overtime Details</h3>
-                        
-                        <div class="form-group">
-                            <label for="overtimeDate">Overtime Date *</label>
-                            <input id="overtimeDate" type="date" class="form-control" 
-                                   @bind="overtimeRequest.OvertimeDate" />
-                            <ValidationMessage For="@(() => overtimeRequest.OvertimeDate)" />
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="startTime">Start Time *</label>
-                                <input id="startTime" type="time" class="form-control"
-                                       value="@startTimeString"
-                                       @onchange="OnStartTimeChanged" />
-                                <ValidationMessage For="@(() => overtimeRequest.StartTime)" />
-                            </div>
-                            <div class="form-group">
-                                <label for="endTime">End Time *</label>
-                                <input id="endTime" type="time" class="form-control"
-                                       value="@endTimeString"
-                                       @onchange="OnEndTimeChanged" />
-                                <ValidationMessage For="@(() => overtimeRequest.EndTime)" />
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="orotHours">Regular OT Hours</label>
-                                <input id="orotHours" type="number" step="0.25" class="form-control" 
-                                       @bind="overtimeRequest.OROTHrs" readonly />
-                            </div>
-                            <div class="form-group">
-                                <label for="nsotHours">Night Shift OT Hours</label>
-                                <input id="nsotHours" type="number" step="0.25" class="form-control" 
-                                       @bind="overtimeRequest.NSOTHrs" readonly />
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reason">Reason *</label>
-                            <textarea id="reason" class="form-control" rows="3" 
-                                      @bind="overtimeRequest.Reason" 
-                                      placeholder="Enter reason for overtime request"></textarea>
-                            <ValidationMessage For="@(() => overtimeRequest.Reason)" />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked="@overtimeRequest.ForOffsetting"
-                                       @onchange="OnForOffsettingChanged" />
-                                <span class="checkmark"></span>
-                                For Offsetting
-                            </label>
-                        </div>
-
-                        @if (overtimeRequest.ForOffsetting == true)
-                        {
-                            <div class="form-group">
-                                <label for="offsetExpiration">Offsetting Expiration Date</label>
-                                <input id="offsetExpiration" type="date" class="form-control" 
-                                       @bind="overtimeRequest.OffsettingExpirationDate" />
-                            </div>
-                        }
-                    </div>
-
-                    @if (overtimeSummary != null)
-                    {
-                        <div class="form-section">
-                            <h3>Overtime Summary</h3>
-                            <div class="summary-grid">
-                                <div class="summary-item">
-                                    <span class="label">Total Hours:</span>
-                                    <span class="value">@overtimeSummary.TotalHours</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span class="label">Regular OT:</span>
-                                    <span class="value">@overtimeSummary.RegularOTHours</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span class="label">Night Shift OT:</span>
-                                    <span class="value">@overtimeSummary.NightShiftOTHours</span>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="alert alert-danger">
-                            @errorMessage
-                        </div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(successMessage))
-                    {
-                        <div class="alert alert-success">
-                            @successMessage
-                        </div>
-                    }
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" @onclick="SaveDraft" disabled="@isSubmitting">
-                            @if (isSubmitting)
-                            {
-                                <span class="spinner-border spinner-border-sm" role="status"></span>
-                                <span> Saving...</span>
-                            }
-                            else
-                            {
-                                <span>Save as Draft</span>
-                            }
-                        </button>
-                        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
-                            @if (isSubmitting)
-                            {
-                                <span class="spinner-border spinner-border-sm" role="status"></span>
-                                <span> Submitting...</span>
-                            }
-                            else
-                            {
-                                <span>Submit Request</span>
-                            }
-                        </button>
+                <FormGroup Label="Overtime Date" IsRequired="true">
+                    <input type="date" 
+                           class="form-control" 
+                           value="@ViewModel.OvertimeRequest.OvertimeDate.ToString("yyyy-MM-dd")"
+                           @onchange="@((e) => ViewModel.OvertimeRequest.OvertimeDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
+                </FormGroup>
+                
+                <div class="form-row">
+                    <FormGroup Label="Start Time" IsRequired="true">
+                        <input type="time" 
+                               class="form-control" 
+                               value="@ViewModel.OvertimeRequest.StartTime.ToString("HH:mm")"
+                               @onchange="@((e) => ViewModel.OvertimeRequest.StartTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
+                    </FormGroup>
+                    
+                    <FormGroup Label="End Time" IsRequired="true">
+                        <input type="time" 
+                               class="form-control" 
+                               value="@ViewModel.OvertimeRequest.EndTime.ToString("HH:mm")"
+                               @onchange="@((e) => ViewModel.OvertimeRequest.EndTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
+                    </FormGroup>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-item">
+                        <span class="info-label">Total Hours:</span>
+                        <span class="info-value">@ViewModel.FormattedHours</span>
                     </div>
                 </div>
-            </EditForm>
-        }
-    </div>
+                
+                <FormGroup Label="Reason" IsRequired="true">
+                    <textarea class="form-control" 
+                              rows="4" 
+                              placeholder="Enter reason for overtime request..."
+                              @bind="ViewModel.OvertimeRequest.Reason"></textarea>
+                </FormGroup>
+                
+                <FormGroup Label="Remarks">
+                    <textarea class="form-control" 
+                              rows="3" 
+                              placeholder="Additional remarks (optional)..."
+                              @bind="ViewModel.OvertimeRequest.Remarks"></textarea>
+                </FormGroup>
+            </div>
+            
+            <div class="form-actions">
+                <ActionButton 
+                    Text="Submit Request" 
+                    OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
+                    IsDisabled="@ViewModel.IsBusy"
+                    IsPrimary="true"
+                    IconClass="fa-paper-plane" />
+                    
+                <ActionButton 
+                    Text="Cancel" 
+                    OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
+                    IsDisabled="@ViewModel.IsBusy"
+                    IsPrimary="false"
+                    IconClass="fa-times" />
+            </div>
+        </div>
+    }
 </div>
 
-<style>
-    .page-container {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        background-color: #f0f2f5;
-    }
+@code {
+    private PropertyChangedEventHandler? _propertyChangedHandler;
 
-    .page-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+        
+        await ViewModel.InitializeAsync();
     }
-
-    .page-header {
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-        background: #667eea;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn-back {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 18px;
-        margin-right: 15px;
-        cursor: pointer;
-    }
-
-    .page-header h1 {
-        flex: 1;
-        margin: 0;
-        font-size: 20px;
-    }
-
-    .page-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        background: #f8f9fa;
-    }
-
-    .loading-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-    }
-
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 15px;
-    }
-
-    @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .form-card {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .form-section {
-        margin-bottom: 30px;
-    }
-
-    .form-section h3 {
-        margin-bottom: 20px;
-        color: #333;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 10px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .form-control[readonly] {
-        background-color: #f8f9fa;
-        color: #6c757d;
-    }
-
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    .checkbox-label input[type="checkbox"] {
-        margin-right: 8px;
-    }
-
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 4px;
-    }
-
-    .summary-item .label {
-        font-weight: 500;
-        color: #666;
-    }
-
-    .summary-item .value {
-        font-weight: bold;
-        color: #333;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-end;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-
-    .btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .btn-primary {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-        background: #5a6fd8;
-    }
-
-    .btn-secondary {
-        background: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-        background: #5a6268;
-    }
-
-    .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .alert {
-        padding: 12px 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-
-    .alert-danger {
-        background: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
-
-    .alert-success {
-        background: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-    }
-
-    @@media (max-width: 768px) {
-        .form-row {
-            grid-template-columns: 1fr;
+    
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null && ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
         }
         
-        .form-actions {
-            flex-direction: column;
-        }
-        
-        .page-content {
-            padding: 15px;
-        }
+        ViewModel?.Dispose();
     }
-</style>
-
+}
+}

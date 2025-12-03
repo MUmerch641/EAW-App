@@ -1,0 +1,28 @@
+@* Reusable Loading Spinner Component *@
+<div class="loading-container @CssClass">
+    <div class="spinner @SpinnerSize"></div>
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <p class="loading-message">@Message</p>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Loading message to display below spinner
+    /// </summary>
+    [Parameter]
+    public string Message { get; set; } = "Loading...";
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Spinner size: small, medium, large
+    /// </summary>
+    [Parameter]
+    public string SpinnerSize { get; set; } = "medium";
+}

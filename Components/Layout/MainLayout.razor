@@ -53,12 +53,13 @@
         if (firstRender)
         {
             await Task.Delay(millisecondsDelay: 500);
-            await JSRuntime.InvokeVoidAsync("hideLoadingScreen");
+            await JSRuntime.InvokeVoidAsync("blazorHelpers.hideLoadingScreen");
         }
     }
 
     private void ToggleSidebar()
     {
         sidebarOpen = !sidebarOpen;
+        StateHasChanged();
     }
 }

@@ -201,6 +201,16 @@ public interface ITimeEntryDataService
     Task<SaveResult> CreateTimeEntryAsync(string type, double lat, double lng);
 }
 
+// Expense
+public interface IExpenseDataService
+{
+    Task<List<ExpenseModel>> GetExpensesAsync();
+    Task<SaveResult> SubmitExpenseAsync(ExpenseModel request);
+    
+    // Dropdown ke liye types (e.g. Travel, Food)
+    Task<List<SelectableListModel>> GetExpenseTypesAsync();
+}
+
 // Approvals
 public interface IApprovalDataService
 {

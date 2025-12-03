@@ -1,0 +1,61 @@
+@* Reusable Page Header Component *@
+<div class="page-header">
+    @if (ShowBackButton)
+    {
+        <button class="btn-back" @onclick="OnBackClick">
+            <span class="oi oi-arrow-left"></span>
+        </button>
+    }
+    <h1>
+        @if (!string.IsNullOrEmpty(IconClass))
+        {
+            <i class="fa @IconClass me-2"></i>
+        }
+        @Title
+    </h1>
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <p class="subtitle">@Subtitle</p>
+    }
+    <div class="header-actions">
+        @HeaderActions
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Page title to display
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether to show the back button
+    /// </summary>
+    [Parameter]
+    public bool ShowBackButton { get; set; } = true;
+
+    /// <summary>
+    /// Callback when back button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnBackClick { get; set; }
+
+    /// <summary>
+    /// Custom content for header actions (buttons, icons, etc.)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? HeaderActions { get; set; }
+
+    /// <summary>
+    /// Optional subtitle / description shown under the title
+    /// </summary>
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    /// <summary>
+    /// Optional icon class to display next to the title
+    /// </summary>
+    [Parameter]
+    public string? IconClass { get; set; }
+}
