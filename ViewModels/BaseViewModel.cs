@@ -40,8 +40,37 @@ public abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
     public string? ErrorMessage
     {
         get => _errorMessage;
-        set => SetProperty(ref _errorMessage, value);
+        set
+        {
+            SetProperty(ref _errorMessage, value);
+            OnPropertyChanged(nameof(Message));
+            OnPropertyChanged(nameof(HasError));
+        }
     }
+
+    private string? _successMessage;
+    /// <summary>
+    /// Current success message to display to user
+    /// </summary>
+    public string? SuccessMessage
+    {
+        get => _successMessage;
+        set
+        {
+            SetProperty(ref _successMessage, value);
+            OnPropertyChanged(nameof(Message));
+        }
+    }
+
+    /// <summary>
+    /// General message to display (Success or Error)
+    /// </summary>
+    public string? Message => !string.IsNullOrEmpty(SuccessMessage) ? SuccessMessage : ErrorMessage;
+
+    /// <summary>
+    /// Alias for IsBusy
+    /// </summary>
+    public bool IsLoading => IsBusy;
 
     /// <summary>
     /// Indicates if there is an error

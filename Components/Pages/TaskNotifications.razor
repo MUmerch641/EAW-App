@@ -1,0 +1,136 @@
+@page "/task-notifications"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models.Workflow
+@inject TaskNotificationViewModel ViewModel
+
+<div class="page-container p-0 bg-white h-100">
+    <div class="animate-fade-in-up h-100 d-flex flex-column">
+        <!-- Header -->
+        <div class="app-header bg-white text-dark p-3 shadow-sm sticky-top z-3 border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <h5 class="mb-0 fw-bold ms-3">Task & Notifications</h5>
+                </div>
+                <div class="d-flex gap-2">
+                     <button class="btn btn-link text-dark p-0" @onclick="@(() => ViewModel.RefreshCommand.Execute(null))">
+                        <i class="fas fa-sync-alt @(ViewModel.IsBusy ? "fa-spin" : "")"></i>
+                    </button>
+                </div>
+            </div>
+            
+             <!-- Tabs -->
+            <div class="d-flex mt-3 bg-light rounded-pill p-1 mx-3 mb-2">
+                <button class="btn rounded-pill flex-grow-1 fw-bold @(ViewModel.IsTasksTabActive ? "btn-white shadow-sm text-primary" : "text-muted")"
+                        @onclick="@(() => ViewModel.SwitchTabCommand.Execute("Tasks"))">
+                    Tasks
+                    @if (ViewModel.Tasks.Count > 0)
+                    {
+                        <span class="badge bg-danger rounded-pill ms-2">@ViewModel.Tasks.Count</span>
+                    }
+                </button>
+                <button class="btn rounded-pill flex-grow-1 fw-bold @(ViewModel.IsNotificationsTabActive ? "btn-white shadow-sm text-primary" : "text-muted")"
+                         @onclick="@(() => ViewModel.SwitchTabCommand.Execute("Notifications"))">
+                    Notifications
+                    @if (ViewModel.Notifications.Count(n => !n.IsRead) > 0)
+                    {
+                         <span class="badge bg-danger rounded-pill ms-2">@ViewModel.Notifications.Count(n => !n.IsRead)</span>
+                    }
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-grow-1 overflow-auto p-3 bg-light">
+             @if (ViewModel.IsBusy && ViewModel.Tasks.Count == 0 && ViewModel.Notifications.Count == 0)
+            {
+                 <div class="d-flex justify-content-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            }
+            else
+            {
+                @if (ViewModel.IsTasksTabActive)
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @if (ViewModel.Tasks.Any())
+                        {
+                            @foreach (var task in ViewModel.Tasks)
+                            {
+                                <div class="card border-0 shadow-sm rounded-4 p-3 hover-lift cursor-pointer" 
+                                     @onclick="@(() => ViewModel.NavigateToTaskCommand.Execute(task))">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-warning text-dark rounded-pill">Pending Approval</span>
+                                        <small class="text-muted">@task.DateFiled.ToString("MMM dd")</small>
+                                    </div>
+                                    <h6 class="fw-bold mb-1">@task.TransactionType</h6>
+                                    <p class="text-secondary small mb-0">From: @task.EmployeeName</p>
+                                    <div class="mt-2 text-primary small d-flex align-items-center">
+                                        Review Request <i class="fas fa-arrow-right ms-2"></i>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                             <div class="text-center py-5">
+                                <i class="fas fa-check-circle fa-3x text-muted mb-3 opacity-25"></i>
+                                <p class="text-muted fw-bold">No pending tasks</p>
+                            </div>
+                        }
+                    </div>
+                }
+                
+                @if (ViewModel.IsNotificationsTabActive)
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @if (ViewModel.Notifications.Any())
+                        {
+                            @foreach (var notif in ViewModel.Notifications)
+                            {
+                                <div class="card border-0 shadow-sm rounded-4 p-3 hover-lift cursor-pointer position-relative @(notif.IsRead ? "opacity-75" : "")"
+                                      @onclick="@(() => ViewModel.NavigateToNotificationCommand.Execute(notif))">
+                                    
+                                    @if (!notif.IsRead)
+                                    {
+                                        <div class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="left: 95% !important; top: 10px !important;">
+                                            <span class="visually-hidden">New feature</span>
+                                        </div>
+                                    }
+
+                                    <div class="d-flex gap-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 48px; height: 48px;">
+                                                <i class="fas fa-bell"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                             <div class="d-flex justify-content-between mb-1">
+                                                <h6 class="fw-bold mb-0 text-dark">System Notification</h6>
+                                                <small class="text-muted">@notif.ActionDateTime.ToString("MMM dd, h:mm tt")</small>
+                                            </div>
+                                            <p class="text-secondary small mb-0">@notif.Message</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                             <div class="text-center py-5">
+                                <i class="fas fa-bell-slash fa-3x text-muted mb-3 opacity-25"></i>
+                                <p class="text-muted fw-bold">No notifications</p>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

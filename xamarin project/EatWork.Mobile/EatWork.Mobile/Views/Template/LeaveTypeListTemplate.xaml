@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sflistview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Template.LeaveTypeListTemplate">
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <sflistview:SfListView x:Name="LeaveTypeListView"
+                           Style="{StaticResource SfListViewStyle}"
+                           AutoFitMode="Height"
+                           ItemSpacing="0"
+                           SelectionGesture="Tap"
+                           SelectionMode="Single"
+                           IsStickyGroupHeader="False"
+                           ItemsSource="{Binding LeaveTypeList}">
+        <sflistview:SfListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <ViewCell.View>
+                        <Grid RowSpacing="0" ColumnSpacing="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" HeightRequest="48">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Row="0" Grid.Column="0" VerticalOptions="CenterAndExpand" Margin="16,0">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.LeaveTypeSelectedCommand, Source={x:Reference LeaveTypeListView}}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <iconize:IconImage Icon="{StaticResource AddIcon}"
+                                                       IconColor="{DynamicResource PrimaryColor}"
+                                                       HeightRequest="20"
+                                                       WidthRequest="20"
+                                                       HorizontalOptions="Center"
+                                                       Opacity="0.60"
+                                                       VerticalOptions="Center" />
+                                </Grid>
+
+                                <Grid Grid.Row="0" Grid.Column="1" RowSpacing="1" VerticalOptions="CenterAndExpand">
+
+                                    <Label Text="{Binding DisplayText}"
+                                           FontSize="{StaticResource Small}"
+                                           TextColor="{DynamicResource Gray-900}"
+                                           FontFamily="{DynamicResource Medium}" />
+                                </Grid>
+                            </Grid>
+
+                            <!--<buttons:SfRadioButton
+                                 GroupKey="{Binding }"
+                                 HeightRequest="48"
+                                 Text="{Binding DisplayText}"
+                                 Margin="16,0"
+                                 HorizontalOptions="Start"
+                                 VerticalOptions="Center"
+                                 TextColor="{DynamicResource Gray-900}"
+                                 IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                 FontFamily="{DynamicResource Medium}"
+                                 UncheckedColor="{DynamicResource Gray-300}"
+                                 FontSize="16">
+                                 
+                                 <buttons:SfRadioButton.Behaviors>
+                                 <utils:SfRadioButtonCommandBehavior EventName="StateChanged"
+                                 Command="{Binding Path=BindingContext.SelectedShiftCommand, Source={x:Reference ShiftListView}}"
+                                 Converter="{StaticResource EventArgs}"
+                                 CommandParameter="{Binding .}" />
+                                 </buttons:SfRadioButton.Behaviors>
+                                 </buttons:SfRadioButton>-->
+
+                            <BoxView Grid.Row="1" Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+                    </ViewCell.View>
+                </ViewCell>
+            </DataTemplate>
+        </sflistview:SfListView.ItemTemplate>
+    </sflistview:SfListView>
+</StackLayout>

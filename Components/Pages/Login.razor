@@ -1,5 +1,4 @@
 @page "/login"
-@page "/"
 @inject AuthenticationStateService AuthState
 @inject IAuthenticationDataService AuthService
 @inject INavigationService NavigationService
@@ -21,13 +20,13 @@
             
             <div class="form-group">
                 <label for="username">Username</label>
-                <InputText id="username" class="form-control" @bind-Value="loginModel.Username" placeholder="Enter your username" />
+                <InputText id="username" class="modern-input" @bind-Value="loginModel.Username" placeholder="Enter your username" />
                 <ValidationMessage For="@(() => loginModel.Username)" />
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" placeholder="Enter your password" />
+                <InputText id="password" type="password" class="modern-input" @bind-Value="loginModel.Password" placeholder="Enter your password" />
                 <ValidationMessage For="@(() => loginModel.Password)" />
             </div>
 
@@ -54,90 +53,11 @@
         <div class="login-footer">
             <a href="/forgot-password">Forgot Password?</a>
             <span class="separator">|</span>
+            <a href="/connection">Client Setup</a>
         </div>
     </div>
 </div>
-<style>
-    /* Global Reset for full height */
-    :global(html), :global(body) {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* Body scroll roko, sirf container scroll karega */
-    }
 
-    /* 🔥 Main Scrollable Container */
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center; /* Center mein rakho */
-        
-        /* Height logic: Full height lo, lekin keyboard aye to adjust ho jao */
-        height: 100vh; 
-        width: 100%;
-        
-        /* Background */
-        background: linear-gradient(135deg, #a7b4ec 0%, #b4a1c6 100%);
-        
-        /* 🔥 SCROLL MAGIC: Agar content height se bara ho to scroll karo */
-        overflow-y: auto; 
-        -webkit-overflow-scrolling: touch; /* Smooth scroll on mobile */
-        
-        /* Padding taake keyboard bilkul chipak na jaye */
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    /* Card styling same rahegi */
-    .login-card {
-        background: white;
-        border-radius: 10px;
-        padding: 30px; /* Thora padding kam kiya mobile ke liye */
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        max-width: 400px;
-        width: 100%;
-        
-        /* Margin auto taake scroll karte waqt center rahe */
-        margin: auto; 
-    }
-
-    /* ... Baki styles same rakho ... */
-    .login-header { text-align: center; margin-bottom: 20px; }
-    .login-header .logo { width: 70px; height: 70px; margin-bottom: 10px; }
-    .login-header h1 { font-size: 22px; color: #333; margin-bottom: 5px; }
-    .login-header p { color: #666; font-size: 14px; }
-    
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; }
-    
-    .form-control {
-        width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px; /* Mobile par zoom rokne ke liye 16px best hai */
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .btn-block {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        font-weight: 500;
-        margin-top: 10px;
-    }
-
-    .login-footer { text-align: center; margin-top: 20px; font-size: 14px; padding-bottom: 10px; }
-    .login-footer a { color: #667eea; text-decoration: none; }
-    .separator { margin: 0 10px; color: #ccc; }
-    .alert { padding: 10px 15px; border-radius: 5px; margin-bottom: 15px; }
-    .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-</style>
 @code {
     private LoginModel loginModel = new();
     private bool isLoading = false;

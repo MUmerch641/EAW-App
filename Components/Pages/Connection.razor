@@ -1,0 +1,62 @@
+@page "/connection"
+@page "/"
+@using MauiHybridApp.ViewModels
+@inject ConnectionViewModel ViewModel
+@inject IJSRuntime JSRuntime
+
+<div class="connection-container">
+    <div class="connection-card">
+        <div class="connection-header">
+            <img src="images/logo.svg" alt="Everything at Work" class="logo" />
+            <h1>Client Setup</h1>
+            <p>Please enter your Client Code and Pass Key</p>
+        </div>
+
+        <EditForm Model="@ViewModel" OnValidSubmit="@(() => ViewModel.SetupCommand.Execute(null))">
+            <div class="form-group">
+                <label for="clientCode">Client Code</label>
+                <InputText id="clientCode" class="modern-input" @bind-Value="ViewModel.ClientCode" placeholder="Enter client code" />
+            </div>
+
+            <div class="form-group">
+                <label for="passKey">Pass Key</label>
+                <InputText id="passKey" type="password" class="modern-input" @bind-Value="ViewModel.PassKey" placeholder="Enter pass key" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewModel.ErrorMessage
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary btn-block" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span> Setting up...</span>
+                }
+                else
+                {
+                    <span>Setup</span>
+                }
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(100);
+            await JSRuntime.InvokeVoidAsync("blazorHelpers.hideLoadingScreen");
+        }
+    }
+}

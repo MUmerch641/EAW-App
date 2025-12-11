@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:loader="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:effectview="clr-namespace:Syncfusion.XForms.EffectsView;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+             x:Class="EatWork.Mobile.Views.IndividualObjectives.GoalsListPage"
+             Style="{DynamicResource ContentPage}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="HeaderStyle" BasedOn="{StaticResource PriceLabelStyle}" TargetType="Label">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.25, Default=-1}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="Margin" Value="0,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+            <StackLayout Margin="10,10">
+                <Grid ColumnDefinitions="*,80">
+                    <Label Text="Organizational Goal" HorizontalOptions="Start"
+                           FontSize="20"
+                           FontFamily="{DynamicResource Bold}"
+                           TextColor="{DynamicResource Gray-900}"
+                           Grid.Column="0" />
+
+                    <button:SfButton x:Name="SkipButton"
+                                     Grid.Column="1"
+                                     BackgroundColor="Transparent"
+                                     Command="{Binding CloseModalCommand}"
+                                     CornerRadius="20"
+                                     FontFamily="{DynamicResource SemiBold}"
+                                     HeightRequest="40"
+                                     HorizontalOptions="End"
+                                     Text="Close"
+                                     TextColor="{x:StaticResource HyperLink}"
+                                     VerticalOptions="StartAndExpand"
+                                     WidthRequest="80" />
+                </Grid>
+
+                <AbsoluteLayout VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand">
+
+                    <loader:SfBusyIndicator x:Name="busyindicator"
+                                            Style="{StaticResource BusyIndicatorStyle}"
+                                            IsBusy="{Binding IsBusy}" />
+
+                    <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                                 AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                                 IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalOptions="CenterAndExpand">
+
+                        <local:NoItemsPartialPage DetailsText="No basis for organizational/departmental goals retrieved. Please ask your system administrator to set this up."
+                                                  IsVisible="{Binding Holder.GoalHeaderDetails,Converter={utils:ListToBoolConverter}}"
+                                                  HorizontalOptions="CenterAndExpand"
+                                                  VerticalOptions="CenterAndExpand"
+                                                  Margin="0,0" />
+                    </StackLayout>
+
+                    <Grid RowSpacing="0" ColumnSpacing="0"
+                          AbsoluteLayout.LayoutFlags="All"
+                          AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}"
+                          RowDefinitions="Auto">
+                        <StackLayout Grid.Row="0" Margin="8,0" Spacing="0"
+                                     IsVisible="{Binding Holder.GoalHeaderDetails,Converter={utils:ListToInverseBoolConverter}}">
+                            <Grid RowSpacing="0" ColumnSpacing="0" Margin="0,20,0,0">
+                                <StackLayout Spacing="8">
+                                    <!--HEADER LABEL-->
+                                    <Label Margin="0,0"
+                                           HorizontalOptions="Start"
+                                           Style="{StaticResource HeaderStyle}"
+                                           TextColor="{DynamicResource Gray-800}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{DynamicResource TrophyStringIcon}"
+                                                      FontSize="18"
+                                                      FontFamily="{DynamicResource FontAwesomeSolid}" />
+                                                <Span Text="  " />
+                                                <Span Text="{Binding Holder.Header.GoalName}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <!--LIST-->
+                                    <StackLayout Margin="0,10">
+                                        <StackLayout Margin="0,0,0,0"
+                                                     BindableLayout.ItemsSource="{Binding Holder.GoalHeaderDetails}"
+                                                     x:Name="Details">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                                             Margin="0,8,0,4"
+                                                                             HorizontalOptions="FillAndExpand"
+                                                                             VerticalOptions="FillAndExpand"
+                                                                             CornerRadius="0"
+                                                                             Padding="0,0">
+                                                        <control:SfExpander HeaderBackgroundColor="{DynamicResource PrimaryColor}"
+                                                                            HeaderIconPosition="End"
+                                                                            IconColor="{DynamicResource Gray-White}"
+                                                                            IsExpanded="True">
+                                                            <control:SfExpander.Header>
+                                                                <StackLayout Padding="20,12">
+                                                                    <Label Style="{StaticResource HeaderStyle}"
+                                                                           Text="{Binding Name}" />
+                                                                </StackLayout>
+                                                            </control:SfExpander.Header>
+                                                            <control:SfExpander.Content>
+                                                                <StackLayout Padding="10,10"
+                                                                             Spacing="2"
+                                                                             BindableLayout.ItemsSource="{Binding GoalDetails}"
+                                                                             x:Name="DetailsList">
+                                                                    <BindableLayout.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                                                                     Margin="2,2,5,5"
+                                                                                                     Padding="0"
+                                                                                                     BackgroundColor="#d4e3fc"
+                                                                                                     BorderColor="#d4e3fc"
+                                                                                                     CornerRadius="0"
+                                                                                                     VerticalOptions="FillAndExpand">
+
+                                                                                <effectview:SfEffectsView RippleColor="{DynamicResource Gray-300}"
+                                                                                                          TouchDownEffects="Ripple"
+                                                                                                          TouchUpCommand="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ItemTappedCommand}"
+                                                                                                          TouchUpCommandParameter="{Binding .}">
+                                                                                    <border:SfBorder BorderColor="Transparent"
+                                                                                                     BorderWidth="0"
+                                                                                                     CornerRadius="4">
+                                                                                        <Grid>
+                                                                                            <Grid ColumnDefinitions="Auto, *"
+                                                                                                  ColumnSpacing="0"
+                                                                                                  RowSpacing="0">
+
+                                                                                                <StackLayout Grid.Column="1"
+                                                                                                             Padding="10,10"
+                                                                                                             HorizontalOptions="FillAndExpand"
+                                                                                                             Spacing="0"
+                                                                                                             VerticalOptions="FillAndExpand">
+
+                                                                                                    <Label HorizontalOptions="Start"
+                                                                                                           HorizontalTextAlignment="Start"
+                                                                                                           Style="{StaticResource TitleLabelStyle}"
+                                                                                                           FontSize="{DynamicResource Smaller}"
+                                                                                                           LineBreakMode="TailTruncation"
+                                                                                                           MaxLines="2"
+                                                                                                           Text="{Binding Name}" />
+
+                                                                                                    <Label Margin="0,4,0,8"
+                                                                                                           FontSize="13"
+                                                                                                           HorizontalOptions="Start"
+                                                                                                           HorizontalTextAlignment="Start"
+                                                                                                           LineBreakMode="TailTruncation"
+                                                                                                           LineHeight="{OnPlatform Android=1.25,Default=-1}"
+                                                                                                           MaxLines="2"
+                                                                                                           Style="{StaticResource DescriptionLabelStyle}"
+                                                                                                           Text="{Binding Description}" />
+                                                                                                </StackLayout>
+                                                                                            </Grid>
+                                                                                        </Grid>
+                                                                                    </border:SfBorder>
+                                                                                </effectview:SfEffectsView>
+                                                                            </utils:CustomShadowFrame>
+                                                                        </DataTemplate>
+                                                                    </BindableLayout.ItemTemplate>
+                                                                </StackLayout>
+                                                            </control:SfExpander.Content>
+                                                        </control:SfExpander>
+                                                    </utils:CustomShadowFrame>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </Grid>
+                </AbsoluteLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

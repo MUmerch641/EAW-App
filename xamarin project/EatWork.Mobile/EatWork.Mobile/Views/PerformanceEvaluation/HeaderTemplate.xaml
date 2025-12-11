@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:avatar="clr-namespace:Syncfusion.XForms.AvatarView;assembly=Syncfusion.Core.XForms"
+             xmlns:progressBar="clr-namespace:Syncfusion.XForms.ProgressBar;assembly=Syncfusion.SfProgressBar.XForms"
+             x:Class="EatWork.Mobile.Views.PerformanceEvaluation.HeaderTemplate">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <Style x:Key="DescriptionLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Requests/Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <!--HEADER-->
+    <Grid ColumnDefinitions="35*, 65*"
+          Margin="16,0,0,0">
+        <!--IMAGE-->
+        <!--ContentType="{Binding ProfileImage,Converter={utils:ImageAvatarConverter}}"
+             ImageSource="{Binding ProfileImage}"-->
+        <avatar:SfAvatarView Style="{DynamicResource AvatarProfileImageStyle}"
+                             ContentType="AvatarCharacter"
+                             HeightRequest="100"
+                             WidthRequest="100"
+                             CornerRadius="55"
+                             Margin="0,0,16,8"
+                             Grid.Column="0" />
+
+        <StackLayout Grid.Column="1"
+                     Margin="8,0,0,8"
+                     Padding="0"
+                     Spacing="0">
+
+            <!--EMPLOYEE NAME-->
+            <Label FontAttributes="Bold"
+                   FontFamily="{DynamicResource SemiBold}"
+                   FontSize="16"
+                   HorizontalOptions="StartAndExpand"
+                   LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                   Text="{Binding Holder.EmployeeName}"
+                   TextColor="{DynamicResource Gray-900}" />
+
+            <StackLayout Margin="0,5,0,16"
+                         HorizontalOptions="StartAndExpand"
+                         Spacing="3">
+                <!--EMPLOYEE NUMBER-->
+                <Label Style="{StaticResource DescriptionLabelStyle}"
+                       Text="{Binding Holder.EmployeeNumber}" />
+                <!--POSITION-->
+                <Label Style="{StaticResource DescriptionLabelStyle}"
+                       Text="{Binding Holder.Position}" />
+                <!--HIRE DATE-->
+                <Label Style="{StaticResource DescriptionLabelStyle}"
+                       Text="{Binding Holder.HireDate}" />
+            </StackLayout>
+        </StackLayout>
+    </Grid>
+
+    <!--APPRAISAL DETAIL-->
+    <StackLayout Grid.Row="1"
+                 Grid.ColumnSpan="2"
+                 Margin="8,0,0,8"
+                 Spacing="0">
+
+        <!--APPRAISAL TYPE-->
+        <Grid ColumnSpacing="0"
+              RowSpacing="1"
+              Margin="0,0"
+              Style="{StaticResource GridMyScheduleDetails}"
+              ColumnDefinitions="35*, 65*">
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource SemiBold}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="Appraisal Type:" />
+
+            <Label Grid.Column="1"
+                   Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="16,0,0,4"
+                   VerticalOptions="Start"
+                   HorizontalOptions="Start"
+                   FontFamily="{DynamicResource Medium}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="{Binding Holder.AppraisalType}" />
+        </Grid>
+
+        <!--EVALUATOR TYPE-->
+        <Grid ColumnSpacing="0"
+              RowSpacing="1"
+              Margin="0,0"
+              Style="{StaticResource GridMyScheduleDetails}"
+              ColumnDefinitions="35*, 65*">
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource SemiBold}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="Evaluator Type:" />
+
+            <Label Grid.Column="1"
+                   Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="16,0,0,4"
+                   VerticalOptions="Start"
+                   HorizontalOptions="Start"
+                   FontFamily="{DynamicResource Medium}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="{Binding Holder.EvaluatorType}" />
+        </Grid>
+
+        <!--EVALUATOR NAME-->
+        <Grid ColumnSpacing="0"
+              RowSpacing="1"
+              Margin="0,0"
+              Style="{StaticResource GridMyScheduleDetails}"
+              ColumnDefinitions="35*, 65*">
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource SemiBold}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="Evaluator:" />
+
+            <Label Grid.Column="1"
+                   Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="16,0,0,4"
+                   VerticalOptions="Start"
+                   HorizontalOptions="Start"
+                   FontFamily="{DynamicResource Medium}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="{Binding Holder.EvaluatorName}" />
+        </Grid>
+
+        <!--FOR THE PERIOD-->
+        <Grid ColumnSpacing="0"
+              RowSpacing="1"
+              Margin="0,0"
+              Style="{StaticResource GridMyScheduleDetails}"
+              ColumnDefinitions="35*, 65*">
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource SemiBold}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="For the Period:" />
+
+            <Label Grid.Column="1"
+                   Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="16,0,0,4"
+                   VerticalOptions="Start"
+                   HorizontalOptions="Start"
+                   FontFamily="{DynamicResource Medium}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="{Binding Holder.Period}" />
+        </Grid>
+
+        <!--PROGRESS-->
+        <Grid ColumnSpacing="0"
+              RowSpacing="1"
+              Margin="0,0"
+              Style="{StaticResource GridMyScheduleDetails}"
+              ColumnDefinitions="35*, 48*, 4* ,13*"
+              RowDefinitions="*">
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource SemiBold}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Text="Progress:" />
+
+            <!--<progressBar:SfLinearProgressBar Progress="2" TrackHeight="15" CornerRadius="10" Grid.Column="1"
+                 TrackColor="#3351483a" ProgressColor="{StaticResource Success}"
+                 Minimum="0"
+                 Maximum="100" />-->
+
+            <progressBar:SfLinearProgressBar Progress="{Binding Holder.Progress}"
+                                             Margin="16,4,0,4"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             VerticalOptions="CenterAndExpand"
+                                             TrackHeight="15"
+                                             Grid.Column="1"
+                                             TrackColor="#3351483a"
+                                             ProgressColor="{StaticResource Success}"/>
+
+            <Label Style="{StaticResource LabelStyleMySchedule}"
+                   Margin="0,0,16,4"
+                   FontFamily="{DynamicResource Medium}"
+                   TextColor="{DynamicResource Gray-700}"
+                   Grid.Column="3">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text=" " />
+                        <Span Text="{Binding Holder.Progress}" />
+                        <Span Text=" %" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </Grid>
+    </StackLayout>
+
+    <!--SEPARATOR-->
+    <BoxView Style="{DynamicResource SeparatorStyle}" Grid.Row="2" BackgroundColor="{DynamicResource Gray-300}" Margin="16,0" />
+</StackLayout>

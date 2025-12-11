@@ -1,0 +1,774 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.TravelRequest.TravelRequestFormPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:expander="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Title="Travel Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Requests/Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="HeaderStyle"
+                   BasedOn="{StaticResource PriceLabelStyle}"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.25, Default=-1}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+                <Setter Property="Margin" Value="0,0" />
+            </Style>
+
+            <Style x:Key="GridEmployeeProfileDetails"
+                   TargetType="Grid">
+                <Setter Property="ColumnDefinitions">
+                    <Setter.Value>
+                        <ColumnDefinitionCollection>
+                            <ColumnDefinition Width="23*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="75*" />
+                        </ColumnDefinitionCollection>
+                    </Setter.Value>
+                </Setter>
+
+                <Setter Property="RowDefinitions">
+                    <Setter.Value>
+                        <RowDefinitionCollection>
+                            <RowDefinition Height="Auto" />
+                        </RowDefinitionCollection>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="0,0,16,0" />
+                <Setter Property="VerticalOptions" Value="StartAndExpand" />
+            </Style>
+
+            <Style x:Key="LabelStyleProfile"
+                   TargetType="Label">
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="FontSize" Value="{StaticResource Smaller}" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-900}" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalOptions" Value="StartAndExpand" />
+                <!--<Setter Property="HorizontalTextAlignment" Value="Start" />-->
+                <Setter Property="Margin" Value="10, 10" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
+                <!--<Setter Property="LineHeight" Value="{OnPlatform Default=-1, Android=1.5}" />-->
+                <Setter Property="LineBreakMode" Value="NoWrap" />
+                <Setter Property="MaxLines" Value="3" />
+            </Style>
+
+            <Style x:Key="LabelStyleProfileForLabel"
+                   BasedOn="{StaticResource LabelStyleProfile}"
+                   TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="End" />
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+            </Style>
+
+            <Style x:Key="DescriptionLabelStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <Style x:Key="ButtonCancelStyle"
+                   BasedOn="{StaticResource ButtonStyle}"
+                   TargetType="buttons:SfButton">
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="EndAndExpand" />
+                <Setter Property="WidthRequest" Value="245" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Travel Request"
+                             TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Command="{Binding ViewFileAttachmentCommand}"
+                                            IsVisible="{Binding FormHelper.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource FileAttachmentIcon}" />
+
+                        <iconize:IconButton Command="{Binding ViewTransactionHistoryCommand}"
+                                            IsVisible="{Binding FormHelper.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource InfoIcon}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+
+            <AbsoluteLayout HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               IsBusy="{Binding IsBusy}"
+                                               Style="{StaticResource BusyIndicatorStyle}" />
+
+                <StackLayout Margin="0,10"
+                             Padding="15,0"
+                             AbsoluteLayout.LayoutBounds="0,0,1,1"
+                             AbsoluteLayout.LayoutFlags="All"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             Spacing="10"
+                             VerticalOptions="CenterAndExpand">
+
+                    <ScrollView HorizontalScrollBarVisibility="Never"
+                                VerticalScrollBarVisibility="Never">
+
+                        <Grid Padding="0"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              RowSpacing="0"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+                                <StackLayout Spacing="0">
+                                    <StackLayout Padding="15,15,15,0"
+                                                 Style="{StaticResource StackLayoutRequestForm}">
+
+                                        <StackLayout IsVisible="{Binding FormHelper.IsEnabled}">
+                                            <border:SfBorder Padding="0,0,0,5"
+                                                             BorderColor="Transparent"
+                                                             HasShadow="False"
+                                                             HorizontalOptions="Start"
+                                                             IsVisible="{Binding FormHelper.Msg, Converter={utils:EmptyStringToBoolConverter}}"
+                                                             WidthRequest="1000">
+                                                <border:SfBorder.Content>
+                                                    <Grid>
+                                                        <BoxView BackgroundColor="{DynamicResource Error}"
+                                                                 Opacity="0.07" />
+
+                                                        <Label FontFamily="{DynamicResource SemiBold}"
+                                                               FontSize="13"
+                                                               HorizontalOptions="CenterAndExpand"
+                                                               LineBreakMode="TailTruncation"
+                                                               Text="{Binding FormHelper.Msg}"
+                                                               TextColor="{DynamicResource Error}"
+                                                               VerticalOptions="Center" />
+                                                    </Grid>
+                                                </border:SfBorder.Content>
+                                            </border:SfBorder>
+                                        </StackLayout>
+
+                                        <!--  REQUESTED DATE  -->
+                                        <control:SfTextInputLayout Hint="Requested Date  "
+                                                                   IsEnabled="False"
+                                                                   Style="{StaticResource InputLayoutStyleWithIcon}">
+
+                                            <DatePicker Date="{Binding FormHelper.DateRequested, Mode=TwoWay}"
+                                                        Style="{DynamicResource DatePickerStyle}" />
+
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                   Text="{StaticResource DateIcon}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                        </control:SfTextInputLayout>
+
+                                        <!--  REQUESTED BY  -->
+                                        <control:SfTextInputLayout Hint="Requested By  "
+                                                                   IsEnabled="False"
+                                                                   Style="{StaticResource InputLayoutStyleWithIcon}">
+
+                                            <Entry x:Name="txtRequestedBy"
+                                                   Style="{DynamicResource TextBoxStyle}"
+                                                   Text="{Binding FormHelper.RequestedBy, Mode=TwoWay}" />
+
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                   Text="{StaticResource EmployeeIcon}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                        </control:SfTextInputLayout>
+
+                                        <!--  TYPE OF BUSINESS TRIP  -->
+                                        <control:SfTextInputLayout EnableFloating="{Binding FormHelper.IsEnabled}"
+                                                                   ErrorText="{Binding FormHelper.TripType.Message}"
+                                                                   HasError="{Binding FormHelper.TripType.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                   Hint="Type of Business Trip"
+                                                                   Style="{StaticResource inputLayoutStyle}">
+
+                                            <combobox:SfComboBox DataSource="{Binding FormHelper.TripTypes}"
+                                                                 DisplayMemberPath="Value"
+                                                                 IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                 SelectedItem="{Binding FormHelper.SelectedTripType, Mode=TwoWay}"
+                                                                 SelectedValue="{Binding FormHelper.Model.TypeOfBusinessTrip, Mode=TwoWay}"
+                                                                 SelectedValuePath="Id"
+                                                                 Style="{StaticResource ComboBoxStyle}">
+
+                                                <combobox:SfComboBox.Behaviors>
+                                                    <utils:EventToCommandBehavior Command="{Binding TripTypeSelectionCommand}"
+                                                                                  EventName="SelectionChanged" />
+                                                </combobox:SfComboBox.Behaviors>
+                                            </combobox:SfComboBox>
+                                        </control:SfTextInputLayout>
+
+                                        <!--  DETAILS  -->
+                                        <control:SfTextInputLayout ErrorText="{Binding FormHelper.Details.Message}"
+                                                                   HasError="{Binding FormHelper.Details.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                   Hint="Specify details  "
+                                                                   IsVisible="{Binding FormHelper.EnabledDetailField}"
+                                                                   Style="{StaticResource InputLayoutStyleEditor}">
+                                            <Editor x:Name="txtDetails"
+                                                    IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                    Style="{DynamicResource EditorStyle}"
+                                                    Text="{Binding FormHelper.Details.Value, Mode=TwoWay}" />
+                                        </control:SfTextInputLayout>
+
+                                        <StackLayout Padding="0,10,0,0"
+                                                     Orientation="Horizontal">
+
+                                            <!--<Label FontFamily="{DynamicResource Medium}"
+                                                 Margin="0,0,0,0"
+                                                 FontSize="{StaticResource Tiny}"
+                                                 Text="Special Request Note"
+                                                 TextColor="{DynamicResource Gray-800}"
+                                                 HorizontalOptions="StartAndExpand"
+                                                 VerticalOptions="Center" />-->
+
+                                            <Label Style="{StaticResource HeaderStyle}"
+                                                   Text="Special Request Note" />
+
+                                            <!--<Label HorizontalOptions="StartAndExpand"
+                                                 Style="{DynamicResource HeaderStyle}"
+                                                 Text="Special Request Note"
+                                                 VerticalOptions="Center" />-->
+
+                                            <StackLayout Margin="10,0,0,0"
+                                                         HorizontalOptions="Start"
+                                                         IsVisible="{Binding FormHelper.IsEnabled}"
+                                                         Orientation="Horizontal"
+                                                         VerticalOptions="Start">
+                                                <iconize:IconImage HeightRequest="17"
+                                                                   HorizontalOptions="StartAndExpand"
+                                                                   Icon="{DynamicResource AddIcon2}"
+                                                                   IconColor="{DynamicResource PrimaryButtonColor}"
+                                                                   IsVisible="{Binding FormHelper.ShowDeleteNote, Converter={utils:InverseBoolConverter}}"
+                                                                   VerticalOptions="Center"
+                                                                   WidthRequest="17">
+                                                    <iconize:IconImage.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding CallSpecialNoteCommand}"
+                                                                              CommandParameter="" />
+                                                    </iconize:IconImage.GestureRecognizers>
+                                                </iconize:IconImage>
+
+                                                <iconize:IconImage Margin="0,0,5,0"
+                                                                   HeightRequest="17"
+                                                                   HorizontalOptions="StartAndExpand"
+                                                                   Icon="{DynamicResource EditICon2}"
+                                                                   IconColor="{DynamicResource PrimaryButtonColor}"
+                                                                   IsVisible="{Binding FormHelper.ShowDeleteNote}"
+                                                                   VerticalOptions="Center"
+                                                                   WidthRequest="17">
+                                                    <iconize:IconImage.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding CallSpecialNoteCommand}"
+                                                                              CommandParameter="{Binding FormHelper.SpecialRequestNote}" />
+                                                    </iconize:IconImage.GestureRecognizers>
+                                                </iconize:IconImage>
+
+                                                <iconize:IconImage Margin="5,0,0,0"
+                                                                   HeightRequest="17"
+                                                                   HorizontalOptions="StartAndExpand"
+                                                                   Icon="{DynamicResource DeleteIcon}"
+                                                                   IconColor="{DynamicResource Error}"
+                                                                   IsVisible="{Binding FormHelper.ShowDeleteNote}"
+                                                                   VerticalOptions="Center"
+                                                                   WidthRequest="17">
+                                                    <iconize:IconImage.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding RemoveSpecialNoteCommand}" />
+                                                    </iconize:IconImage.GestureRecognizers>
+                                                </iconize:IconImage>
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <utils:ExpandableLabel IsVisible="{Binding FormHelper.SpecialRequestNote, Converter={utils:EmptyStringToBoolConverter}}"
+                                                               Text="{Binding FormHelper.SpecialRequestNote, Mode=TwoWay}" />
+                                    </StackLayout>
+
+                                    <!--  ORIGINS AND DESTINATIONS  -->
+                                    <StackLayout Margin="0,0,0,0"
+                                                 Padding="0,0">
+                                        <utils:CustomShadowFrame Margin="0,8,0,4"
+                                                                 Padding="0,20"
+                                                                 CornerRadius="0"
+                                                                 HorizontalOptions="FillAndExpand"
+                                                                 Style="{DynamicResource CustomFrameStyle}"
+                                                                 VerticalOptions="FillAndExpand">
+                                            <expander:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}"
+                                                                 HeaderIconPosition="End">
+                                                <expander:SfExpander.Header>
+                                                    <StackLayout Padding="15,0">
+                                                        <Label Style="{StaticResource HeaderStyle}"
+                                                               Text="Itinerary" />
+                                                    </StackLayout>
+                                                </expander:SfExpander.Header>
+                                                <expander:SfExpander.Content>
+                                                    <StackLayout Margin="0,0"
+                                                                 Padding="0,0,0,0"
+                                                                 VerticalOptions="StartAndExpand">
+                                                        <!--  FIRST ORIGIN  -->
+                                                        <Grid Margin="0,0"
+                                                              Padding="15,0"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                            <!--<Label Grid.Column="0"
+                                                                 Margin="16,0,0,0"
+                                                                 Style="{StaticResource LabelStyleProfileForLabel}"
+                                                                 Text="From:"
+                                                                 VerticalOptions="Center"
+                                                                 VerticalTextAlignment="Center" />-->
+
+                                                            <control:SfTextInputLayout Grid.ColumnSpan="3"
+                                                                                       EnableFloating="False"
+                                                                                       ErrorText="{Binding FormHelper.FirstOrigin.Message}"
+                                                                                       HasError="{Binding FormHelper.FirstOrigin.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                       Hint="Origin  "
+                                                                                       Style="{StaticResource inputLayoutStyle}">
+
+                                                                <autocomplete:SfAutoComplete DataSource="{Binding FormHelper.Origins}"
+                                                                                             DisplayMemberPath="Value"
+                                                                                             IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                             NoResultsFoundText=""
+                                                                                             Style="{DynamicResource SfAutoCompleteStyle}"
+                                                                                             Text="{Binding FormHelper.FirstOrigin.Value, Mode=TwoWay}" />
+                                                            </control:SfTextInputLayout>
+                                                        </Grid>
+
+                                                        <!--  FIRST DESTINATION  -->
+                                                        <Grid Margin="0,0"
+                                                              Padding="15,0"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                            <!--<Label Grid.Column="0"
+                                                                 Margin="16,0,0,0"
+                                                                 Style="{StaticResource LabelStyleProfileForLabel}"
+                                                                 Text="To:"
+                                                                 VerticalOptions="Center"
+                                                                 VerticalTextAlignment="Center" />-->
+
+                                                            <control:SfTextInputLayout Grid.ColumnSpan="3"
+                                                                                       EnableFloating="False"
+                                                                                       ErrorText="{Binding FormHelper.FirstDestination.Message}"
+                                                                                       HasError="{Binding FormHelper.FirstDestination.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                       Hint="Destination  "
+                                                                                       Style="{StaticResource inputLayoutStyle}">
+
+                                                                <!--<Entry x:Name="txtFirstDestination"
+                                                                     Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding FormHelper.FirstDestination.Value, Mode=TwoWay}" />-->
+
+                                                                <autocomplete:SfAutoComplete DataSource="{Binding FormHelper.Destinations}"
+                                                                                             DisplayMemberPath="Value"
+                                                                                             IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                             NoResultsFoundText=""
+                                                                                             Style="{DynamicResource SfAutoCompleteStyle}"
+                                                                                             Text="{Binding FormHelper.FirstDestination.Value, Mode=TwoWay}" />
+                                                            </control:SfTextInputLayout>
+                                                        </Grid>
+
+                                                        <!--  FIRST DEPARTURE  -->
+                                                        <Grid Padding="15,0"
+                                                              ColumnDefinitions="*"
+                                                              IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                              RowDefinitions="15,*">
+
+                                                            <Label Grid.Row="0"
+                                                                   Margin="0,0,0,0"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Tiny}"
+                                                                   Text="Departure"
+                                                                   TextColor="{DynamicResource Gray-800}" />
+
+                                                            <StackLayout Grid.Row="1"
+                                                                         Grid.Column="0">
+                                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                                           ErrorText="{Binding FormHelper.FirstDepartureDateStr.Message}"
+                                                                                           HasError="{Binding FormHelper.FirstDepartureDateStr.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                           Hint="Date"
+                                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+                                                                    <utils:NullableDatePicker IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                              NullableDate="{Binding FormHelper.FirstDepartureDate, Mode=TwoWay}"
+                                                                                              Style="{DynamicResource DatePickerStyle}" />
+
+                                                                    <control:SfTextInputLayout.LeadingView>
+                                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                                           Text="{StaticResource DateIcon}" />
+                                                                    </control:SfTextInputLayout.LeadingView>
+                                                                </control:SfTextInputLayout>
+                                                            </StackLayout>
+
+                                                            <StackLayout Grid.Row="1"
+                                                                         Grid.Column="1"
+                                                                         Padding="0,0,0,0">
+                                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                                           ErrorText="{Binding FormHelper.FirstDepartureTimeStr.Message}"
+                                                                                           HasError="{Binding FormHelper.FirstDepartureTimeStr.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                           Hint="Time"
+                                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+
+                                                                    <utils:NullableTimePicker IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                              NullableTime="{Binding FormHelper.FirstDepartureTime, Mode=TwoWay}"
+                                                                                              Style="{DynamicResource TimePickerStyle}" />
+
+                                                                    <control:SfTextInputLayout.LeadingView>
+                                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                                           Text="{StaticResource TimeIcon}" />
+                                                                    </control:SfTextInputLayout.LeadingView>
+                                                                </control:SfTextInputLayout>
+                                                            </StackLayout>
+                                                        </Grid>
+
+                                                        <BoxView Grid.ColumnSpan="3"
+                                                                 Margin="10,15"
+                                                                 BackgroundColor="{DynamicResource Gray-300}"
+                                                                 HeightRequest="{OnIdiom Default=1,
+                                                                                         Desktop=0}"
+                                                                 Style="{StaticResource SeparatorStyle}" />
+
+                                                        <!--  SECOND ORIGIN  -->
+                                                        <Grid Margin="0,0"
+                                                              Padding="15,0"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                            <!--<Label Grid.Column="0"
+                                                                 Margin="16,0,0,0"
+                                                                 Style="{StaticResource LabelStyleProfileForLabel}"
+                                                                 Text="From:"
+                                                                 VerticalOptions="Center"
+                                                                 VerticalTextAlignment="Center" />-->
+
+                                                            <control:SfTextInputLayout Grid.ColumnSpan="3"
+                                                                                       EnableFloating="False"
+                                                                                       ErrorText="{Binding FormHelper.SecondOrigin.Message}"
+                                                                                       HasError="{Binding FormHelper.SecondOrigin.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                       Hint="Origin  "
+                                                                                       Style="{StaticResource inputLayoutStyle}">
+
+                                                                <!--<Entry x:Name="txtSecondOrigin"
+                                                                     Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding FormHelper.SecondOrigin.Value, Mode=TwoWay}" />-->
+
+                                                                <autocomplete:SfAutoComplete DataSource="{Binding FormHelper.Origins}"
+                                                                                             DisplayMemberPath="Value"
+                                                                                             IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                             NoResultsFoundText=""
+                                                                                             Style="{DynamicResource SfAutoCompleteStyle}"
+                                                                                             Text="{Binding FormHelper.SecondOrigin.Value, Mode=TwoWay}" />
+                                                            </control:SfTextInputLayout>
+                                                        </Grid>
+
+                                                        <!--  SECOND DESTINATION  -->
+                                                        <Grid Margin="0,0"
+                                                              Padding="15,0"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                            <!--<Label Grid.Column="0"
+                                                                 Margin="16,0,0,0"
+                                                                 Style="{StaticResource LabelStyleProfileForLabel}"
+                                                                 Text="To:"
+                                                                 VerticalOptions="Center"
+                                                                 VerticalTextAlignment="Center" />-->
+
+                                                            <control:SfTextInputLayout Grid.ColumnSpan="3"
+                                                                                       EnableFloating="False"
+                                                                                       ErrorText="{Binding FormHelper.SecondDestination.Message}"
+                                                                                       HasError="{Binding FormHelper.SecondDestination.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                       Hint="Destination  "
+                                                                                       Style="{StaticResource inputLayoutStyle}">
+
+                                                                <!--<Entry x:Name="txtSecondDestination"
+                                                                     Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding FormHelper.SecondDestination.Value, Mode=TwoWay}" />-->
+
+                                                                <autocomplete:SfAutoComplete DataSource="{Binding FormHelper.Destinations}"
+                                                                                             DisplayMemberPath="Value"
+                                                                                             IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                             NoResultsFoundText=""
+                                                                                             Style="{DynamicResource SfAutoCompleteStyle}"
+                                                                                             Text="{Binding FormHelper.SecondDestination.Value, Mode=TwoWay}" />
+                                                            </control:SfTextInputLayout>
+                                                        </Grid>
+
+                                                        <!--  SECOND DEPARTURE  -->
+                                                        <Grid Padding="15,0"
+                                                              ColumnDefinitions="*"
+                                                              IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                              RowDefinitions="15,*">
+
+                                                            <Label Grid.Row="0"
+                                                                   Margin="0,0,0,0"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Tiny}"
+                                                                   Text="Departure"
+                                                                   TextColor="{DynamicResource Gray-800}" />
+
+                                                            <StackLayout Grid.Row="1"
+                                                                         Grid.Column="0">
+                                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                                           ErrorText="{Binding FormHelper.SecondDepartureDateStr.Message}"
+                                                                                           HasError="{Binding FormHelper.SecondDepartureDateStr.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                           Hint="Date"
+                                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+
+                                                                    <utils:NullableDatePicker IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                              NullableDate="{Binding FormHelper.SecondDepartureDate, Mode=TwoWay}"
+                                                                                              Style="{DynamicResource DatePickerStyle}" />
+
+                                                                    <control:SfTextInputLayout.LeadingView>
+                                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                                           Text="{StaticResource DateIcon}" />
+                                                                    </control:SfTextInputLayout.LeadingView>
+                                                                </control:SfTextInputLayout>
+                                                            </StackLayout>
+
+                                                            <StackLayout Grid.Row="1"
+                                                                         Grid.Column="1"
+                                                                         Padding="0,0,0,0">
+                                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                                           ErrorText="{Binding FormHelper.SecondDepartureTimeStr.Message}"
+                                                                                           HasError="{Binding FormHelper.SecondDepartureTimeStr.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                                                           Hint="Time"
+                                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+
+                                                                    <utils:NullableTimePicker IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                                              NullableTime="{Binding FormHelper.SecondDepartureTime, Mode=TwoWay}"
+                                                                                              Style="{DynamicResource TimePickerStyle}" />
+
+                                                                    <control:SfTextInputLayout.LeadingView>
+                                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                                           Text="{StaticResource TimeIcon}" />
+                                                                    </control:SfTextInputLayout.LeadingView>
+                                                                </control:SfTextInputLayout>
+                                                            </StackLayout>
+                                                        </Grid>
+                                                    </StackLayout>
+                                                </expander:SfExpander.Content>
+                                            </expander:SfExpander>
+                                        </utils:CustomShadowFrame>
+                                    </StackLayout>
+
+                                    <!--  FILE ATTACHMENTS  -->
+                                    <listView:SfListView x:Name="Attachments"
+                                                         Grid.Row="9"
+                                                         Margin="8,15,5,0"
+                                                         Padding="0"
+                                                         AutoFitMode="DynamicHeight"
+                                                         ColumnSpacing="0"
+                                                         HeightRequest="100"
+                                                         HorizontalOptions="FillAndExpand"
+                                                         IsScrollBarVisible="False"
+                                                         IsVisible="{Binding FormHelper.UploadedFilesDisplay, Converter={utils:ListToInverseBoolConverter}}"
+                                                         ItemSpacing="0"
+                                                         ItemsSource="{Binding FormHelper.UploadedFilesDisplay}"
+                                                         Orientation="Horizontal"
+                                                         RowSpacing="0"
+                                                         SelectionBackgroundColor="Transparent">
+                                        <listView:SfListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+                                                    <ViewCell.View>
+                                                        <StackLayout Margin="0,8,16,0"
+                                                                     Spacing="0">
+                                                            <utils:CustomShadowFrame Margin="0"
+                                                                                     Padding="0"
+                                                                                     BorderColor="{DynamicResource Gray}"
+                                                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                                                     WidthRequest="205">
+                                                                <Grid ColumnDefinitions="Auto,100,Auto"
+                                                                      ColumnSpacing="0"
+                                                                      RowDefinitions="Auto,Auto"
+                                                                      RowSpacing="0">
+
+                                                                    <iconize:IconLabel Grid.RowSpan="2"
+                                                                                       Margin="16"
+                                                                                       FontSize="25"
+                                                                                       Text="{DynamicResource ReasonIcon}"
+                                                                                       TextColor="{DynamicResource Warning}"
+                                                                                       VerticalOptions="CenterAndExpand" />
+
+                                                                    <Label Grid.RowSpan="2"
+                                                                           Grid.Column="1"
+                                                                           Margin="0,0,0,0"
+                                                                           FontFamily="{DynamicResource Medium}"
+                                                                           FontSize="16"
+                                                                           HeightRequest="24"
+                                                                           LineBreakMode="TailTruncation"
+                                                                           Style="{DynamicResource DescriptionLabelStyle}"
+                                                                           Text="{Binding FileName}"
+                                                                           VerticalOptions="Center" />
+
+                                                                    <!--<Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                         Text="{Binding FileSize}"
+                                                                         Grid.Row="1"
+                                                                         Grid.Column="1"
+                                                                         Margin="0,0,0,14"
+                                                                         LineBreakMode="TailTruncation"
+                                                                         FontSize="14"
+                                                                         FontFamily="{DynamicResource Medium}"
+                                                                         HeightRequest="21" />-->
+
+                                                                    <iconize:IconButton Grid.RowSpan="2"
+                                                                                        Grid.Column="3"
+                                                                                        Margin="5,0,15,0"
+                                                                                        BackgroundColor="{DynamicResource Transparent}"
+                                                                                        Command="{Binding Path=BindingContext.FileChooseOptionCommand, Source={x:Reference Attachments}}"
+                                                                                        CommandParameter="{Binding .}"
+                                                                                        FontSize="18"
+                                                                                        HeightRequest="38"
+                                                                                        HorizontalOptions="End"
+                                                                                        Text="{DynamicResource EllipsisVIcon}"
+                                                                                        TextColor="{DynamicResource Gray}"
+                                                                                        VerticalOptions="Center"
+                                                                                        WidthRequest="38" />
+                                                                </Grid>
+                                                            </utils:CustomShadowFrame>
+                                                        </StackLayout>
+                                                    </ViewCell.View>
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </listView:SfListView.ItemTemplate>
+                                    </listView:SfListView>
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </ScrollView>
+
+                    <StackLayout Margin="0,40"
+                                 IsVisible="{Binding FormHelper.IsEditable}" />
+                </StackLayout>
+
+                <!--  BUTTONS  -->
+                <StackLayout x:Name="ScanView"
+                             AbsoluteLayout.LayoutBounds="0,1,1,0.14"
+                             AbsoluteLayout.LayoutFlags="All"
+                             BackgroundColor="{DynamicResource Gray-Bg}"
+                             IsVisible="{Binding FormHelper.IsEditable}">
+
+                    <BoxView BackgroundColor="{DynamicResource Gray-300}"
+                             HeightRequest="{OnIdiom Default=1,
+                                                     Desktop=0}"
+                             Style="{StaticResource SeparatorStyle}" />
+
+                    <FlexLayout Margin="10,5"
+                                Direction="Row"
+                                JustifyContent="{Binding FormHelper.IsEnabled, Converter={utils:FlexLayoutCenterContentConverter}}"
+                                VerticalOptions="End">
+
+                        <buttons:SfButton BackgroundColor="{StaticResource Transparent}"
+                                          Command="{Binding CameraCommand}"
+                                          HorizontalOptions="Start"
+                                          IsVisible="{Binding FormHelper.IsEnabled}">
+                            <buttons:SfButton.Content>
+                                <Grid Margin="0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="54" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                        Text="{StaticResource CameraIcon}" />
+                                    <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                           Text="Take Photo" />
+                                </Grid>
+                            </buttons:SfButton.Content>
+                        </buttons:SfButton>
+
+                        <buttons:SfButton BackgroundColor="{StaticResource Transparent}"
+                                          Command="{Binding SelectFileCommand}"
+                                          HorizontalOptions="Start"
+                                          IsVisible="{Binding FormHelper.IsEnabled}">
+                            <buttons:SfButton.Content>
+                                <Grid Margin="0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="54" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                        Text="{StaticResource FileAttachmentIcon}" />
+                                    <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                           Text="Attach File" />
+                                </Grid>
+                            </buttons:SfButton.Content>
+                        </buttons:SfButton>
+
+                        <buttons:SfButton Margin="5,0"
+                                          BackgroundColor="{StaticResource Transparent}"
+                                          Command="{Binding SubmitCommand}"
+                                          HorizontalOptions="Start"
+                                          IsVisible="{Binding FormHelper.IsEnabled}">
+                            <buttons:SfButton.Content>
+                                <Grid Margin="0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="54" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                        Text="{StaticResource SaveIcon}" />
+                                    <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                           Text="Submit" />
+                                </Grid>
+                            </buttons:SfButton.Content>
+                        </buttons:SfButton>
+
+                        <buttons:SfButton Command="{Binding CancelCommand}"
+                                          IsVisible="{Binding FormHelper.ShowCancelButton}"
+                                          Style="{StaticResource ButtonCancelStyle}"
+                                          Text="Cancel" />
+                    </FlexLayout>
+                </StackLayout>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

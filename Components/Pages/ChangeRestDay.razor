@@ -1,0 +1,117 @@
+@page "/change-rest-day"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Services.Navigation
+@inject ChangeRestDayViewModel ViewModel
+@inject INavigationService NavigationService
+
+<div class="page-container p-0">
+    <div class="animate-fade-in-up">
+        <!-- Header -->
+        <div class="app-header bg-primary text-white p-4 shadow-sm" style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-link text-white p-0 me-3" @onclick="@(() => NavigationService.NavigateBackAsync())">
+                    <i class="fas fa-arrow-left fa-lg"></i>
+                </button>
+                <h5 class="mb-0 fw-bold">Change Rest Day</h5>
+            </div>
+            <p class="mb-0 small text-white-50">Request to swap your rest day.</p>
+        </div>
+
+        <div class="px-3" style="margin-top: -20px;">
+            <!-- Main Card -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-body p-4">
+                    @if (ViewModel.IsBusy)
+                    {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted small">Loading form...</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <form @onsubmit:preventDefault>
+                            
+                            <!-- Current Rest Day Date -->
+                            <div class="mb-4">
+                                <label class="form-label small text-uppercase fw-bold text-muted mb-2">Original Rest Day</label>
+                                <div class="input-group input-group-lg bg-light rounded-3 border-0">
+                                    <span class="input-group-text bg-transparent border-0 text-primary ps-3">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </span>
+                                    <input type="date" class="form-control bg-transparent border-0 shadow-none" 
+                                           @bind="ViewModel.Holder.ChangeRestdayModel.RestDayDate" />
+                                </div>
+                            </div>
+
+                             <!-- Target Rest Day Date -->
+                            <div class="mb-4">
+                                <label class="form-label small text-uppercase fw-bold text-muted mb-2">New Rest Day</label>
+                                <div class="input-group input-group-lg bg-light rounded-3 border-0">
+                                    <span class="input-group-text bg-transparent border-0 text-success ps-3">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </span>
+                                    <input type="date" class="form-control bg-transparent border-0 shadow-none" 
+                                           @bind="ViewModel.Holder.ChangeRestdayModel.RequestDate" />
+                                </div>
+                            </div>
+
+                            <!-- Swap With (Employee Selection) -->
+                            <div class="mb-4">
+                                <label class="form-label small text-uppercase fw-bold text-muted mb-2">Swap With (Optional)</label>
+                                <div class="input-group input-group-lg bg-light rounded-3 border-0" @onclick="@(() => ViewModel.SelectEmployeeCommand.Execute(null))">
+                                    <span class="input-group-text bg-transparent border-0 text-secondary ps-3">
+                                        <i class="fas fa-user-friends"></i>
+                                    </span>
+                                    <input type="text" readonly class="form-control bg-transparent border-0 shadow-none" 
+                                           placeholder="Select Employee..." 
+                                           value="@ViewModel.Holder.SwapWith" />
+                                    <span class="input-group-text bg-transparent border-0 text-muted pe-3">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Reason -->
+                            <div class="mb-4">
+                                <label class="form-label small text-uppercase fw-bold text-muted mb-2">Reason</label>
+                                <textarea class="form-control bg-light border-0 rounded-3 shadow-none p-3" rows="3" 
+                                          placeholder="Enter reason for change..." 
+                                          @bind="ViewModel.Holder.ChangeRestdayModel.Reason"></textarea>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+                            {
+                                <div class="alert alert-danger border-0 d-flex align-items-center mb-4 fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <div>@ViewModel.ErrorMessage</div>
+                                </div>
+                            }
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold py-3" 
+                                        @onclick="@(() => ViewModel.SubmitCommand.Execute(null))">
+                                    Submit Request
+                                </button>
+                                <button type="button" class="btn btn-light btn-lg rounded-pill fw-bold py-3 text-muted" 
+                                        @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

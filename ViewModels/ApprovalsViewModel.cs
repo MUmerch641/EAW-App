@@ -3,6 +3,7 @@ using System.Windows.Input;
 using MauiHybridApp.Commands;
 using MauiHybridApp.Models.Workflow;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using Microsoft.AspNetCore.Components;
 
 namespace MauiHybridApp.ViewModels;
@@ -12,7 +13,7 @@ public class ApprovalsViewModel : BaseViewModel
     #region Fields
 
     private readonly IApprovalDataService _approvalService;
-    private readonly NavigationManager _navigationManager;
+    private readonly INavigationService _navigationService;
 
     private ObservableCollection<MyApprovalListModel> _approvals;
     private ObservableCollection<MyApprovalListModel> _filteredApprovals;
@@ -24,7 +25,6 @@ public class ApprovalsViewModel : BaseViewModel
     private bool _isApproving;
     private int _pendingCount;
     private int _totalCount;
-    private string _successMessage;
 
     #endregion
 
@@ -102,12 +102,6 @@ public class ApprovalsViewModel : BaseViewModel
         set => SetProperty(ref _totalCount, value);
     }
 
-    public string SuccessMessage
-    {
-        get => _successMessage;
-        set => SetProperty(ref _successMessage, value);
-    }
-
     public bool HasApprovals => FilteredApprovals?.Any() == true;
 
     #endregion
@@ -126,10 +120,10 @@ public class ApprovalsViewModel : BaseViewModel
 
     #region Constructor
 
-    public ApprovalsViewModel(IApprovalDataService approvalService, NavigationManager navigationManager)
+    public ApprovalsViewModel(IApprovalDataService approvalService, INavigationService navigationService)
     {
         _approvalService = approvalService ?? throw new ArgumentNullException(nameof(approvalService));
-        _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
         _approvals = new ObservableCollection<MyApprovalListModel>();
         _filteredApprovals = new ObservableCollection<MyApprovalListModel>();

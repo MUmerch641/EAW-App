@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EatWork.Mobile.Views.Survey.SurveyEndingPage"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ContentView.Content>
+        <StackLayout BackgroundColor="Transparent"
+                     Spacing="0"
+                     VerticalOptions="Center"
+                     IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+
+            <ffsvg:SvgCachedImage x:Name="WalkthroughImage"
+                                  Margin="{x:OnIdiom Phone='0,0,0,0', Desktop='0',Tablet='0'}"
+                                  BackgroundColor="Transparent"
+                                  HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                  AndroidPhonePortrait=200,
+                                  AndroidPhoneLandscape=140,
+                                  iOSPhonePortrait=200,
+                                  iOSPhoneLandscape=140}"
+                                  Source="welcomebanner.svg"
+                                  Opacity="{OnPlatform Default=0, UWP=1}"
+                                  VerticalOptions="Center"
+                                  WidthRequest="{x:OnIdiom Phone=200, Desktop=300, Tablet=300}"
+                                  FadeAnimationEnabled="False" />
+
+            <!--  Label to display header  -->
+            <!--Text="Welcome {User}!"-->
+            <Label Margin="0,30,0,8"
+                   FontFamily="{DynamicResource SemiBold}"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Opacity="{OnPlatform Default=0, UWP=1}"
+                   Style="{StaticResource WalkthroughLabelStyle}"
+                   TranslationY="{OnPlatform Default=60, UWP=0}"
+                   VerticalTextAlignment="Center"
+                   Text="{Binding QuestionHeader}"
+                   x:Name="HeaderLabel" />
+
+            <!--  Label to display content  -->
+            <!--Text="I hope you're doing well. Your opinion and feedback is important to us! Please take some time to answer the survey"-->
+
+            <Label FontFamily="{DynamicResource Medium}"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   Opacity="{OnPlatform Default=0, UWP=1}"
+                   Style="{StaticResource WalkthroughLabelStyle}"
+                   TranslationY="{OnPlatform Default=60,UWP=0}"
+                   Text="{Binding QuestionDetail}"
+                   x:Name="ContentLabel" />
+            
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

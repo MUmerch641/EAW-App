@@ -1,0 +1,701 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application x:Class="EatWork.Mobile.App"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:constants="clr-namespace:EatWork.Mobile.Contants"
+             xmlns:custom="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
+             xmlns:effects="clr-namespace:Syncfusion.XForms.EffectsView;assembly=Syncfusion.Core.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:inputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:maskededit="clr-namespace:Syncfusion.XForms.MaskedEdit;assembly=Syncfusion.SfMaskedEdit.XForms"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:rating="clr-namespace:Syncfusion.SfRating.XForms;assembly=Syncfusion.SfRating.XForms"
+             xmlns:rte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:themes="clr-namespace:EatWork.Mobile.Themes"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <themes:LightTheme />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--  Start Global Styles  -->
+            <!--<Color x:Key="NavigationPrimary">#4e73df</Color>-->
+            <Color x:Key="Green">#82af6f</Color>
+            <Color x:Key="Success">#27ae60</Color>
+            <Color x:Key="Gray">#99aab5</Color>
+            <Color x:Key="DarkBlue">#425A8E</Color>
+
+            <!--<Color x:Key="Error">#E41B17</Color>-->
+            <Color x:Key="Error">#d0424f</Color>
+            <Color x:Key="Transparent">Transparent</Color>
+            <Color x:Key="Cancel">#f89406</Color>
+            <Color x:Key="ForApprovalColor">#428bca</Color>
+            <Color x:Key="GradientEndColor2">#59DAFF</Color>
+
+            <Color x:Key="PrimaryColor2">#f54e5e</Color>
+            <Color x:Key="Secondary">#d54381</Color>
+            <Color x:Key="Invoice">#ffffcc</Color>
+
+            <x:Double x:Key="Large">25</x:Double>
+            <x:Double x:Key="MediumText">18</x:Double>
+            <x:Double x:Key="Small">15</x:Double>
+            <!--<x:Double x:Key="Smaller">14</x:Double>-->
+            <x:Double x:Key="Smaller">14</x:Double>
+            <x:Double x:Key="Tiny">12</x:Double>
+
+            <!--<x:Double x:Key="EntryHeightRequest">45</x:Double>-->
+            <!--<x:Double x:Key="Small">12</x:Double>-->
+            <!--<x:String x:Key="DatePickerFormat">dd/MM/yyyy</x:String>-->
+
+            <!--  ICONS  -->
+            <x:String x:Key="TimeIcon">far-clock</x:String>
+            <!--<x:String x:Key="TimeIcon">md-query-builder</x:String>-->
+            <x:String x:Key="ReasonIcon">fas-file-alt</x:String>
+            <x:String x:Key="HourIcon">fas-hourglass-half</x:String>
+            <x:String x:Key="AmountIcon">fas-money-bill-alt</x:String>
+            <!--<x:String x:Key="DateIcon">fas-calendar</x:String>-->
+            <x:String x:Key="DateIcon">far-calendar</x:String>
+            <x:String x:Key="EmployeeIcon">md-person</x:String>
+            <x:String x:Key="EmployeeInfoIcon">fas-address-card</x:String>
+            <x:String x:Key="EllipsisIcon">fas-ellipsis-h</x:String>
+            <x:String x:Key="AddIcon">md-add-circle-outline</x:String>
+            <x:String x:Key="AddIcon2">fas-plus</x:String>
+            <x:String x:Key="AccountIcon">fas-user</x:String>
+            <x:String x:Key="LockIcon">fas-lock</x:String>
+            <x:String x:Key="EmailIcon">fas-envelope</x:String>
+            <x:String x:Key="InfoIcon">fas-info-circle</x:String>
+            <x:String x:Key="CommentAltIcon">fas-comment-alt</x:String>
+            <x:String x:Key="CameraIcon">md-camera-alt</x:String>
+            <x:String x:Key="FileAttachmentIcon">md-attach-file</x:String>
+            <x:String x:Key="EditICon">fas-pencil-alt</x:String>
+            <x:String x:Key="EditICon2">fas-pencil-alt</x:String>
+            <x:String x:Key="DeleteIcon">fas-trash-alt</x:String>
+            <x:String x:Key="CheckboxSquareIcon">fas-check-square</x:String>
+            <x:String x:Key="NewNotifIcon">fas-circle</x:String>
+            <x:String x:Key="ArrowRight">fas-chevron-right</x:String>
+            <x:String x:Key="ArrowLeft">fas-chevron-left</x:String>
+            <x:String x:Key="QRCodeIcon">fas-qrcode</x:String>
+            <x:String x:Key="SaveIcon">fas-save</x:String>
+            <x:String x:Key="SubmitIcon">fas-share</x:String>
+            <x:String x:Key="CancelIcon">fas-ban</x:String>
+            <x:String x:Key="ListIcon">fas-list</x:String>
+            <x:String x:Key="CloseIcon">fas-times</x:String>
+            <x:String x:Key="HistoryIcon">fas-history</x:String>
+            <x:String x:Key="HamburgerIcon">fas-bars</x:String>
+            <x:String x:Key="BackButtonIcon">fas-chevron-left</x:String>
+            <x:String x:Key="SearchIcon">fas-search</x:String>
+            <x:String x:Key="FilterIcon">fas-filter</x:String>
+            <x:String x:Key="SortIcon">fas-sort</x:String>
+            <x:String x:Key="HazardIcon">fas-exclamation-circle</x:String>
+            <x:String x:Key="ThemeIcon">fas-palette</x:String>
+            <x:String x:Key="EmployeeListSetupIcon">fas-users-cog</x:String>
+            <x:String x:Key="AddressCardIcon">fas-address-card</x:String>
+            <x:String x:Key="PrintIcon">fas-print</x:String>
+            <x:String x:Key="ImageIcon">fas-image</x:String>
+            <x:String x:Key="MultiSelectListIcon">fas-tasks</x:String>
+            <x:String x:Key="EllipsisVIcon">fas-ellipsis-v</x:String>
+            <x:String x:Key="EllipsisHIcon">fas-ellipsis-h</x:String>
+
+            <x:String x:Key="WarningIcon">&#xf06a;</x:String>
+            <x:String x:Key="StringFlagIcon">&#xf024;</x:String>
+            <x:String x:Key="FlagIcon">fas-flag</x:String>
+            <x:String x:Key="FlagRegularIcon">far-flag</x:String>
+            <x:String x:Key="ChartIcon">fas-chart-bar</x:String>
+            <x:String x:Key="RouteIcon">fas-route</x:String>
+            <x:String x:Key="ScaleIcon">fas-balance-scale</x:String>
+
+            <x:String x:Key="CheckedCircleIcon">fas-check-circle</x:String>
+            <x:String x:Key="CheckedIcon">fas-check</x:String>
+            <x:String x:Key="InfoCircleIcon">fas-info-circle</x:String>
+            <x:String x:Key="ExclamationCircleIcon">fas-exclamation-circle</x:String>
+            <x:String x:Key="CloseCircleIcon">fas-times-circle</x:String>
+            <x:String x:Key="BuildingIcon">fas-building</x:String>
+            <x:String x:Key="MultipleEmployeeIcon">fas-users</x:String>
+            <x:String x:Key="TrophyIcon">fas-trophy</x:String>
+            <x:String x:Key="TrophyStringIcon">&#xf091;</x:String>
+            <x:String x:Key="ListRegIconRaw">&#xf022;</x:String>
+
+            <x:String x:Key="KPIIcon">fas-tachometer-alt</x:String>
+            <x:String x:Key="KPIIconString">&#xf3fd;</x:String>
+            <x:String x:Key="MeasureIcon">fas-ruler-combined</x:String>
+            <x:String x:Key="MeasureIconString">&#xf546;</x:String>
+            <x:String x:Key="TargetGoalIcon">fas-bullseye</x:String>
+            <x:String x:Key="TargetGoalIconString">&#xf140;</x:String>
+            <x:String x:Key="WeightIcon">fas-balance-scale</x:String>
+            <x:String x:Key="WeightIconString">&#xf24e;</x:String>
+            <x:String x:Key="BaselineIcon">fas-chart-line</x:String>
+            <x:String x:Key="BaselineIconString">&#xf201;</x:String>
+            <x:String x:Key="AddIconString">&#xf024;</x:String>
+
+            <x:String x:Key="EmojiProudIcon">mdi-emoticon-cool-outline</x:String>
+            <x:String x:Key="EmojiAngryIcon">far-angry</x:String>
+            <x:String x:Key="EmojiDisappointedIcon">far-frown</x:String>
+            <x:String x:Key="EmojiHappyIcon">far-grin-beam</x:String>
+
+            <OnPlatform x:Key="FontAwesomeBrands"
+                        x:TypeArguments="x:String">
+                <On Platform="Android"
+                    Value="FontAwesome5Brands.otf#Regular" />
+                <On Platform="iOS"
+                    Value="FontAwesome5Brands-Regular" />
+            </OnPlatform>
+
+            <OnPlatform x:Key="FontAwesomeSolid"
+                        x:TypeArguments="x:String">
+                <On Platform="Android"
+                    Value="FontAwesome5Solid.otf#Regular" />
+                <On Platform="iOS"
+                    Value="FontAwesome5Free-Solid" />
+            </OnPlatform>
+
+            <OnPlatform x:Key="FontAwesomeRegular"
+                        x:TypeArguments="x:String">
+                <On Platform="Android"
+                    Value="FontAwesome5Regular.otf#Regular" />
+                <On Platform="iOS"
+                    Value="FontAwesome5Free-Regular" />
+            </OnPlatform>
+
+            <OnPlatform x:Key="MDIIcons"
+                        x:TypeArguments="x:String">
+                <On Platform="Android"
+                    Value="iconize-materialdesignicons.ttf#Regular" />
+                <On Platform="iOS"
+                    Value="iconize-materialdesignicons" />
+            </OnPlatform>
+
+            <OnPlatform x:Key="IconizeToolbarItemColor"
+                        x:TypeArguments="Color">
+                <OnPlatform.Platforms>
+                    <On Platform="Android"
+                        Value="White" />
+                </OnPlatform.Platforms>
+            </OnPlatform>
+
+            <!--<Style TargetType="NavigationPage">
+                 <Setter Property="BarBackgroundColor" Value="{DynamicResource PrimaryColor}" />
+                 <Setter Property="BarTextColor" Value="White" />
+                 </Style>-->
+
+            <!--<Style TargetType="buttons:SfButton">
+                 <Setter Property="BackgroundColor" Value="{StaticResource DarkBlue}" />
+                 </Style>-->
+
+            <x:String x:Key="NoDecimalPlaceFormat">{0:0,0}</x:String>
+            <x:String x:Key="TwoDecimalPlacesFormat">{0:0,0.00}</x:String>
+            <x:String x:Key="FourDecimalPlacesFormat">{0:0,0.0000}</x:String>
+            <!--<x:String x:Key="DateFormat">{0:MM/dd/yyyy}</x:String>-->
+            <x:String x:Key="DateFormat">{0:MM/dd/yyyy}</x:String>
+
+            <Style x:Key="inputLayoutStyle"
+                   TargetType="inputLayout:SfTextInputLayout">
+                <Setter Property="ContainerType" Value="Outlined" />
+                <Setter Property="OutlineCornerRadius" Value="8" />
+                <Setter Property="ReserveSpaceForAssistiveLabels" Value="False" />
+                <Setter Property="FocusedColor" Value="{StaticResource PrimaryColor}" />
+                <Setter Property="EnableFloating" Value="True" />
+                <Setter Property="InputViewPadding" Value="{OnPlatform Android='10,0', iOS='10,5', UWP='10,5'}" />
+                <Setter Property="ErrorColor" Value="{DynamicResource Error}" />
+                <Setter Property="LeadingViewPosition" Value="Inside" />
+                <Setter Property="TrailingViewPosition" Value="Outside" />
+                <Setter Property="HintLabelStyle">
+                    <inputLayout:LabelStyle FontFamily="{DynamicResource Regular}"
+                                            FontSize="{DynamicResource Smaller}" />
+                </Setter>
+                <Setter Property="ErrorLabelStyle">
+                    <inputLayout:LabelStyle FontFamily="{DynamicResource Regular}"
+                                            FontSize="{DynamicResource Smaller}" />
+                </Setter>
+                <Setter Property="HelperLabelStyle">
+                    <inputLayout:LabelStyle FontFamily="{DynamicResource Regular}"
+                                            FontSize="{DynamicResource Smaller}" />
+                </Setter>
+            </Style>
+
+            <Style x:Key="InputLayoutStyleWithIcon"
+                   BasedOn="{StaticResource inputLayoutStyle}"
+                   TargetType="inputLayout:SfTextInputLayout">
+                <Setter Property="InputViewPadding" Value="{OnPlatform Android='0', iOS='0,5', UWP='0,5'}" />
+            </Style>
+
+            <Style x:Key="InputLayoutStyleEditor"
+                   BasedOn="{StaticResource inputLayoutStyle}"
+                   TargetType="inputLayout:SfTextInputLayout">
+                <Setter Property="InputViewPadding" Value="{OnPlatform Android='10', iOS='10', UWP='10'}" />
+            </Style>
+
+            <Style x:Key="InputLayoutStyleEditorWithIcon"
+                   BasedOn="{StaticResource inputLayoutStyle}"
+                   TargetType="inputLayout:SfTextInputLayout">
+                <Setter Property="InputViewPadding" Value="{OnPlatform Android='0,5', iOS='0,5', UWP='0,5'}" />
+            </Style>
+
+            <Style x:Key="DatePickerStyle"
+                   TargetType="DatePicker">
+                <!--<Setter Property="Format" Value="{StaticResource DatePickerFormat}" />-->
+                <Setter Property="Format" Value="{x:Static constants:FormHelper.DateFormat}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="checkbox"
+                   TargetType="buttons:SfCheckBox">
+                <Setter Property="IsChecked" Value="False" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="CheckedColor" Value="{DynamicResource PrimaryColor}" />
+                <Setter Property="HeightRequest" Value="20" />
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-900}" />
+            </Style>
+
+            <Style x:Key="SfListViewStyle"
+                   TargetType="listview:SfListView">
+                <Setter Property="FocusBorderThickness" Value="0" />
+                <Setter Property="SelectionBackgroundColor" Value="Transparent" />
+                <Setter Property="IsScrollBarVisible" Value="False" />
+                <Setter Property="VerticalOptions" Value="FillAndExpand" />
+            </Style>
+
+            <Style x:Key="FileAttachmentCard"
+                   TargetType="cards:SfCardView">
+                <Setter Property="HeightRequest" Value="50" />
+            </Style>
+
+            <Style x:Key="IconizeIconStyle"
+                   TargetType="Label">
+                <!--<Setter Property="TextColor"  Value="{DynamicResource PrimaryColor}" />-->
+                <Setter Property="TextColor" Value="{StaticResource Gray-600}" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <Style x:Key="circleImageStyle"
+                   TargetType="custom:CircleImage">
+                <Setter Property="Source" Value="logoTest1.png" />
+                <Setter Property="Margin" Value="0,30,0,0" />
+                <Setter Property="BorderColor" Value="Black" />
+                <Setter Property="BorderThickness" Value="0.5" />
+                <Setter Property="Opacity" Value="0.5" />
+                <Setter Property="Aspect" Value="AspectFill" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="WidthRequest" Value="150" />
+                <Setter Property="HeightRequest" Value="150" />
+            </Style>
+
+            <Style x:Key="BusyIndicatorStyle"
+                   TargetType="busyindicator:SfBusyIndicator">
+                <!--<Setter Property="AnimationType" Value="SingleCircle" />-->
+                <Setter Property="AnimationType" Value="Cupertino" />
+                <Setter Property="ViewBoxHeight" Value="100" />
+                <Setter Property="ViewBoxWidth" Value="100" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional" />
+                <Setter Property="AbsoluteLayout.LayoutBounds" Value="0.5,0.5,-1,-1" />
+                <Setter Property="Title" Value="Loading..." />
+                <Setter Property="TitlePlacement" Value="None" />
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
+                <Setter Property="Duration" Value="2" />
+            </Style>
+
+            <Style x:Key="BusyIndicatorStyleForms"
+                   BasedOn="{StaticResource BusyIndicatorStyle}"
+                   TargetType="busyindicator:SfBusyIndicator">
+                <!--<Setter Property="IsVisible" Value="{OnPlatform Android=True,iOS=False,UWP=True}" />-->
+            </Style>
+
+            <Style x:Key="btnLoginStyle"
+                   TargetType="buttons:SfButton">
+                <!--<Setter Property="Text" Value="Sign in" />-->
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <!--<Setter Property="BackgroundColor" Value="#425A8E" />-->
+                <Setter Property="BackgroundColor" Value="{StaticResource Success}" />
+                <Setter Property="CornerRadius" Value="20" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <!--<Setter Property="FontFamily" Value="{StaticResource Calibri}" />-->
+            </Style>
+
+            <Style x:Key="SfPopupStyle"
+                   TargetType="sfPopup:PopupView">
+                <Setter Property="DeclineButtonText" Value="Close" />
+                <Setter Property="IsFullScreen" Value="True" />
+                <Setter Property="AppearanceMode" Value="OneButton" />
+                <Setter Property="ShowHeader" Value="True" />
+                <Setter Property="ShowFooter" Value="False" />
+                <Setter Property="ShowCloseButton" Value="False" />
+                <Setter Property="HeaderHeight" Value="{OnPlatform Android=60, iOS=64}" />
+            </Style>
+
+            <Style x:Key="ComboBoxStyle"
+                   TargetType="combobox:SfComboBox">
+                <Setter Property="TextSize" Value="{StaticResource Small}" />
+                <Setter Property="BorderColor" Value="White" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="ShowClearButton" Value="True" />
+                <Setter Property="ClearButtonColor" Value="{StaticResource Error}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="DropDownItemFontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="IsEditableMode" Value="False" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="ComboBoxMultiStyle"
+                   BasedOn="{StaticResource ComboBoxStyle}"
+                   TargetType="combobox:SfComboBox">
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=45, iOS=40, UWP=40}" />
+            </Style>
+
+            <Style x:Key="SfNumericTextBoxStyle"
+                   TargetType="numeric:SfNumericTextBox">
+                <Setter Property="ParserMode" Value="Decimal" />
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="SelectAllOnFocus" Value="True" />
+                <Setter Property="EnableGroupSeparator" Value="True" />
+                <Setter Property="FormatString" Value="n" />
+                <Setter Property="MaximumNumberDecimalDigits" Value="2" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="TextBoxStyle"
+                   TargetType="Entry">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="IsTextPredictionEnabled" Value="True" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="SfAutoCompleteStyle"
+                   TargetType="autocomplete:SfAutoComplete">
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="SuggestionMode" Value="Contains" />
+                <Setter Property="AutoCompleteMode" Value="Suggest" />
+                <Setter Property="HighlightedTextColor" Value="{StaticResource Error}" />
+                <Setter Property="TextHighlightMode" Value="FirstOccurrence" />
+                <Setter Property="HighlightedTextFontAttributes" Value="Bold" />
+                <Setter Property="NoResultsFoundText" Value="No Results Found" />
+                <Setter Property="MaximumDropDownHeight" Value="150" />
+                <Setter Property="TextSize" Value="{StaticResource Small}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="TimePickerStyle"
+                   TargetType="TimePicker">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="Format" Value="t" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="MaskedEditStyle"
+                   TargetType="maskededit:SfMaskedEdit">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="HeightRequest" Value="{OnPlatform Android=40, iOS=35, UWP=35}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="CustomFrameStyle"
+                   TargetType="utils:CustomShadowFrame">
+                <Setter Property="BackgroundColor" Value="{StaticResource GrayShadowColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource GrayShadowColor}" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HasShadow" Value="true" />
+                <Setter Property="Radius" Value="4" />
+                <Setter Property="ShadowOffSetHeight" Value="4" />
+                <Setter Property="ShadowOffsetWidth" Value="0" />
+                <Setter Property="ShadowOpacity" Value="0.12" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            </Style>
+
+            <!--  Common style for icon buttons  -->
+            <Style x:Key="IconButtonStyle"
+                   TargetType="iconize:IconButton">
+                <!--<Setter Property="TextColor" Value="{DynamicResource Gray-600}" />-->
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Transparent}" />
+                <!--<Setter Property="FontFamily" Value="{StaticResource FontIcons}" />-->
+                <Setter Property="FontSize" Value="20" />
+                <!--<Setter Property="HorizontalTextAlignment" Value="Center" />-->
+                <!--<Setter Property="VerticalTextAlignment" Value="Center" />-->
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="WidthRequest" Value="44" />
+                <Setter Property="CornerRadius" Value="4" />
+            </Style>
+
+            <Style x:Key="NavBarStyle"
+                   ApplyToDerivedTypes="True"
+                   TargetType="gradient:SfGradientView">
+                <Setter Property="BackgroundBrush">
+                    <Setter.Value>
+                        <gradient:SfLinearGradientBrush>
+                            <gradient:SfLinearGradientBrush.GradientStops>
+                                <!--<Setter Property="PrimaryColor" Value="PrimaryGradient" />-->
+                                <!--<Setter Property="PrimaryDarkColor" Value="PrimaryGradient" />-->
+                                <gradient:SfGradientStop Offset="0.1"
+                                                         Color="{DynamicResource PrimaryColor}" />
+                                <gradient:SfGradientStop Offset="1.0"
+                                                         Color="{DynamicResource PrimaryGradient}" />
+                            </gradient:SfLinearGradientBrush.GradientStops>
+                        </gradient:SfLinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="TitleViewContent"
+                   TargetType="Grid">
+                <Setter Property="RowSpacing" Value="0" />
+                <Setter Property="RowDefinitions">
+                    <Setter.Value>
+                        <RowDefinitionCollection>
+                            <!--<RowDefinition Height="57" />-->
+                            <RowDefinition Height="{OnPlatform Android='60', iOS='Auto', UWP='Auto'}" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </RowDefinitionCollection>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!--<Style TargetType="Grid" x:Key="TitleViewContent2">
+                 <Setter Property="RowSpacing" Value="0" />
+                 <Setter Property="RowDefinitions">
+                 <Setter.Value>
+                 <RowDefinitionCollection>
+                 <RowDefinition Height="Auto" />
+                 <RowDefinition Height="Auto" />
+                 <RowDefinition Height="*" />
+                 </RowDefinitionCollection>
+                 </Setter.Value>
+                 </Setter>
+                 </Style>-->
+
+            <Style x:Key="ContentPage"
+                   TargetType="ContentPage">
+                <Setter Property="ios:Page.UseSafeArea" Value="True" />
+                <Setter Property="NavigationPage.HasNavigationBar" Value="False" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource GrayShadowBackgroundColor}" />
+            </Style>
+
+            <Style x:Key="ContentPageNoiOSSafeArea"
+                   TargetType="ContentPage">
+                <!--<Setter Property="ios:Page.UseSafeArea" Value="True" />-->
+                <Setter Property="NavigationPage.HasNavigationBar" Value="False" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource GrayShadowBackgroundColor}" />
+            </Style>
+
+            <Style x:Key="ButtonStyle"
+                   TargetType="buttons:SfButton">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="CornerRadius" Value="20" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <!--<Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                     <Setter Property="VerticalOptions" Value="EndAndExpand" />-->
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="BackgroundGradient">
+                    <Setter.Value>
+                        <gradient:SfLinearGradientBrush StartPoint="0, 0"
+                                                        EndPoint="1, 1">
+                            <gradient:SfLinearGradientBrush.GradientStops>
+                                <gradient:SfGradientStop Offset="0"
+                                                         Color="{DynamicResource PrimaryButtonColor}" />
+                                <gradient:SfGradientStop Offset="1"
+                                                         Color="{DynamicResource PrimaryButtonGradient}" />
+                            </gradient:SfLinearGradientBrush.GradientStops>
+                        </gradient:SfLinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ErrorButtonStyle"
+                   BasedOn="{StaticResource ButtonStyle}"
+                   TargetType="buttons:SfButton">
+                <Setter Property="BackgroundGradient">
+                    <Setter.Value>
+                        <gradient:SfLinearGradientBrush StartPoint="0, 0"
+                                                        EndPoint="1, 1">
+                            <gradient:SfLinearGradientBrush.GradientStops>
+                                <gradient:SfGradientStop Offset="0"
+                                                         Color="{DynamicResource Error}" />
+                                <gradient:SfGradientStop Offset="1"
+                                                         Color="{DynamicResource Error}" />
+                            </gradient:SfLinearGradientBrush.GradientStops>
+                        </gradient:SfLinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="WarningButtonStyle"
+                   BasedOn="{StaticResource ButtonStyle}"
+                   TargetType="buttons:SfButton">
+                <Setter Property="BackgroundGradient">
+                    <Setter.Value>
+                        <gradient:SfLinearGradientBrush StartPoint="0, 0"
+                                                        EndPoint="1, 1">
+                            <gradient:SfLinearGradientBrush.GradientStops>
+                                <gradient:SfGradientStop Offset="0"
+                                                         Color="{DynamicResource Warning}" />
+                                <gradient:SfGradientStop Offset="1"
+                                                         Color="{DynamicResource Warning}" />
+                            </gradient:SfLinearGradientBrush.GradientStops>
+                        </gradient:SfLinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="BaseEditorStyle"
+                   TargetType="Editor">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <!--<Setter Property="MinimumHeightRequest" Value="80" />-->
+                <Setter Property="IsTextPredictionEnabled" Value="True" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+                <Setter Property="MaxLength" Value="250" />
+            </Style>
+
+            <Style x:Key="EditorStyle"
+                   BasedOn="{StaticResource BaseEditorStyle}"
+                   TargetType="Editor">
+                <Setter Property="HeightRequest" Value="80" />
+            </Style>
+
+            <Style x:Key="EditorStyle2"
+                   TargetType="Editor">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="IsTextPredictionEnabled" Value="True" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+                <Setter Property="MinimumHeightRequest" Value="80" />
+                <Setter Property="AutoSize" Value="TextChanges" />
+            </Style>
+
+            <Style x:Key="EditorStyle3"
+                   BasedOn="{StaticResource BaseEditorStyle}"
+                   TargetType="Editor">
+                <Setter Property="HeightRequest" Value="80" />
+                <Setter Property="MaxLength" Value="1000" />
+            </Style>
+
+            <Style x:Key="EditorStyleNoHeight"
+                   TargetType="Editor">
+                <Setter Property="FontSize" Value="{StaticResource Small}" />
+                <Setter Property="MaxLength" Value="250" />
+                <!--<Setter Property="MinimumHeightRequest" Value="80" />-->
+                <Setter Property="IsTextPredictionEnabled" Value="True" />
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-Black}" />
+            </Style>
+
+            <Style x:Key="FABStyle"
+                   TargetType="iconize:IconButton">
+                <Setter Property="BackgroundColor" Value="{DynamicResource PrimaryColor}" />
+                <Setter Property="HeightRequest" Value="64" />
+                <Setter Property="WidthRequest" Value="64" />
+                <Setter Property="CornerRadius" Value="32" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="Text" Value="{StaticResource AddIcon2}" />
+                <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional" />
+                <Setter Property="AbsoluteLayout.LayoutBounds" Value=".95 ,.97, AutoSize, AutoSize" />
+                <!--<Setter Property="Background">
+                     <Setter.Value>
+                     <LinearGradientBrush EndPoint="0,1">
+                     <GradientStop Color="{StaticResource PrimaryColor}" Offset="0.2" />
+                     <GradientStop Color="{StaticResource PrimaryGradient}" Offset="1.0" />
+                     </LinearGradientBrush>
+                     </Setter.Value>
+                     </Setter>-->
+            </Style>
+
+            <Style x:Key="StatusBoxViewStyle"
+                   TargetType="BoxView">
+                <Setter Property="Opacity" Value="0.2" />
+            </Style>
+
+            <Style x:Key="ModalPageTitleStyle"
+                   TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="Padding" Value="20,10,20,0" />
+                <Setter Property="VerticalOptions" Value="Start" />
+            </Style>
+
+            <Style x:Key="RadioButtonStyle"
+                   TargetType="buttons:SfRadioButton">
+                <Setter Property="FontFamily" Value="{DynamicResource Regular}" />
+                <Setter Property="FontSize" Value="{DynamicResource Smaller}" />
+                <Setter Property="HeightRequest" Value="25" />
+            </Style>
+
+            <Style x:Key="TransparentButtonStyle"
+                   TargetType="buttons:SfButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{DynamicResource HyperLink}" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="CornerRadius" Value="4" />
+            </Style>
+
+            <Style x:Key="RichTextEditorStyle"
+                   TargetType="rte:SfRichTextEditor">
+                <Setter Property="VerticalOptions" Value="StartAndExpand" />
+                <Setter Property="MaximumHeightRequest" Value="250" />
+                <Setter Property="MinimumHeightRequest" Value="250" />
+                <Setter Property="DefaultFontSize" Value="{DynamicResource Smaller}" />
+                <Setter Property="ToolbarOptions" Value="Font,FontSize,Bold,Italic,Underline,BulletList,NumberList,DecreaseIndent,IncreaseIndent,Alignment,FontColor,Undo,Redo" />
+            </Style>
+
+            <Style x:Key="RatingStyle"
+                   TargetType="rating:SfRating">
+                <Setter Property="ItemSize" Value="25" />
+                <Setter Property="ItemSpacing" Value="20" />
+                <Setter Property="RatingSettings">
+                    <Setter.Value>
+                        <rating:SfRatingSettings RatedFill="{DynamicResource Warning}"
+                                                 UnRatedFill="{DynamicResource Gray}" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="RippleEffectStyle"
+                   TargetType="effects:SfEffectsView">
+                <Setter Property="RippleColor" Value="{DynamicResource Gray-500}" />
+                <Setter Property="TouchDownEffects" Value="Ripple" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

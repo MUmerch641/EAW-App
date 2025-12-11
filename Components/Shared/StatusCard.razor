@@ -1,10 +1,10 @@
 @* Reusable Status Card Component *@
-<div class="card stat-card @CssClass">
+<div class="card stat-card @CssClass" @onclick="OnClick" style="@(OnClick.HasDelegate ? "cursor: pointer;" : "")">
     <div class="card-body">
         @if (!string.IsNullOrEmpty(Icon))
         {
             <div class="stat-icon @IconColor">
-                <span class="oi oi-@Icon"></span>
+                <span class="fas fa-@Icon"></span>
             </div>
         }
         <div class="stat-content">
@@ -81,6 +81,6 @@
 
     // Compatibility parameters to match usage in TimeEntry.razor
     [Parameter] public string Title { get => Label; set => Label = value; }
-    [Parameter] public string IconClass { get => Icon; set => Icon = value; }
+    [Parameter] public string? IconClass { get => Icon; set => Icon = value; }
     [Parameter] public string AdditionalClass { get => CssClass; set => CssClass = value; }
 }

@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.Approvals.OvertimeApprovalPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             Title="Overtime Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <converter:TitleView Title="Overtime Request"
+                                 TitleColor="{StaticResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </converter:TitleView.LeadingView>
+                <converter:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource InfoIcon}" />
+                    </StackLayout>
+                </converter:TitleView.TrailingView>
+            </converter:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout>
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               IsBusy="{Binding IsBusy}"
+                                               Style="{StaticResource BusyIndicatorStyleForms}" />
+
+                <shared:NoItemsPartialPage x:Name="Header1"
+                                           Grid.Row="1"
+                                           AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                           AbsoluteLayout.LayoutFlags="All"
+                                           DetailsText="No items available to display."
+                                           HorizontalOptions="Center"
+                                           IsVisible="{Binding ShowPage, Converter={converter:InverseBoolConverter}}"
+                                           VerticalOptions="Center" />
+
+                <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            HorizontalOptions="FillAndExpand"
+                            IsVisible="{Binding ShowPage}"
+                            Orientation="Vertical"
+                            VerticalOptions="FillAndExpand">
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  APPROVAL SHARED PAGE  -->
+                        <local:ApprovalHeaderPage BindingContext="{Binding .}" />
+
+                        <!--  REQUEST DETAILS  -->
+                        <StackLayout Style="{StaticResource RequestDetails}">
+                            <Grid Margin="0,0"
+                                  Padding="0"
+                                  BackgroundColor="{StaticResource Gray-100}"
+                                  ColumnSpacing="0"
+                                  HorizontalOptions="StartAndExpand"
+                                  IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                  RowSpacing="0">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=5}" />
+                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=5}" />
+                                </Grid.ColumnDefinitions>
+
+                                <converter:CustomShadowFrame Grid.Row="0"
+                                                             Grid.Column="1"
+                                                             Margin="0,0,0,0"
+                                                             Padding="0,0,0,10"
+                                                             BackgroundColor="{StaticResource Transparent}"
+                                                             BorderColor="{StaticResource Transparent}"
+                                                             BorderWidth="1"
+                                                             CornerRadius="8"
+                                                             HasShadow="true"
+                                                             HorizontalOptions="FillAndExpand"
+                                                             Radius="4"
+                                                             ShadowOffSetHeight="4"
+                                                             ShadowOffsetWidth="0"
+                                                             ShadowOpacity="0.12">
+                                    <StackLayout Spacing="0">
+                                        <StackLayout BackgroundColor="{DynamicResource Transparent}">
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Date Filed:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.DateFiled, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OT Date:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OvertimeDate, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OT Time:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.TimeRange, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OT Hours:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OvertimeHours, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Pre-Shift OT:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.IsPreshift, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="For offsetting:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.IsOffSetting, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  IsVisible="{Binding FormHelper.ShowOffsetting}"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Offset Expiration:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OffsettingExpirationDate, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Reason:" />
+
+                                                <Label Grid.Column="2"
+                                                       Margin="0,10"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OvertimeModel.Reason, Mode=OneWay}" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid Margin="0,0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Approved OT Hours:" />
+
+                                                <control:SfTextInputLayout Grid.Column="2"
+                                                                           Margin="0,10"
+                                                                           ErrorColor="{StaticResource Error}"
+                                                                           ErrorText="Specify no. of hours  "
+                                                                           HasError="{Binding FormHelper.ErrorOTHours, Mode=TwoWay}"
+                                                                           Style="{StaticResource inputLayoutStyle}"
+                                                                           TrailingViewPosition="Inside">
+
+                                                    <numeric:SfNumericTextBox x:Name="txtApprovedOROTHrs"
+                                                                              Style="{StaticResource SfNumericTextBoxStyle}"
+                                                                              ValueChangeMode="OnLostFocus"
+                                                                              Value="{Binding FormHelper.ApprovedHours, Mode=TwoWay}">
+                                                        <!--<numeric:SfNumericTextBox.Behaviors>
+                                                            <converter:SfNumericTextBoxCommandBehavior Command="{Binding ApprovedHoursChangeCommand}"
+                                                                                                       CommandParameter="{Reference txtApprovedOROTHrs}"
+                                                                                                       EventName="ValueChanged" />
+                                                        </numeric:SfNumericTextBox.Behaviors>-->
+                                                    </numeric:SfNumericTextBox>
+
+                                                    <control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.HintLabelStyle>
+
+                                                    <control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.ErrorLabelStyle>
+
+                                                    <!--<control:SfTextInputLayout.TrailingView>
+                                                         <iconize:IconLabel Text="{StaticResource HourIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                                         </control:SfTextInputLayout.TrailingView>-->
+                                                </control:SfTextInputLayout>
+                                            </Grid>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </converter:CustomShadowFrame>
+                            </Grid>
+                            <!--  FILE ATTACHMENT  -->
+                            <cards:SfCardView Style="{StaticResource CardsApproval}">
+                                <Grid>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ViewFileAttachmentsCommand}" />
+                                    </Grid.GestureRecognizers>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="145" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout HorizontalOptions="EndAndExpand"
+                                                 VerticalOptions="CenterAndExpand">
+                                        <iconize:IconImage Icon="{StaticResource FileAttachmentIcon}"
+                                                           Style="{StaticResource IconImageApproval}" />
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1"
+                                                 Grid.ColumnSpan="1"
+                                                 HorizontalOptions="StartAndExpand"
+                                                 VerticalOptions="CenterAndExpand">
+                                        <Label Grid.Column="1"
+                                               FontFamily="{DynamicResource Regular}"
+                                               Text="File Attachments"
+                                               TextColor="{DynamicResource HyperLink}" />
+                                    </StackLayout>
+                                </Grid>
+                            </cards:SfCardView>
+                        </StackLayout>
+                    </Grid>
+                </ScrollView>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

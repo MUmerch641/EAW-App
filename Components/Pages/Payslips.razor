@@ -10,94 +10,57 @@
         Subtitle="View your payment history" 
         IconClass="fa-file-invoice-dollar" />
     
-    @if (ViewModel.IsBusy)
-    {
-        <LoadingIndicator Message="Loading payslips..." />
-    }
-    else if (ViewModel.ShowEmptyState)
-    {
-        <EmptyState 
-            Message="No payslips found" 
-            IconClass="fa-file-invoice" />
-    }
-    else
-    {
-        <div class="payslip-list">
-            @foreach (var payslip in ViewModel.Payslips)
-            {
-                <div class="payslip-card" @onclick="() => ViewModel.ViewDetailCommand.Execute(payslip)">
-                    <div class="card-left">
-                        <span class="payroll-type">@payslip.PayrollType</span>
-                        <span class="date">@payslip.IssuedDate.ToString("MMM dd, yyyy")</span>
-                    </div>
-                    <div class="card-right">
-                        <span class="amount">₱@payslip.NetPay.ToString("N2")</span>
-                        <span class="status">View <i class="fa fa-chevron-right"></i></span>
-                    </div>
+    <!-- Animated Content Wrapper -->
+    <div class="animate-fade-in-up">
+        @if (ViewModel.IsBusy)
+        {
+             <div class="p-4">
+                <SkeletonLoader height="80px" width="100%" class="mb-3" />
+                <SkeletonLoader height="80px" width="100%" class="mb-3" />
+                <SkeletonLoader height="80px" width="100%" />
+            </div>
+        }
+        else if (ViewModel.ShowEmptyState)
+        {
+            <EmptyState 
+                Message="No payslips found" 
+                IconClass="fa-file-invoice" />
+        }
+        else
+        {
+            <div class="content-section">
+                <!-- Detailed Cards -->
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var payslip in ViewModel.Payslips)
+                    {
+                        <div class="card p-3 shadow-sm border-0 border-radius-lg cursor-pointer hover-lift" 
+                             @onclick="() => ViewModel.ViewDetailCommand.Execute(payslip)">
+                             <div class="d-flex justify-content-between align-items-center">
+                                 <div class="d-flex align-items-center gap-3">
+                                     <div class="icon-circle bg-light text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                         <i class="fas fa-money-bill-wave fs-5"></i>
+                                     </div>
+                                     <div>
+                                         <h6 class="mb-0 fw-bold text-dark">@payslip.PayrollType</h6>
+                                         <small class="text-muted">@payslip.IssuedDate.ToString("MMM dd, yyyy")</small>
+                                     </div>
+                                 </div>
+                                 <div class="text-end">
+                                     <h6 class="mb-0 fw-bold text-primary">₱@payslip.NetPay.ToString("N2")</h6>
+                                     <small class="text-primary d-flex align-items-center justify-content-end gap-1">
+                                         View <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                                     </small>
+                                 </div>
+                             </div>
+                        </div>
+                    }
                 </div>
-            }
-        </div>
-    }
+            </div>
+        }
+    </div>
 </div>
 
-@if (ViewModel.IsDetailModalOpen && ViewModel.SelectedPayslipDetail != null)
-{
-    <div class="modal-overlay" @onclick="() => ViewModel.CloseModalCommand.Execute(null)">
-        <div class="modal-content" @onclick:stopPropagation="true">
-            <div class="modal-header">
-                <h3>Payslip Details</h3>
-                <button class="btn-close" @onclick="() => ViewModel.CloseModalCommand.Execute(null)">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
 
-            <div class="modal-body">
-                <div class="summary-box">
-                    <div class="row">
-                        <span>Payroll Type:</span>
-                        <strong>@ViewModel.SelectedPayslipDetail.PayrollType</strong>
-                    </div>
-                    <div class="row">
-                        <span>Reference:</span>
-                        <strong>@ViewModel.SelectedPayslipDetail.ReferenceNumber</strong>
-                    </div>
-                    <div class="row">
-                        <span>Issued:</span>
-                        <strong>@ViewModel.SelectedPayslipDetail.IssuedDate?.ToString("MMM dd, yyyy")</strong>
-                    </div>
-                    <div class="row total">
-                        <span>Net Pay:</span>
-                        <strong>₱@ViewModel.SelectedPayslipDetail.NetPay.ToString("N2")</strong>
-                    </div>
-                </div>
-
-                @if (ViewModel.SelectedPayslipDetail.Earnings?.Any() == true)
-                {
-                    <h4>Earnings</h4>
-                    @foreach (var item in ViewModel.SelectedPayslipDetail.Earnings)
-                    {
-                        <div class="detail-row">
-                            <span>@item.Description</span>
-                            <span>₱@item.Amount.ToString("N2")</span>
-                        </div>
-                    }
-                }
-
-                @if (ViewModel.SelectedPayslipDetail.Deductions?.Any() == true)
-                {
-                    <h4>Deductions</h4>
-                    @foreach (var item in ViewModel.SelectedPayslipDetail.Deductions)
-                    {
-                        <div class="detail-row">
-                            <span>@item.Description</span>
-                            <span>₱@item.Amount.ToString("N2")</span>
-                        </div>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-}
 
 @code {
     private PropertyChangedEventHandler? _propertyChangedHandler;

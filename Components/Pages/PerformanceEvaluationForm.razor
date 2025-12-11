@@ -1,0 +1,125 @@
+@page "/performance-evaluation/form/{Id:long}"
+@page "/performance-evaluation/form/new"
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@inject PerformanceEvaluationFormViewModel ViewModel
+@implements IDisposable
+
+<div class="form-container">
+    <PageHeader 
+        Title="Evaluation Form" 
+        Subtitle="@(ViewModel.FormHolder?.Period ?? "New Evaluation")" 
+        IconClass="fa-file-signature" 
+        ShowBackButton="true"
+        OnBackClick="() => ViewModel.GoBackCommand.Execute(null)" />
+
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading form..." />
+    }
+    else if (ViewModel.FormHolder != null)
+    {
+        <!-- Header Section -->
+        <div class="section-card">
+            <div class="section-title">Employee Information</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Employee</span>
+                    <span class="info-value">@ViewModel.FormHolder.EmployeeName</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Position</span>
+                    <span class="info-value">@ViewModel.FormHolder.Position</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Department</span>
+                    <span class="info-value">@ViewModel.FormHolder.Department</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Evaluator</span>
+                    <span class="info-value">@ViewModel.FormHolder.EvaluatorName</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Objectives Section -->
+        <div class="section-card">
+            <div class="section-title">Objectives</div>
+            
+            @if (ViewModel.FormHolder.Objectives != null)
+            {
+                @foreach (var objective in ViewModel.FormHolder.Objectives)
+                {
+                    <div class="objective-item">
+                        <div class="objective-header">@objective.ObjectiveHeader</div>
+                        <div class="kpi-name">@objective.KPINameDisplay</div>
+                        
+                        <div class="target-info">
+                            <strong>Target:</strong> @objective.Target <br/>
+                            <strong>Weight:</strong> @objective.Weight
+                        </div>
+
+                        <div class="rating-section">
+                            <div class="input-group">
+                                <label class="input-label">Employee Review</label>
+                                <textarea class="form-control" @bind="objective.EmployeeReview" disabled="@(!ViewModel.IsEditMode)"></textarea>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Actual Result</label>
+                                <input type="text" class="form-control" @bind="objective.Actual" disabled="@(!ViewModel.IsEditMode)" />
+                            </div>
+
+                            <div class="input-group">
+                                <label class="input-label">Self Rating</label>
+                                <input type="number" class="form-control" @bind="objective.EmployeeRating" step="0.1" min="0" max="5" disabled="@(!ViewModel.IsEditMode)" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-muted">No objectives found.</div>
+            }
+        </div>
+
+        <!-- Bottom Actions -->
+        @if (ViewModel.IsEditMode)
+        {
+            <div class="bottom-actions">
+                <button class="btn-save" @onclick="() => ViewModel.SaveCommand.Execute(null)" disabled="@ViewModel.IsBusy">
+                    <i class="fas fa-save me-2"></i> Save Draft
+                </button>
+                <button class="btn-submit" @onclick="() => ViewModel.SubmitCommand.Execute(null)" disabled="@ViewModel.IsBusy">
+                    <i class="fas fa-paper-plane me-2"></i> Submit
+                </button>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+
+        await ViewModel.InitializeAsync(Id);
+    }
+
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        ViewModel.Dispose();
+    }
+}

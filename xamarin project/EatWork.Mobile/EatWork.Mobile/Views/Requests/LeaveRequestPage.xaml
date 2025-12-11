@@ -1,0 +1,534 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.Requests.LeaveRequestPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behavior="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:sys="clr-namespace:System.Collections.Generic;assembly=netstandard"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Title="Leave Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="DashboardLabelStyle"
+                   TargetType="Label">
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource DashboardSecondaryTextHeader}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Default=1.25, iOS=-1}" />
+            </Style>
+
+            <behavior:CustomConverter x:Key="EventArgs" />
+            <behavior:TextToBoolConverter x:Key="TextToBoolConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Leave Request"
+                             TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Command="{Binding ViewLeaveDocumentCommand}"
+                                            IsVisible="{Binding FormHelper.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource FileAttachmentIcon}" />
+
+                        <iconize:IconButton Command="{Binding ViewLeaveDetailsCommand}"
+                                            IsVisible="{Binding FormHelper.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource ListIcon}" />
+
+                        <iconize:IconButton Command="{Binding ViewTransactionHistoryCommand}"
+                                            IsVisible="{Binding FormHelper.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource InfoIcon}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never"
+                        VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   IsVisible="False"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}" />
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="55" />-->
+                        </Grid.RowDefinitions>
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding ShowLeaveTypeList}"
+                                               VerticalOptions="CenterAndExpand">
+                            <sfPopup:SfPopupLayout.PopupView>
+                                <!--  HeightRequest="500"  -->
+                                <sfPopup:PopupView Style="{StaticResource SfPopupStyle}">
+                                    <sfPopup:PopupView.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackLayout>
+                                                <ContentView>
+                                                    <ContentView.Effects>
+                                                        <effect:SafeAreaPaddingEffect />
+                                                    </ContentView.Effects>
+
+                                                    <Grid Margin="10,10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="80" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Label Grid.Column="0"
+                                                               FontFamily="{DynamicResource Bold}"
+                                                               FontSize="20"
+                                                               HorizontalOptions="Start"
+                                                               Text="Leave Types"
+                                                               TextColor="{DynamicResource Gray-900}" />
+
+                                                        <buttons:SfButton x:Name="SkipButton"
+                                                                          Grid.Column="1"
+                                                                          BackgroundColor="Transparent"
+                                                                          Command="{Binding LeaveTypeSelectionCommand}"
+                                                                          CornerRadius="20"
+                                                                          FontFamily="{DynamicResource SemiBold}"
+                                                                          HeightRequest="40"
+                                                                          HorizontalOptions="End"
+                                                                          Text="Close"
+                                                                          TextColor="{x:StaticResource HyperLink}"
+                                                                          VerticalOptions="StartAndExpand"
+                                                                          WidthRequest="80" />
+                                                    </Grid>
+                                                </ContentView>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.HeaderTemplate>
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Margin="10,10"
+                                                         Spacing="0">
+                                                <!--<template:LeaveTypeListTemplate BindingContext="{Binding .}" />-->
+                                                <shared:SelectableListView2 BindingContext="{Binding .}"
+                                                                            ItemsSource="{Binding LeaveTypeList}" />
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}"
+                                                            HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <cards:SfCardView Grid.Row="0"
+                                          Margin="10,0"
+                                          BackgroundColor="{DynamicResource DashboardSecondaryColor}"
+                                          CornerRadius="4"
+                                          HeightRequest="80"
+                                          IndicatorColor="#fae188"
+                                          IndicatorPosition="Left"
+                                          IndicatorThickness="8"
+                                          IsVisible="False">
+                            <Grid Padding="16"
+                                  RowSpacing="4">
+
+                                <Label Grid.ColumnSpan="2"
+                                       Style="{StaticResource DashboardLabelStyle}"
+                                       Text="{Binding FormHelper.WarningMessageHeader}" />
+
+                                <Label Grid.Row="1"
+                                       FontFamily="{DynamicResource Medium}"
+                                       FontSize="12"
+                                       Style="{StaticResource DashboardLabelStyle}"
+                                       Text="{Binding FormHelper.WarningMessageDetail}"
+                                       TextColor="{DynamicResource DashboardSecondaryTextValue}" />
+                            </Grid>
+                        </cards:SfCardView>
+
+                        <Grid Grid.Row="1"
+                              Padding="15"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              RowSpacing="0"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+
+                                    <!--  LEAVE TYPE  -->
+                                    <control:SfTextInputLayout HasError="{Binding FormHelper.ErrorLeaveType, Mode=TwoWay}"
+                                                               Hint="Leave Type  "
+                                                               Style="{StaticResource inputLayoutStyle}">
+                                        <Entry IsEnabled="{Binding FormHelper.IsEnabled}"
+                                               IsReadOnly="True"
+                                               Style="{StaticResource TextBoxStyle}"
+                                               Text="{Binding FormHelper.LeaveTypeSelectedItem.DisplayText, Mode=TwoWay}" />
+
+                                        <control:SfTextInputLayout.TrailingView>
+                                            <iconize:IconLabel IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                               Style="{StaticResource IconizeIconStyle}"
+                                                               Text="{StaticResource EllipsisIcon}">
+                                                <iconize:IconLabel.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding LeaveTypeSelectionCommand}" />
+                                                </iconize:IconLabel.GestureRecognizers>
+                                            </iconize:IconLabel>
+                                        </control:SfTextInputLayout.TrailingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--  BALANCE  -->
+                                    <control:SfTextInputLayout Hint="Balance  "
+                                                               Style="{StaticResource InputLayoutStyleWithIcon}">
+                                        <numeric:SfNumericTextBox x:Name="txtRemainingBalance"
+                                                                  IsEnabled="False"
+                                                                  Style="{StaticResource SfNumericTextBoxStyle}"
+                                                                  Value="{Binding FormHelper.RemainingBalance, Mode=TwoWay}" />
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                               Text="{StaticResource HourIcon}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                        <control:SfTextInputLayout.TrailingView>
+                                            <Label FontFamily="{DynamicResource Regular}"
+                                                   Text="{Binding FormHelper.BalanceLabelDisplay, Mode=TwoWay}"
+                                                   TextColor="{StaticResource Gray-800}" />
+                                        </control:SfTextInputLayout.TrailingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--  LEAVE DATES  -->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="0">
+                                            <control:SfTextInputLayout Hint="Start Date  "
+                                                                       Style="{StaticResource InputLayoutStyleWithIcon}">
+                                                <DatePicker x:Name="dtpInclusiveStartDate"
+                                                            Date="{Binding FormHelper.InclusiveStartDate, Mode=TwoWay}"
+                                                            IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                            Style="{StaticResource DatePickerStyle}">
+                                                    <DatePicker.Behaviors>
+                                                        <behavior:DatePickerCommandBehavior Command="{Binding InclusiveStartDateChangedCommand}"
+                                                                                            Converter="{StaticResource EventArgs}"
+                                                                                            EventName="DateSelected" />
+                                                    </DatePicker.Behaviors>
+                                                </DatePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                       Text="{StaticResource DateIcon}" />
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="1">
+                                            <control:SfTextInputLayout Hint="End Date  "
+                                                                       Style="{StaticResource InputLayoutStyleWithIcon}">
+                                                <DatePicker x:Name="dtpInclusiveEndDate"
+                                                            Date="{Binding FormHelper.InclusiveEndDate, Mode=TwoWay}"
+                                                            IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                            Style="{StaticResource DatePickerStyle}" />
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                       Text="{StaticResource DateIcon}" />
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--  IS PARTIAL DAY LEAVE  -->
+                                    <Grid IsEnabled="{Binding FormHelper.IsEnabled}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="1" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="0"
+                                                     HorizontalOptions="Start">
+                                            <buttons:SfSwitch IsOn="{Binding FormHelper.IsPartialLeave, Mode=TwoWay, Converter={behavior:IntToBoolConverter}}"
+                                                              VisualType="Cupertino">
+                                                <buttons:SfSwitch.Behaviors>
+                                                    <behavior:SfSwitchCommandBehavior Command="{Binding PartialDayOptionCommand}"
+                                                                                      Converter="{StaticResource EventArgs}"
+                                                                                      EventName="StateChanged" />
+                                                </buttons:SfSwitch.Behaviors>
+                                            </buttons:SfSwitch>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="2">
+                                            <Label FontFamily="{DynamicResource Medium}"
+                                                   FontSize="{StaticResource Tiny}"
+                                                   HorizontalOptions="StartAndExpand"
+                                                   Text="Partial-day leave"
+                                                   TextColor="{StaticResource Gray-800}"
+                                                   VerticalOptions="CenterAndExpand" />
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--  NUMBER OF HOURS  -->
+                                    <StackLayout Margin="0,0"
+                                                 IsVisible="{Binding FormHelper.ShowPartialOptions}">
+                                        <control:SfTextInputLayout Hint="{Binding FormHelper.RequestLabelDisplay, Mode=TwoWay}"
+                                                                   IsVisible="{Binding FormHelper.AutomateHalfDayLeave, Converter={utils:InverseBoolConverter}}"
+                                                                   Style="{StaticResource InputLayoutStyleWithIcon}">
+                                            <numeric:SfNumericTextBox x:Name="txtNoOfHours"
+                                                                      IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                                      Style="{StaticResource SfNumericTextBoxStyle}"
+                                                                      Value="{Binding FormHelper.LeaveRequestModel.NoOfHours, Mode=TwoWay}" />
+
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                   Text="{StaticResource HourIcon}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--  APPLY TO  -->
+                                    <StackLayout IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                 IsVisible="{Binding FormHelper.AutomateHalfDayLeave, Converter={utils:InverseBoolConverter}}">
+                                        <control:SfTextInputLayout EnableFloating="{Binding FormHelper.IsEnabled}"
+                                                                   HasError="{Binding FormHelper.ErrorPartialType, Mode=TwoWay}"
+                                                                   Hint="Apply To  "
+                                                                   IsVisible="{Binding FormHelper.ShowPartialOptions}"
+                                                                   Style="{StaticResource inputLayoutStyle}">
+
+                                            <combobox:SfComboBox DataSource="{Binding FormHelper.ApplyTo}"
+                                                                 DisplayMemberPath="Value"
+                                                                 SelectedItem="{Binding FormHelper.ApplyToSelectedItem, Mode=TwoWay}"
+                                                                 SelectedValue="{Binding FormHelper.LeaveRequestModel.PartialDayApplyTo, Mode=TwoWay}"
+                                                                 SelectedValuePath="Id"
+                                                                 Style="{StaticResource ComboBoxStyle}" />
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--  APPLY TO VERSION 2  -->
+                                    <Grid IsEnabled="{Binding FormHelper.IsEnabled}"
+                                          IsVisible="{Binding FormHelper.AutomateHalfDayLeave}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="15*" />
+                                            <ColumnDefinition Width="27*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="0"
+                                                     Grid.ColumnSpan="2"
+                                                     IsVisible="{Binding FormHelper.ShowPartialOptions}">
+                                            <Label FontFamily="{DynamicResource Medium}"
+                                                   FontSize="{StaticResource Tiny}"
+                                                   HorizontalOptions="StartAndExpand"
+                                                   Text="Apply To "
+                                                   TextColor="{StaticResource Gray-800}"
+                                                   VerticalOptions="CenterAndExpand" />
+                                        </StackLayout>
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="2"
+                                                     HorizontalOptions="End"
+                                                     IsVisible="{Binding FormHelper.ShowPartialOptions}">
+                                            <buttons:SfSegmentedControl BackgroundColor="Transparent"
+                                                                        BorderColor="#929292"
+                                                                        BorderThickness="2"
+                                                                        CornerRadius="13"
+                                                                        DisplayMode="Text"
+                                                                        FontColor="#929292"
+                                                                        FontFamily="{DynamicResource Regular}"
+                                                                        HorizontalOptions="StartAndExpand"
+                                                                        ItemsSource="{Binding FormHelper.ApplyToAutomated}"
+                                                                        SegmentCornerRadius="13"
+                                                                        SegmentHeight="20"
+                                                                        SelectedIndex="{Binding FormHelper.ApplyToOption, Mode=TwoWay}"
+                                                                        SelectionTextColor="White"
+                                                                        VerticalOptions="CenterAndExpand"
+                                                                        VisibleSegmentsCount="2"
+                                                                        Color="Transparent">
+                                                <!--<sys:List x:TypeArguments="x:String">
+                                                    <x:String>1st Half</x:String>
+                                                    <x:String>2nd Half</x:String>
+                                                </sys:List>-->
+                                                <buttons:SfSegmentedControl.Behaviors>
+                                                    <behavior:SegmentedControlCommandBehavior Command="{Binding ApplyToEventCommand}"
+                                                                                              Converter="{StaticResource EventArgs}"
+                                                                                              EventName="SelectionChanged" />
+                                                </buttons:SfSegmentedControl.Behaviors>
+                                            </buttons:SfSegmentedControl>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--  REASON  -->
+                                    <!--<control:SfTextInputLayout
+                                         LeadingViewPosition="Inside"
+                                         Style="{StaticResource inputLayoutStyle}"
+                                         Hint="Reason"
+                                         EnableFloating="{Binding FormHelper.IsEnabled}">
+                                         <control:SfTextInputLayout.HintLabelStyle>
+                                         <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                         </control:SfTextInputLayout.HintLabelStyle>
+                                         <control:SfTextInputLayout.ErrorLabelStyle>
+                                         <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                         </control:SfTextInputLayout.ErrorLabelStyle>
+                                         <combobox:SfComboBox TextSize="{StaticResource Small}"
+                                         BorderColor="White"
+                                         DataSource="{Binding FormHelper.LeaveRequestReason}"
+                                         DisplayMemberPath="Value"
+                                         SelectedValuePath="Id"
+                                         HeightRequest="45"
+                                         FontFamily="{DynamicResource Regular}"
+                                         SelectedItem="{Binding FormHelper.ReasonSelectedItem, Mode=TwoWay}"
+                                         SelectedValue="" />
+                                         <control:SfTextInputLayout.LeadingView>
+                                         <iconize:IconLabel Text="{StaticResource ReasonIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                         </control:SfTextInputLayout.LeadingView>
+                                         </control:SfTextInputLayout>-->
+
+                                    <!--  DETIALS  -->
+                                    <control:SfTextInputLayout Hint="Enter reason  "
+                                                               Style="{StaticResource InputLayoutStyleEditor}">
+                                        <Editor IsEnabled="{Binding FormHelper.IsEnabled}"
+                                                Style="{DynamicResource EditorStyle}"
+                                                Text="{Binding FormHelper.LeaveRequestModel.Reason, Mode=TwoWay}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--  BUTTONS  -->
+                                    <BoxView Style="{DynamicResource SeparatorStyle}" />
+
+                                    <FlexLayout Margin="0,10,0,0"
+                                                Direction="Row"
+                                                JustifyContent="{Binding FormHelper.IsMultipleLeave, Converter={utils:FlexLayoutContentConverter}}"
+                                                VerticalOptions="End">
+
+                                        <buttons:SfButton x:Name="btnCamera"
+                                                          BackgroundColor="{StaticResource Transparent}"
+                                                          Command="{Binding ViewLeaveDocumentCommand}"
+                                                          HorizontalOptions="Start"
+                                                          IsVisible="{Binding FormHelper.IsEnabled}">
+                                            <buttons:SfButton.Content>
+                                                <Grid Margin="0,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="54" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                                        Text="{StaticResource ReasonIcon}" />
+                                                    <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                                           Text="Documents" />
+                                                </Grid>
+                                            </buttons:SfButton.Content>
+                                        </buttons:SfButton>
+
+                                        <StackLayout HorizontalOptions="Center"
+                                                     IsVisible="{Binding FormHelper.IsMultipleLeave}">
+
+                                            <buttons:SfButton x:Name="btnFileAttachment"
+                                                              BackgroundColor="{StaticResource Transparent}"
+                                                              Command="{Binding ViewLeaveDetailsCommand}"
+                                                              IsVisible="{Binding FormHelper.IsEnabled}">
+                                                <buttons:SfButton.Content>
+                                                    <Grid Margin="0,0">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="54" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+                                                        <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                                            Text="{StaticResource ListIcon}" />
+                                                        <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                                               Text="Leave Details" />
+                                                    </Grid>
+                                                </buttons:SfButton.Content>
+                                            </buttons:SfButton>
+                                        </StackLayout>
+
+                                        <buttons:SfButton x:Name="BtnSubmit"
+                                                          BackgroundColor="{StaticResource Transparent}"
+                                                          Command="{Binding SubmitCommand}"
+                                                          HorizontalOptions="End"
+                                                          IsVisible="{Binding FormHelper.IsEnabled}">
+                                            <buttons:SfButton.Content>
+                                                <Grid Margin="0,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="54" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <iconize:IconButton Style="{StaticResource BtnRequestStyle}"
+                                                                        Text="{StaticResource SaveIcon}" />
+                                                    <Label Style="{StaticResource FooterButtonLabelStyle}"
+                                                           Text="Submit" />
+                                                </Grid>
+                                            </buttons:SfButton.Content>
+                                        </buttons:SfButton>
+
+                                        <buttons:SfButton Command="{Binding CancelCommand}"
+                                                          HeightRequest="40"
+                                                          IsVisible="{Binding FormHelper.ShowCancelButton}"
+                                                          Style="{StaticResource btnLoginStyle}"
+                                                          Text="Cancel"
+                                                          WidthRequest="245" />
+                                    </FlexLayout>
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

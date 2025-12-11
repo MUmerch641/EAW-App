@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<utils:FormModal xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+                 xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+                 xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+                 xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+                 xmlns:rte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
+                 xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+                 x:Class="EatWork.Mobile.Views.IndividualObjectives.RateScaleModalPage">
+
+    <utils:FormModal.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </utils:FormModal.Resources>
+
+    <utils:FormModal.Header>
+        <Grid ColumnSpacing="0" BackgroundColor="{DynamicResource PrimaryColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Rate Scale"
+                   Grid.Column="0"
+                   Style="{DynamicResource ModalPageTitleStyle}" />
+
+            <iconize:IconLabel Grid.Column="1"
+                               Style="{DynamicResource IconizeIconStyle}"
+                               Text="{DynamicResource CloseIcon}"
+                               TextColor="{DynamicResource Gray-White}"
+                               Padding="15,10,0,10"
+                               FontSize="Large">
+                <iconize:IconLabel.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseModalCommand}" />
+                </iconize:IconLabel.GestureRecognizers>
+            </iconize:IconLabel>
+        </Grid>
+    </utils:FormModal.Header>
+
+    <utils:FormModal.Body>
+        <StackLayout Grid.Row="1">
+
+            <Grid IsEnabled="{Binding IsEnabled}" RowDefinitions="*" ColumnDefinitions="*">
+                <StackLayout Grid.Row="0" Grid.Column="0">
+                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                               HasError="{Binding MinRate.IsValid,Converter={utils:InverseBoolConverter}}"
+                                               Hint="Min ">
+
+                        <Entry Style="{DynamicResource TextBoxStyle}"
+                               Text="{Binding MinRate.Value,Mode=TwoWay}"
+                               Keyboard="Numeric"
+                               IsEnabled="{Binding IsEnabled}"
+                               x:Name="txtMin"
+                               ReturnCommand="{Binding EntryFocusCommand}"
+                               ReturnCommandParameter="{Reference txtMax}"
+                               ReturnType="Next" />
+                    </control:SfTextInputLayout>
+                </StackLayout>
+
+                <StackLayout Grid.Row="0" Grid.Column="1">
+                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                               HasError="{Binding MaxRate.IsValid,Converter={utils:InverseBoolConverter}}"
+                                               Hint="Max  ">
+
+                        <Entry Style="{DynamicResource TextBoxStyle}"
+                               Text="{Binding MaxRate.Value,Mode=TwoWay}"
+                               Keyboard="Numeric"
+                               IsEnabled="{Binding IsEnabled}"
+                               x:Name="txtMax"
+                               ReturnCommand="{Binding EntryFocusCommand}"
+                               ReturnCommandParameter="{Reference txtRating}"
+                               ReturnType="Next" />
+                    </control:SfTextInputLayout>
+                </StackLayout>
+            </Grid>
+
+            <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                       HasError="{Binding Rating.IsValid,Converter={utils:InverseBoolConverter}}"
+                                       Hint="Rating ">
+
+                <Entry Style="{DynamicResource TextBoxStyle}"
+                       Text="{Binding Rating.Value,Mode=TwoWay}"
+                       Keyboard="Numeric"
+                       IsEnabled="{Binding IsEnabled}"
+                       x:Name="txtRating"
+                       ReturnCommand="{Binding EntryFocusCommand}"
+                       ReturnCommandParameter="{Reference txtCriteria}"
+                       ReturnType="Next" />
+            </control:SfTextInputLayout>
+
+            <Grid IsEnabled="{Binding Holder.IsEnabled}"
+                  Margin="4,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label FontFamily="{DynamicResource Medium}"
+                       Margin="0,0,0,0"
+                       FontSize="{StaticResource Tiny}"
+                       Text="Criteria"
+                       Grid.Row="0"
+                       TextColor="{DynamicResource Gray-800}" />
+
+                <StackLayout Grid.Row="1">
+                    <border:SfBorder BorderColor="Gray"
+                                     HasShadow="False"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="End"
+                                     CornerRadius="12"
+                                     WidthRequest="1000"
+                                     Margin="0,0,0,0">
+
+                        <rte:SfRichTextEditor Text= "{Binding Criteria.Value,Mode=TwoWay}"
+                                              Style="{DynamicResource RichTextEditorStyle}"
+                                              x:Name="txtCriteria" />
+                    </border:SfBorder>
+                </StackLayout>
+            </Grid>
+
+            <!--<control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                 HasError="{Binding Criteria.IsValid,Converter={utils:InverseBoolConverter}}"
+                 Hint="Criteria ">
+
+                 <Editor Style="{DynamicResource EditorStyle}"
+                 Text="{Binding Criteria.Value,Mode=TwoWay}"
+                 IsEnabled="{Binding IsEnabled}" />
+                 </control:SfTextInputLayout>-->
+
+            <FlexLayout Margin="0,20,0,0"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Direction="Row"
+                        JustifyContent="{Binding IsExistingItem,Converter={utils:FlexLayoutCenterContentConverter}}"
+                        AlignItems="Center"
+                        IsVisible="{Binding IsEditable}">
+
+                <buttons:SfButton Text="Delete"
+                                  Style="{StaticResource WlkErrorButtonStyle}"
+                                  Command="{Binding DeleteRateCommand}"
+                                  IsVisible="{Binding IsExistingItem}"
+                                  Margin="0,0,10,0" />
+
+                <buttons:SfButton Text="Save"
+                                  Style="{StaticResource WalkthroughButtonStyle}"
+                                  Command="{Binding AddRatingCommand}"
+                                  Margin="10,0,0,0" />
+            </FlexLayout>
+        </StackLayout>
+    </utils:FormModal.Body>
+</utils:FormModal>

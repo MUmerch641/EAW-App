@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout x:Class="EatWork.Mobile.Views.Template.RequestLeaveTemplate"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <Grid RowSpacing="5">
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackLayout Padding="0,0,0,0">
+                <iconize:IconImage HeightRequest="15"
+                                   HorizontalOptions="StartAndExpand"
+                                   Icon="{StaticResource HourIcon}"
+                                   IconColor="{StaticResource Gray-600}"
+                                   VerticalOptions="CenterAndExpand"
+                                   WidthRequest="15" />
+            </StackLayout>
+            <StackLayout Padding="25,0,0,0">
+                <Label HorizontalOptions="StartAndExpand"
+                       LineBreakMode="TailTruncation"
+                       Style="{StaticResource ListItemDetailTextStyle}"
+                       VerticalOptions="CenterAndExpand">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding RequestedHoursNumber, StringFormat={StaticResource TwoDecimalPlacesFormat}}" />
+                            <Span Text=" " />
+                            <Span Text="{Binding RequestedHoursSuffixDisplay}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackLayout Padding="0,0,0,0">
+                <iconize:IconImage HeightRequest="15"
+                                   HorizontalOptions="StartAndExpand"
+                                   Icon="{StaticResource ReasonIcon}"
+                                   IconColor="{StaticResource Gray-600}"
+                                   VerticalOptions="CenterAndExpand"
+                                   WidthRequest="15" />
+            </StackLayout>
+            <StackLayout Padding="25,0,0,0">
+                <Label LineBreakMode="TailTruncation"
+                       Style="{StaticResource ListItemDetailTextStyle}"
+                       Text="{Binding Details}"
+                       VerticalOptions="CenterAndExpand" />
+            </StackLayout>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackLayout Padding="0,0,0,0">
+                <Label Text=" " />
+            </StackLayout>
+            <StackLayout Padding="25,0,0,0">
+                <Label Text=" " />
+            </StackLayout>
+        </Grid>
+    </Grid>
+</StackLayout>

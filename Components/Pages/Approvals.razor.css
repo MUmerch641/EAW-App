@@ -1,0 +1,348 @@
+/* Page Layout */
+.page-container {
+    padding-bottom: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.content-section {
+    padding: 16px;
+}
+
+/* Stats Cards */
+.stats-section {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stats-section ::deep .status-card {
+    flex: 1;
+}
+
+.pending-card ::deep .card-icon {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+
+.total-card ::deep .card-icon {
+    background-color: rgba(81, 43, 212, 0.1);
+    color: #512BD4;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filter-tabs ::deep .action-btn {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* History Section */
+.history-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Approval Card */
+.approval-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.approval-card:active {
+    transform: scale(0.98);
+}
+
+.approval-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.approval-info {
+    flex: 1;
+}
+
+.approval-type {
+    font-weight: 600;
+    font-size: 16px;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.requester {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.approval-status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.approval-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.approval-status.approved {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.approval-status.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.approval-details {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-row .label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.detail-row .value {
+    color: #212529;
+    font-weight: 500;
+    text-align: right;
+    max-width: 60%;
+}
+
+.approval-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+}
+
+.modal-dialog {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #adb5bd;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.btn-close:hover {
+    color: #495057;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal-body .approval-info {
+    margin-bottom: 24px;
+}
+
+.modal-body h4 {
+    margin: 0 0 16px 0;
+    color: #512BD4;
+    font-size: 20px;
+}
+
+.modal-body p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #495057;
+    line-height: 1.5;
+}
+
+.modal-body strong {
+    color: #212529;
+    font-weight: 600;
+    min-width: 100px;
+    display: inline-block;
+}
+
+/* Detail Grid */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-item .label {
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.detail-item .value {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 500;
+}
+
+.detail-section {
+    margin-bottom: 16px;
+}
+
+.detail-section .label {
+    display: block;
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.detail-section .value-text {
+    font-size: 14px;
+    color: #212529;
+    line-height: 1.5;
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #adb5bd;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    font-size: 16px;
+    font-weight: 500;
+}

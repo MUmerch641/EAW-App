@@ -31,8 +31,11 @@ public static class MauiProgram
 
         // Add Blazor Hybrid support
         builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddTransient<MauiHybridApp.ViewModels.PayslipDetailViewModel>();
+        builder.Services.AddTransient<MauiHybridApp.ViewModels.TaskNotificationViewModel>();
 
 #if DEBUG
+        builder.Logging.AddDebug();
         builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
@@ -67,7 +70,7 @@ public static class MauiProgram
         // HTTP Client with Polly
         services.AddHttpClient<IGenericRepository, GenericRepository>(client =>
         {
-            client.Timeout = TimeSpan.FromSeconds(30);
+            client.Timeout = TimeSpan.FromSeconds(100);
         })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
@@ -94,18 +97,36 @@ public static class MauiProgram
         // Data access services - will be populated with all data services
         services.AddScoped<IMainPageDataService, MainPageDataService>();
         services.AddScoped<IDashboardDataService, DashboardDataService>();
-        services.AddScoped<ILeaveDataService, LeaveDataService>();
-        services.AddScoped<IOvertimeDataService, OvertimeDataService>();
-        services.AddScoped<IOfficialBusinessDataService, OfficialBusinessDataService>();
+        services.AddSingleton<ILeaveDataService, LeaveDataService>();
+        services.AddSingleton<IEmployeeDataService, EmployeeListDataService>();
+        services.AddSingleton<IOfficialBusinessDataService, OfficialBusinessDataService>();
+        services.AddSingleton<IOvertimeDataService, OvertimeDataService>();
+        services.AddSingleton<IChangeRestdayScheduleDataService, ChangeRestdayScheduleDataService>();
+        services.AddSingleton<IChangeWorkScheduleDataService, ChangeWorkScheduleDataService>();
+        services.AddSingleton<IMyRequestDataService, MyRequestDataService>();
+        services.AddSingleton<IWorkflowDataService, WorkflowDataService>();
         services.AddScoped<ITimeEntryDataService, TimeEntryDataService>();
         services.AddScoped<IApprovalDataService, ApprovalDataService>();
         services.AddScoped<IAttendanceDataService, AttendanceDataService>();
-    services.AddScoped<IExpenseDataService, ExpenseDataService>();
+        services.AddScoped<IExpenseDataService, ExpenseDataService>();
         services.AddScoped<IPayrollDataService, PayrollDataService>();
         services.AddScoped<IPerformanceDataService, PerformanceDataService>();
+        services.AddScoped<IPerformanceEvaluationDataService, PerformanceEvaluationDataService>();
+        services.AddScoped<IIndividualObjectivesDataService, IndividualObjectivesDataService>();
+        services.AddScoped<IIndividualObjectiveItemDataService, IndividualObjectiveItemDataService>();
+        services.AddScoped<ISurveyDataService, SurveyDataService>();
         services.AddScoped<IEmployeeRelationsDataService, EmployeeRelationsDataService>();
         services.AddScoped<IUserDataService, UserDataService>();
         services.AddScoped<INotificationDataService, NotificationDataService>();
+        services.AddScoped<ISettingsDataService, SettingsDataService>();
+        services.AddScoped<IScheduleDataService, ScheduleDataService>();
+        services.AddScoped<IFinancialDataService, FinancialDataService>();
+        services.AddScoped<ITravelDataService, TravelDataService>();
+        services.AddScoped<IDocumentDataService, DocumentDataService>();
+        services.AddScoped<IUndertimeDataService, UndertimeDataService>();
+        services.AddScoped<ISuggestionDataService, SuggestionDataService>();
+        services.AddScoped<ISpecialWorkScheduleDataService, SpecialWorkScheduleDataService>();
+        services.AddScoped<IWorkflowDataService, WorkflowDataService>();
 
         // Additional services
         services.AddSingleton<ISQLiteDataService, SQLiteDataService>();
@@ -118,9 +139,7 @@ public static class MauiProgram
         services.AddSingleton<MauiHybridApp.Services.Performance.ICacheService, MauiHybridApp.Services.Performance.CacheService>();
         services.AddSingleton<MauiHybridApp.Services.Performance.IPerformanceService, MauiHybridApp.Services.Performance.PerformanceService>();
 
-        // SignalR and State services
-        services.AddSingleton<MauiHybridApp.Services.SignalR.ISignalRDataService, MauiHybridApp.Services.SignalR.SignalRDataService>();
-        services.AddSingleton<MauiHybridApp.Services.State.IStateService, MauiHybridApp.Services.State.StateService>();
+
     }
 
     private static void RegisterStateServices(IServiceCollection services)
@@ -133,9 +152,61 @@ public static class MauiProgram
         services.AddTransient<MauiHybridApp.ViewModels.OvertimeViewModel>();
         services.AddTransient<MauiHybridApp.ViewModels.OfficialBusinessViewModel>();
         services.AddTransient<MauiHybridApp.ViewModels.PayslipsViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.PayslipDetailViewModel>();
         services.AddTransient<MauiHybridApp.ViewModels.ExpensesViewModel>();
         services.AddTransient<MauiHybridApp.ViewModels.AttendanceViewModel>();
         services.AddTransient<MauiHybridApp.ViewModels.ApprovalsViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ConnectionViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.LeaveHistoryViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.PerformanceEvaluationViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.PerformanceEvaluationFormViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.IndividualObjectivesViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.IndividualObjectiveFormViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.SurveyViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.SurveyFormViewModel>();
+        
+        // Profile ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.PersonalDetailsViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ContactInformationViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.FamilyBackgroundViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.EmergencyContactViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.CurrentJobInformationViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.AreaOfAssignmentViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.RelevantEmploymentDatesViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.TaxGovernmentRelatedInfoViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ObjectiveDetailViewModel>();
+        
+        // Schedule ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.MyScheduleViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.ScheduleRequestViewModel>();
+        
+        // Financial ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.FinancialViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.CashAdvanceRequestViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.LoanRequestViewModel>();
+        
+        // Request ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.TimeOffViewModel>();
+        
+        // Travel ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.TravelRequestViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.TravelRequestFormViewModel>();
+        
+        // Document ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.DocumentRequestViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.DocumentRequestFormViewModel>();
+        
+        // Undertime ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.UndertimeRequestViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.UndertimeRequestFormViewModel>();
+        
+        // Suggestion ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.SuggestionViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.SuggestionFormViewModel>();
+        
+        // Special Work Schedule ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.SpecialWorkScheduleViewModel>();
+        services.AddTransient<MauiHybridApp.ViewModels.SpecialWorkScheduleFormViewModel>();
         
         // State management services for Blazor components
         services.AddScoped<AuthenticationStateService>();
@@ -150,7 +221,17 @@ public static class MauiProgram
         services.AddScoped<PerformanceStateService>();
         services.AddScoped<EmployeeRelationsStateService>();
         services.AddScoped<ProfileStateService>();
+        services.AddScoped<ProfileStateService>();
         services.AddScoped<NotificationStateService>();
+        
+        // Notification ViewModels
+
+        
+        // Settings ViewModels
+        services.AddTransient<MauiHybridApp.ViewModels.SettingsViewModel>();
+        
+        // Employee List ViewModel (was missing - caused navigation freeze)
+        services.AddTransient<MauiHybridApp.ViewModels.EmployeeListViewModel>();
     }
 }
 

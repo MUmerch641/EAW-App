@@ -1,0 +1,125 @@
+@page "/specialworkschedule/new"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@inject SpecialWorkScheduleFormViewModel ViewModel
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>New Special Schedule</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-content">
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert error">
+                <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+        {
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Work Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.WorkDate" />
+        </div>
+
+        <div class="form-group">
+            <label>Shift</label>
+            <select class="form-control" @bind="ViewModel.SelectedShift">
+                <option value="">Select Shift</option>
+                @if (ViewModel.Shifts != null)
+                {
+                    @foreach (var item in ViewModel.Shifts)
+                    {
+                        <option value="@item">@item.DisplayText</option>
+                    }
+                }
+            </select>
+        </div>
+
+        @if (ViewModel.IsCustomSchedule)
+        {
+            <div class="form-group">
+                <label>Start Time</label>
+                <input type="time" class="form-control" @bind="ViewModel.StartTime" />
+            </div>
+
+            <div class="form-group">
+                <label>End Time</label>
+                <input type="time" class="form-control" @bind="ViewModel.EndTime" />
+            </div>
+
+            <div class="form-group">
+                <label>Lunch Start</label>
+                <input type="time" class="form-control" @bind="ViewModel.LunchStart" />
+            </div>
+
+            <div class="form-group">
+                <label>Lunch End</label>
+                <input type="time" class="form-control" @bind="ViewModel.LunchEnd" />
+            </div>
+        }
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="offsetting" @bind="ViewModel.ForOffsetting" />
+            <label for="offsetting">For Offsetting</label>
+        </div>
+
+        @if (ViewModel.ForOffsetting)
+        {
+            <div class="form-group">
+                <label>Offset Expiration Date</label>
+                <input type="date" class="form-control" @bind="ViewModel.OffsetExpirationDate" />
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Reason</label>
+            <textarea class="form-control" rows="3" @bind="ViewModel.Reason" placeholder="Enter reason..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-small"></span> <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Request</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

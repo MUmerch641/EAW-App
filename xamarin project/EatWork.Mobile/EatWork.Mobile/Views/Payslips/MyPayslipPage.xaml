@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.Payslips.MyPayslipPage"
+             Title="My Payslips"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <Style x:Key="DescriptionLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowSpacing="0" Style="{DynamicResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <converter:TitleView Title="My Payslips"
+                                 TitleColor="{DynamicResource Gray-White}"
+                                 x:Name="TitleView">
+                <converter:TitleView.LeadingView>
+
+                    <iconize:IconButton Text="{StaticResource HamburgerIcon}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Command="{Binding MenuButtonCommand}"
+                                        x:Name="MenuIcon" />
+                </converter:TitleView.LeadingView>
+            </converter:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+                <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                             HorizontalOptions="CenterAndExpand"
+                             VerticalOptions="CenterAndExpand">
+
+                    <local:NoItemsPartialPage DetailsText="No items available to display."
+                                              IsVisible="{Binding ShowList, Converter={converter:InverseBoolConverter}}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+
+                    <local:NoItemsPartialPage DetailsText="Please try again with different keywords/criteria."
+                                              TitleText="No Result Found"
+                                              IsVisible="{Binding NoItems}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+                </StackLayout>
+
+                <Grid AbsoluteLayout.LayoutFlags="All"
+                      AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                      HorizontalOptions="FillAndExpand"
+                      VerticalOptions="FillAndExpand">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackLayout Padding="16"
+                                 Spacing="16"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 IsVisible="{Binding ShowList}">
+
+                        <syncfusion:SfListView x:Name="MyPayslipListView"
+                                               AutoFitMode="Height"
+                                               SelectionMode="None"
+                                               IsScrollBarVisible="False"
+                                               ItemSpacing="0,10"
+                                               IsStickyHeader="True"
+                                               IsStickyGroupHeader="False"
+                                               HeaderTemplate="{DynamicResource CatalogDefaultHeaderTemplate}"
+                                               HeaderSize="{OnPlatform Android=50,iOS=60, UWP=60}"
+                                               ItemsSource="{Binding Holder.MyPayslipList}"
+                                               LoadMoreOption="AutoOnScroll"
+                                               LoadMoreCommand="{Binding LoadItemsCommand}"
+                                               LoadMoreCommandParameter="{Binding Source={x:Reference Name=MyPayslipListView}}"
+                                               TapCommand="{Binding ViewDetailCommand}">
+
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid Padding="0"
+                                                  Margin="0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="0">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <converter:CustomShadowFrame Grid.Row="0"
+                                                                             Grid.Column="1"
+                                                                             Margin="{OnPlatform Android='0,0',iOS='0,2,0,0'}"
+                                                                             Padding="5,5"
+                                                                             BackgroundColor="{DynamicResource Gray-White}"
+                                                                             BorderColor="{DynamicResource Gray-White}"
+                                                                             BorderWidth="1"
+                                                                             CornerRadius="4"
+                                                                             HasShadow="True"
+                                                                             HorizontalOptions="FillAndExpand"
+                                                                             Radius="4"
+                                                                             ShadowOffSetHeight="4"
+                                                                             ShadowOffsetWidth="0"
+                                                                             ShadowOpacity="0.12">
+
+                                                    <Grid Margin="10,0"
+                                                          ColumnDefinitions="11*, 53*, 36*"
+                                                          ColumnSpacing="1">
+
+                                                        <StackLayout HeightRequest="40"
+                                                                     Margin="0,16"
+                                                                     WidthRequest="40"
+                                                                     HorizontalOptions="Center"
+                                                                     VerticalOptions="Center">
+                                                            <iconize:IconImage Icon="{StaticResource ReasonIcon}"
+                                                                               VerticalOptions="CenterAndExpand"
+                                                                               HorizontalOptions="CenterAndExpand"
+                                                                               IconColor="{DynamicResource Gray-600}"
+                                                                               HeightRequest="30" />
+                                                        </StackLayout>
+
+                                                        <StackLayout Grid.Column="1"
+                                                                     Margin="0,16,0,13"
+                                                                     BackgroundColor="{DynamicResource Gray-Bg}"
+                                                                     Spacing="3">
+
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   HorizontalOptions="Start"
+                                                                   Style="{StaticResource TitleLabelStyle}"
+                                                                   Text="{Binding PayrollType}"
+                                                                   LineBreakMode="TailTruncation" />
+
+                                                            <Label Grid.Row="1"
+                                                                   HorizontalOptions="Start"
+                                                                   Style="{StaticResource DescriptionLabelStyle}"
+                                                                   Text="{Binding IssuedDateDisplay}"
+                                                                   LineBreakMode="TailTruncation" />
+                                                        </StackLayout>
+
+                                                        <Label FontFamily="{DynamicResource Medium}"
+                                                               HorizontalOptions="StartAndExpand"
+                                                               Style="{StaticResource TitleLabelStyle}"
+                                                               LineBreakMode="TailTruncation"
+                                                               Grid.Column="2"
+                                                               Margin="5,20,0,20">
+                                                            <Label.FormattedText>
+                                                                <FormattedString>
+                                                                    <Span Text="Php " />
+                                                                    <Span Text="{Binding AmountDisplay}" />
+                                                                </FormattedString>
+                                                            </Label.FormattedText>
+                                                        </Label>
+                                                    </Grid>
+                                                </converter:CustomShadowFrame>
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+                    </StackLayout>
+                </Grid>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

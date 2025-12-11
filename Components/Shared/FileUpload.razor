@@ -1,0 +1,216 @@
+@* Reusable File Upload Component *@
+<div class="file-upload-container @CssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="file-upload-label">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="required">*</span>
+            }
+        </label>
+    }
+    
+    <div class="file-upload-area @(IsDragOver ? "drag-over" : "")"
+         @ondrop="HandleDrop"
+         @ondragover="HandleDragOver"
+         @ondragleave="HandleDragLeave"
+         @ondragenter="HandleDragEnter">
+        
+        <InputFile OnChange="HandleFileSelected" 
+                   multiple="@AllowMultiple"
+                   class="file-input"
+                   id="@InputId" />
+        
+        <label for="@InputId" class="file-upload-button">
+            <span class="oi oi-cloud-upload"></span>
+            <span>@UploadText</span>
+        </label>
+        
+        @if (!string.IsNullOrEmpty(HelpText))
+        {
+            <p class="file-upload-help">@HelpText</p>
+        }
+    </div>
+    
+    @if (UploadedFiles.Any())
+    {
+        <div class="uploaded-files-list">
+            @foreach (var file in UploadedFiles)
+            {
+                <div class="uploaded-file-item">
+                    <span class="oi oi-document file-icon"></span>
+                    <div class="file-info">
+                        <span class="file-name">@file.Name</span>
+                        <span class="file-size">@FormatFileSize(file.Size)</span>
+                    </div>
+                    <button type="button" 
+                            class="btn-remove" 
+                            @onclick="() => RemoveFile(file)"
+                            title="Remove file">
+                        <span class="oi oi-x"></span>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+    
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger file-upload-error">
+            @ErrorMessage
+        </div>
+    }
+</div>
+
+
+
+@code {
+    private string InputId = $"file-upload-{Guid.NewGuid():N}";
+    private bool IsDragOver = false;
+    
+    /// <summary>
+    /// Label for the file upload
+    /// </summary>
+    [Parameter]
+    public string? Label { get; set; }
+    
+    /// <summary>
+    /// Whether the field is required
+    /// </summary>
+    [Parameter]
+    public bool IsRequired { get; set; }
+    
+    /// <summary>
+    /// Upload button text
+    /// </summary>
+    [Parameter]
+    public string UploadText { get; set; } = "Choose File or Drag & Drop";
+    
+    /// <summary>
+    /// Help text shown below upload area
+    /// </summary>
+    [Parameter]
+    public string? HelpText { get; set; }
+    
+    /// <summary>
+    /// Accepted file types (e.g., ".pdf,.doc,.docx")
+    /// </summary>
+    [Parameter]
+    public string AcceptedFileTypes { get; set; } = "*";
+    
+    /// <summary>
+    /// Allow multiple file selection
+    /// </summary>
+    [Parameter]
+    public bool AllowMultiple { get; set; } = true;
+    
+    /// <summary>
+    /// Maximum file size in bytes (default 10MB)
+    /// </summary>
+    [Parameter]
+    public long MaxFileSize { get; set; } = 10 * 1024 * 1024;
+    
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Callback when files are selected
+    /// </summary>
+    [Parameter]
+    public EventCallback<List<IBrowserFile>> OnFilesSelected { get; set; }
+    
+    /// <summary>
+    /// List of uploaded files
+    /// </summary>
+    public List<IBrowserFile> UploadedFiles { get; set; } = new();
+    
+    private string ErrorMessage = string.Empty;
+    
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        ErrorMessage = string.Empty;
+        
+        try
+        {
+            var files = e.GetMultipleFiles(AllowMultiple ? 10 : 1);
+            
+            foreach (var file in files)
+            {
+                // Validate file size
+                if (file.Size > MaxFileSize)
+                {
+                    ErrorMessage = $"File '{file.Name}' exceeds maximum size of {FormatFileSize(MaxFileSize)}";
+                    continue;
+                }
+                
+                // Validate file type if AcceptedFileTypes is specified
+                if (!string.IsNullOrEmpty(AcceptedFileTypes) && AcceptedFileTypes != "*")
+                {
+                    var extension = Path.GetExtension(file.Name).ToLowerInvariant();
+                    var acceptedExtensions = AcceptedFileTypes.Split(',').Select(e => e.Trim().ToLowerInvariant()).ToArray();
+                    
+                    if (!acceptedExtensions.Contains(extension))
+                    {
+                        ErrorMessage = $"File type '{extension}' is not allowed. Accepted types: {AcceptedFileTypes}";
+                        continue;
+                    }
+                }
+                
+                UploadedFiles.Add(file);
+            }
+            
+            await OnFilesSelected.InvokeAsync(UploadedFiles);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error uploading files: {ex.Message}";
+        }
+    }
+    
+    private void RemoveFile(IBrowserFile file)
+    {
+        UploadedFiles.Remove(file);
+        _ = OnFilesSelected.InvokeAsync(UploadedFiles);
+    }
+    
+    private void HandleDragOver(DragEventArgs e)
+    {
+        IsDragOver = true;
+    }
+    
+    private void HandleDragLeave(DragEventArgs e)
+    {
+        IsDragOver = false;
+    }
+    
+    private void HandleDragEnter(DragEventArgs e)
+    {
+        IsDragOver = true;
+    }
+    
+    private async Task HandleDrop(DragEventArgs e)
+    {
+        IsDragOver = false;
+        // Note: Drag & drop file handling requires additional JavaScript interop
+        // This is a placeholder for the UI behavior
+    }
+    
+    private string FormatFileSize(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB" };
+        double len = bytes;
+        int order = 0;
+        
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        
+        return $"{len:0.##} {sizes[order]}";
+    }
+}

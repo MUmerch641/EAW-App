@@ -1,0 +1,123 @@
+.payslip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 20px;
+}
+
+.payslip-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.payslip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-primary-light);
+}
+
+.card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.payroll-type {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--color-gray-900);
+}
+
+.date {
+    font-size: 13px;
+    color: var(--color-gray-500);
+}
+
+.card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.amount {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-success);
+}
+
+.status {
+    font-size: 12px;
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+/* Modal Styles override/specifics */
+.summary-box {
+    background-color: var(--color-gray-50);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-row.total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-gray-200);
+    font-size: 16px;
+    color: var(--color-primary);
+}
+
+.info-label {
+    color: var(--color-gray-600);
+}
+
+.info-val {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.detail-section {
+    margin-top: 20px;
+}
+
+.detail-section h4 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--color-gray-500);
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 14px;
+    color: var(--color-gray-800);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}

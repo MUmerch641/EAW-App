@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             x:Class="EatWork.Mobile.Views.PerformanceEvaluation.JotterTemplate">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
+                 Padding="0,8"
+                 BackgroundColor="{StaticResource Gray-200}"
+                 BindableLayout.ItemsSource="{Binding Holder.JotterSource}"
+                 x:Name="Details">
+
+        <BindableLayout.ItemTemplate>
+            <DataTemplate>
+                <Grid HorizontalOptions="Start"
+                      VerticalOptions="Start"
+                      RowDefinitions="Auto,Auto,Auto,Auto"
+                      Margin="8,0"
+                      Padding="0,0">
+
+                    <Label FontFamily="{DynamicResource Regular}"
+                           Style="{StaticResource SimpleLabelStyle}"
+                           Text="{Binding TimeStamp_String}" />
+
+                    <Grid ColumnDefinitions="Auto,Auto,Auto"
+                          Grid.Row="1">
+
+                        <Label HorizontalOptions="Start"
+                               HorizontalTextAlignment="Start"
+                               VerticalOptions="Center"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="3"
+                               Margin="0,0"
+                               Style="{StaticResource DescriptionLabelStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding ReportedBy}" />
+                                    <Span Text=" " />
+                                    <Span Text="{Binding ConnecterOne}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <!--<iconize:IconImage Icon="{Binding Icon}"
+                                           Grid.Column="1"
+                                           HeightRequest="25"
+                                           WidthRequest="25"/>-->
+                        
+                        <iconize:IconLabel Text="{Binding Icon}"
+                                           FontFamily="MDIIcons"
+                                           HeightRequest="30"
+                                           WidthRequest="30"
+                                           FontSize="30"
+                                           Grid.Column="1"
+                                           TextColor="#FFCC22"/>
+
+                        <Label HorizontalOptions="Start"
+                               HorizontalTextAlignment="Start"
+                               VerticalOptions="Center"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="3"
+                               Margin="0,0"
+                               Style="{StaticResource DescriptionLabelStyle}"
+                               Grid.Column="2">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding ConnectorTwo}" />
+                                    <Span Text=" you." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+
+                    <Label HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="3"
+                           Margin="0,5,0,0"
+                           Style="{StaticResource DescriptionLabelStyle}"
+                           Text="{Binding Message}"
+                           TextType="Html"
+                           FontAttributes="Italic"
+                           Grid.Row="2" />
+
+                    <BoxView Style="{DynamicResource SeparatorStyle}"
+                             BackgroundColor="{DynamicResource Gray-300}"
+                             Margin="0,5"
+                             Grid.Row="3" />
+                </Grid>
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
+    </StackLayout>
+</StackLayout>

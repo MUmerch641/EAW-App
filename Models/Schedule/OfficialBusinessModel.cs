@@ -39,6 +39,7 @@ public class OfficialBusinessModel
     // --- API Fields ---
     public long OfficialBusinessId { get; set; }
     public long ProfileId { get; set; }
+    public long TransactionTypeId { get; set; } // Added for Time Off Request reuse
     public DateTime DateFiled { get; set; }
     public DateTime OfficialBusinessDate { get; set; }
     public DateTime? StartTime { get; set; }

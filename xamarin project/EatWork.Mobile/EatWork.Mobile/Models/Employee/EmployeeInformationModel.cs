@@ -1,0 +1,92 @@
+﻿using System;
+
+namespace EatWork.Mobile.Models
+{
+    public class EmployeeInformationModel
+    {
+        public long ProfileId { get; set; }
+        public string EmployeeNo { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string FullName { get; set; }
+        public string FullNameTitleAndMiddleInitialOnly { get; set; }
+        public string FullNameMiddleInitialOnly { get; set; }
+        public string EmployeeName { get; set; }
+        public string FullAddress { get; set; }
+        public string FullProvincialAddress { get; set; }
+        public string ProfileImage { get; set; }
+        public long? EmployeeAssignmentId { get; set; }
+        public string TIN { get; set; }
+        public string SSS { get; set; }
+        public string PhilHealth { get; set; }
+        public string Pagibig { get; set; }
+        public string Religion { get; set; }
+        public string Nationality { get; set; }
+        public string DualNationality { get; set; }
+        public long? EmploymentTypeId { get; set; }
+        public string EmploymentTypeCode { get; set; }
+        public long? EmploymentStatusId { get; set; }
+        public string EmploymentStatus { get; set; }
+        public long? DueToId { get; set; }
+        public string DueTo { get; set; }
+        public long? JobRankId { get; set; }
+        public string JobRankCode { get; set; }
+        public long? JobGradeId { get; set; }
+        public string JobGradeCode { get; set; }
+        public long? JobLevelId { get; set; }
+        public string JobLevelCode { get; set; }
+        public long? PositionId { get; set; }
+        public string Position { get; set; }
+        public long? ManpowerClassificationId { get; set; }
+        public string ManpowerClassification { get; set; }
+        public long? CompanyId { get; set; }
+        public string Company { get; set; }
+        public string CompanyCode { get; set; }
+        public long? BranchId { get; set; }
+        public string Branch { get; set; }
+        public string BranchCode { get; set; }
+        public long? DepartmentId { get; set; }
+        public string Department { get; set; }
+        public long? OfficeId { get; set; }
+        public string Office { get; set; }
+        public long? UnitId { get; set; }
+        public string UnitCode { get; set; }
+        public long? DivisionId { get; set; }
+        public string DivisionCode { get; set; }
+        public long? GroupsId { get; set; }
+        public string GroupsCode { get; set; }
+        public long? DistrictId { get; set; }
+        public string DistrictCode { get; set; }
+        public long? LocationId { get; set; }
+        public string Location { get; set; }
+        public long? ProjectProfileId { get; set; }
+        public string ProjectName { get; set; }
+        public long? CostCenterId { get; set; }
+        public string CostCenterCode { get; set; }
+        public long? LineId { get; set; }
+        public string LineIdCode { get; set; }
+        public long? TeamId { get; set; }
+        public string TeamCode { get; set; }
+        public string EmailAddress { get; set; }
+        public long? ManHourClassificationId { get; set; }
+        public string ManHourClassificationCode { get; set; }
+        public long? ApplicableTaxId { get; set; }
+        public long? TaxExemptionStatusId { get; set; }
+        public string ChargeCode { get; set; }
+        public DateTime? HireDate { get; set; }
+        public DateTime? ReglarizationDate { get; set; }
+        public DateTime? EndOfContractDate { get; set; }
+        public string DueToReason { get; set; }
+        public string RED_Others { get; set; }
+        public DateTime? SeparationDate { get; set; }
+        public DateTime? ClearanceDate { get; set; }
+        public int? YearsInService { get; set; }
+        public DateTime? Birthdate { get; set; }
+        public int? Age { get; set; }
+        public string AccessId { get; set; }
+        public string Gender { get; set; }
+        public bool? UnionMember { get; set; }
+        public long UserAccountId { get; set; }
+    }
+}

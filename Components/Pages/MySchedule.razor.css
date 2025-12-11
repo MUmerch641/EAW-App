@@ -1,0 +1,156 @@
+.page-container {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.page-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.month-navigator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: white;
+    padding: 0.75rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+.month-navigator h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    min-width: 150px;
+    text-align: center;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #3498db;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.schedule-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.btn-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-action.primary {
+    background-color: #3498db;
+}
+
+.btn-action.secondary {
+    background-color: #9b59b6;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.schedule-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid transparent;
+}
+
+.schedule-card.regular {
+    border-left-color: #3498db;
+}
+
+.schedule-card.restday {
+    border-left-color: #95a5a6;
+    background-color: #f8f9fa;
+}
+
+.schedule-card.holiday {
+    border-left-color: #e74c3c;
+    background-color: #fdedec;
+}
+
+.date-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.day-date {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.schedule-time {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.regular {
+    background-color: #ebf5fb;
+    color: #3498db;
+}
+
+.status-badge.restday {
+    background-color: #e9ecef;
+    color: #7f8c8d;
+}
+
+.status-badge.holiday {
+    background-color: #fadbd8;
+    color: #e74c3c;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 2rem;
+    color: #95a5a6;
+}

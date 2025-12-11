@@ -1,0 +1,70 @@
+@page "/profile/current-job"
+@using MauiHybridApp.ViewModels
+@inject CurrentJobInformationViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="GoBack">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Current Job Information</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading job info...</p>
+        </div>
+    }
+    else if (ViewModel.UserProfile != null)
+    {
+        <div class="form-content">
+            <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.JobTitle" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.Department" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Manager</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.ManagerName" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Employment Status</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.EmploymentStatus" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Work Location</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.WorkLocation" readonly />
+            </div>
+            
+            <div class="form-group">
+                <label>Shift</label>
+                <input type="text" class="form-control" placeholder="Regular Shift" readonly />
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/profile");
+    }
+}

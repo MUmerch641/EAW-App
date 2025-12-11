@@ -1,0 +1,65 @@
+@page "/app-info"
+@inject MauiHybridApp.Services.Navigation.INavigationService NavigationService
+@using MauiAppInfo = Microsoft.Maui.ApplicationModel.AppInfo
+
+<div class="page-container bg-light">
+    <!-- Header -->
+    <div class="app-header bg-white text-dark p-3 shadow-sm sticky-top">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-link text-dark p-0 me-3" @onclick="GoBack">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </button>
+            <h5 class="mb-0 fw-bold">About App</h5>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-4 d-flex flex-column align-items-center text-center animate-fade-in-up">
+        
+        <div class="mb-4 mt-5">
+            <div class="rounded-4 overflow-hidden shadow-lg mx-auto" style="width: 120px; height: 120px;">
+                <img src="images/app_logo.png" alt="App Logo" class="w-100 h-100 object-fit-cover" onerror="this.src='https://via.placeholder.com/120?text=Logo'" />
+            </div>
+        </div>
+
+        <h3 class="fw-bold text-dark mb-1">EatWork Mobile</h3>
+        <p class="text-muted mb-4">Version @GetAppVersion()</p>
+
+        <div class="card border-0 shadow-sm w-100 rounded-4 mb-4 text-start">
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush rounded-4">
+                    <div class="list-group-item p-3 border-0 d-flex justify-content-between align-items-center">
+                        <span class="text-secondary fw-medium">Build Number</span>
+                        <span class="text-dark fw-bold">@GetBuildNumber()</span>
+                    </div>
+                     <div class="list-group-item p-3 border-0 d-flex justify-content-between align-items-center bg-light">
+                        <span class="text-secondary fw-medium">Package Name</span>
+                        <span class="text-dark small">@MauiAppInfo.PackageName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted small mt-auto mb-2">
+            © @DateTime.Now.Year EatWork Inc.<br/>
+            All rights reserved.
+        </p>
+    </div>
+</div>
+
+@code {
+    private async Task GoBack()
+    {
+        await NavigationService.NavigateBackAsync();
+    }
+
+    private string GetAppVersion()
+    {
+        return MauiAppInfo.VersionString;
+    }
+
+    private string GetBuildNumber()
+    {
+        return MauiAppInfo.BuildString;
+    }
+}

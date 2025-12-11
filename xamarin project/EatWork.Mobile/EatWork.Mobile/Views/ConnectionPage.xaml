@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.ConnectionPage"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}"
+             Title="Setup your connection">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+        
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}"/>
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Setup your connection" TitleColor="{StaticResource Gray-White}" />
+        </ContentView>
+        
+        <StackLayout Grid.Row="2" Spacing="0" >
+            <RelativeLayout>
+
+                <Image Source="{core:OnPlatformOrientationStringValue Default=LoginBackground2.jpg}"
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"
+                       Aspect="AspectFill" />
+
+                <Grid RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                      RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}">
+
+                    <gradient:SfGradientView Style="{StaticResource SfGradientViewStyle}" />
+
+                    <Grid Padding="0,5" RowSpacing="0" ColumnSpacing="0">
+
+                        <!--<busyindicator:SfBusyIndicator x:Name="busyindicator"
+                             Style="{StaticResource BusyIndicatorStyle}"
+                             TextColor="{StaticResource White-Smoke}"
+                             IsBusy="{Binding IsBusy}" />-->
+                        <StackLayout VerticalOptions="Center"
+                                     HorizontalOptions="FillAndExpand"
+                                     Margin="{core:OnPlatformOrientationThickness PhonePortrait='20,32',
+                                     PhoneLandscape='150,32',
+                                     TabletPortrait='200,50',
+                                     TabletLandscape='300,50',
+                                     Desktop='30'}"
+                                     Spacing="30"
+                                     IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                                     WidthRequest="{OnPlatform Default='-1',UWP='350'}">
+
+                            <Label Text="Client Setup"
+                                   FontSize="22"
+                                   TextColor="{StaticResource Gray-White}"
+                                   HorizontalOptions="CenterAndExpand"
+                                   HorizontalTextAlignment="Center"
+                                   FontAttributes="Bold"
+                                   FontFamily="{DynamicResource Bold}" />
+
+                            <Label Text="Please enter your Client Code and Pass Key"
+                                   FontSize="{StaticResource Small}"
+                                   HorizontalOptions="CenterAndExpand"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource Gray-White}"
+                                   FontFamily="{DynamicResource Regular}" />
+
+                            <utils:CustomShadowFrame BackgroundColor="{StaticResource Gray-White}"
+                                                     BorderColor="{StaticResource Gray-White}"
+                                                     BorderWidth="1"
+                                                     CornerRadius="8"
+                                                     HasShadow="true"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Radius="4"
+                                                     ShadowOffSetHeight="4"
+                                                     ShadowOffsetWidth="0"
+                                                     ShadowOpacity="0.12">
+
+                                <StackLayout VerticalOptions="FillAndExpand"
+                                             HorizontalOptions="FillAndExpand"
+                                             Padding="0"
+                                             Spacing="20">
+
+                                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyleLogin}"
+                                                               HasError="{Binding FormHolder.ErrorClientCode, Mode=TwoWay}"
+                                                               Hint="Client Code"
+                                                               EnableFloating="False">
+                                        <Entry Text="{Binding FormHolder.ClientSetupModel.ClientCode, Mode=TwoWay}"
+                                               x:Name="txtClientCode"
+                                               ReturnType="Next"
+                                               ReturnCommand="{Binding EntryFocusCommand}"
+                                               ReturnCommandParameter="{Reference txtPassKey}"
+                                               Style="{StaticResource TextBoxStyle}" />
+                                        <control:SfTextInputLayout.HintLabelStyle>
+                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                        </control:SfTextInputLayout.HintLabelStyle>
+                                        <control:SfTextInputLayout.ErrorLabelStyle>
+                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                        </control:SfTextInputLayout.ErrorLabelStyle>
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource AccountIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyleLogin}"
+                                                               HasError="{Binding FormHolder.ErrorPassKey, Mode=TwoWay}"
+                                                               EnablePasswordVisibilityToggle="True"
+                                                               Hint="Pass Key"
+                                                               EnableFloating="False">
+                                        <Entry Text="{Binding FormHolder.ClientSetupModel.Passkey, Mode=OneWayToSource}"
+                                               ReturnType="Send"
+                                               x:Name="txtPassKey"
+                                               ReturnCommand="{Binding SetupCommand}"
+                                               IsPassword="True"
+                                               Style="{StaticResource TextBoxStyle}" />
+                                        <control:SfTextInputLayout.HintLabelStyle>
+                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                        </control:SfTextInputLayout.HintLabelStyle>
+                                        <control:SfTextInputLayout.ErrorLabelStyle>
+                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                        </control:SfTextInputLayout.ErrorLabelStyle>
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource LockIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <button:SfButton Style="{DynamicResource ButtonStyle}" Text="Setup" Command="{Binding SetupCommand}" />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </StackLayout>
+                    </Grid>
+                </Grid>
+            </RelativeLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

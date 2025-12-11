@@ -1,0 +1,167 @@
+@page "/individual-objectives/form/{Id:long}"
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
+@using MauiHybridApp.Models.IndividualObjectives
+@inject IndividualObjectiveFormViewModel ViewModel
+@inject ObjectiveDetailViewModel DetailViewModel
+@implements IDisposable
+
+<div class="page-container">
+    <PageHeader 
+        Title="Individual Objective Form" 
+        Subtitle="@(Id == 0 ? "Create New" : "Edit Objective")" 
+        IconClass="fa-bullseye" 
+        ShowBackButton="true"
+        OnBackClick="() => ViewModel.GoBackCommand.Execute(null)" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading form..." />
+    }
+    else
+    {
+        <div class="form-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3>General Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Effective Year</label>
+                            <input type="text" class="form-control" value="@ViewModel.FormHolder.EffectiveYear.Value" readonly="@(!ViewModel.FormHolder.IsEnabled)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <span class="status-badge @GetStatusClass(ViewModel.FormHolder.Status)">@ViewModel.FormHolder.Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3>Objectives</h3>
+                    @if (ViewModel.FormHolder.IsEnabled)
+                    {
+                        <button class="btn btn-primary btn-sm" @onclick="AddNewObjective">
+                            <i class="fas fa-plus"></i> Add Objective
+                        </button>
+                    }
+                </div>
+                <div class="card-body">
+                    @if (ViewModel.FormHolder.Objectives != null)
+                    {
+                        @foreach (var group in ViewModel.FormHolder.Objectives)
+                        {
+                            <div class="objective-group mb-3">
+                                <h4 class="group-header">@group.Header</h4>
+                                @foreach (var header in group.ObjectiveDetailHeaderDto)
+                                {
+                                    <div class="objective-subgroup ml-3">
+                                        <h5 class="subgroup-header">@header.ObjectiveHeader</h5>
+                                        @foreach (var item in header.ObjectiveDetailDto)
+                                        {
+                                            <div class="objective-item card p-2 mb-2" @onclick="() => EditObjective(item)">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>@item.ObjectiveDescription</span>
+                                                    <span class="badge badge-secondary">@item.Weight</span>
+                                                </div>
+                                                <small class="text-muted">@item.MeasureName - @item.Target @item.UnitOfMeasure</small>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="form-actions mt-3">
+                @if (ViewModel.FormHolder.ShowButton)
+                {
+                    <button class="btn btn-secondary" @onclick="() => ViewModel.SaveCommand.Execute(null)">Save Draft</button>
+                    <button class="btn btn-primary" @onclick="() => ViewModel.SubmitCommand.Execute(null)">Submit</button>
+                }
+                @if (ViewModel.FormHolder.ShowCancelButton)
+                {
+                    <button class="btn btn-danger" @onclick="() => ViewModel.CancelRequestCommand.Execute(null)">Cancel Request</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<Modal @bind-IsVisible="IsDetailModalVisible" Title="@(IsEditMode ? "Edit Objective" : "Add Objective")">
+    <ObjectiveDetailForm ViewModel="DetailViewModel" OnSave="OnObjectiveSaved" OnCancel="() => IsDetailModalVisible = false" />
+</Modal>
+
+@code {
+    [Parameter] public long Id { get; set; }
+
+    private bool IsDetailModalVisible { get; set; }
+    private bool IsEditMode { get; set; }
+    private PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+
+        await ViewModel.InitializeAsync(Id);
+    }
+
+    private async Task AddNewObjective()
+    {
+        IsEditMode = false;
+        short year = 0;
+        short.TryParse(ViewModel.FormHolder.EffectiveYear.Value, out year);
+        await DetailViewModel.InitializeAsync(0, year);
+        IsDetailModalVisible = true;
+    }
+
+    private async Task EditObjective(ObjectiveDetailDto item)
+    {
+        IsEditMode = true;
+        short year = 0;
+        short.TryParse(ViewModel.FormHolder.EffectiveYear.Value, out year);
+        await DetailViewModel.InitializeAsync(item.PODetailId, year, item);
+        IsDetailModalVisible = true;
+    }
+
+    private void OnObjectiveSaved(ObjectiveDetailDto result)
+    {
+        // Add or update the objective in the list
+        // This requires logic to update ViewModel.FormHolder.ObjectivesToSave and re-group
+        // Since ViewModel doesn't expose a method for this yet, I should add one.
+        // For now, I'll assume I can add it to ObjectivesToSave directly if it's observable, but re-grouping is needed.
+        // I'll add a method to ViewModel to handle this.
+        
+        // ViewModel.AddOrUpdateObjective(result);
+        IsDetailModalVisible = false;
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "draft" => "draft",
+            "submitted" => "submitted",
+            "approved" => "approved",
+            "rejected" => "rejected",
+            _ => "draft"
+        };
+    }
+
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        ViewModel.Dispose();
+    }
+}

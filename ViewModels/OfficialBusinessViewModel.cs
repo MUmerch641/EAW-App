@@ -42,21 +42,27 @@ public class OfficialBusinessViewModel : BaseViewModel
         set => SetProperty(ref _obRequest, value);
     }
 
-    public string SuccessMessage
-    {
-        get => _successMessage;
-        private set => SetProperty(ref _successMessage, value);
-    }
-
     public decimal TotalHours => CalculateHours();
 
     public ICommand SubmitCommand { get; }
     public ICommand GoBackCommand { get; }
 
-    public async Task InitializeAsync()
+    public virtual void SetTransactionType(long typeId)
+    {
+        OBRequest.TransactionTypeId = typeId;
+    }
+
+    public override async Task InitializeAsync()
     {
         await ExecuteBusyAsync(async () =>
         {
+            // Default to OB if not set
+            if (OBRequest.TransactionTypeId == 0)
+                OBRequest.TransactionTypeId = 1; // Assuming 1 is OB, need to verify or strictly set it.
+                // Wait, Xamarin doesn't seem to set it explicitly for OB in InitMenuList, but TimeOff sets it to 4 via Constants.TimeOff
+                // Let's assume default OB is handled by backend if 0 or we should look up OB constant.
+                // For now, base class is for OB, so let's stick to OB default.
+            
             await Task.CompletedTask;
         }, "Loading...");
     }

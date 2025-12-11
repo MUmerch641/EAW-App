@@ -1,0 +1,104 @@
+@page "/undertime/request/new"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@inject UndertimeRequestFormViewModel ViewModel
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>New Undertime Request</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-content">
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert error">
+                <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+        {
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Undertime Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.UndertimeDate" />
+        </div>
+
+        <div class="form-group">
+            <label>Undertime Type</label>
+            <select class="form-control" @bind="ViewModel.SelectedUndertimeType">
+                <option value="">Select Type</option>
+                @if (ViewModel.UndertimeTypes != null)
+                {
+                    @foreach (var item in ViewModel.UndertimeTypes)
+                    {
+                        <option value="@item">@item.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Departure Time</label>
+            <input type="time" class="form-control" @bind="ViewModel.DepartureTime" />
+        </div>
+
+        <div class="form-group">
+            <label>Arrival Time</label>
+            <input type="time" class="form-control" @bind="ViewModel.ArrivalTime" />
+        </div>
+
+        <div class="form-group">
+            <label>Total Hours</label>
+            <input type="text" class="form-control" value="@($"{ViewModel.UTHrs:F2} hrs")" readonly />
+        </div>
+
+        <div class="form-group">
+            <label>Reason</label>
+            <textarea class="form-control" rows="3" @bind="ViewModel.Reason" placeholder="Enter reason..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-small"></span> <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Request</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

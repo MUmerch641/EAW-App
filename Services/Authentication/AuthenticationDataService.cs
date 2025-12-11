@@ -25,11 +25,14 @@ public class AuthenticationDataService : IAuthenticationDataService
             Console.WriteLine($"[AUTH] Portal: {request.portal}");
             
             // Make direct HTTP call to handle API error responses properly
-            var httpClient = new HttpClient { BaseAddress = new Uri(ApiEndpoints.BaseUrl) };
+            var baseUrl = Preferences.Get("APILink", ApiEndpoints.BaseApiUrl);
+            if (!baseUrl.EndsWith("/")) baseUrl += "/";
+            
+            var httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             
-            Console.WriteLine($"[AUTH] Making POST request to: {ApiEndpoints.BaseUrl}{ApiEndpoints.Login}");
+            Console.WriteLine($"[AUTH] Making POST request to: {baseUrl}{ApiEndpoints.Login}");
             Console.WriteLine($"[AUTH] Request body: {json}");
             
             var httpResponse = await httpClient.PostAsync(ApiEndpoints.Login, content);
@@ -54,7 +57,7 @@ public class AuthenticationDataService : IAuthenticationDataService
                     Console.WriteLine($"[AUTH] Token received: {(string.IsNullOrEmpty(apiResponse.token) ? "NO" : "YES")}");
                     Console.WriteLine($"[AUTH] Expiration: {apiResponse.expiration}");
                     
-                    // 1. Token Save kar lo (Taake agli request mein use ho sake)
+                    // 1. Save Token (So it can be used in the next request)
                     if (!string.IsNullOrEmpty(apiResponse.token))
                     {
                         await SecureStorage.SetAsync("auth_token", apiResponse.token);
@@ -66,17 +69,17 @@ public class AuthenticationDataService : IAuthenticationDataService
                     long realProfileId = 0;
                     try
                     {
-                        // UserSecurityId uthao login response se
+                        // Get UserSecurityId from login response
                         var userSecurityId = apiResponse.user.userSecurityId;
 
                         // URL banao: /api/v1/employee/{id}/employee-details-by-userid
-                        // Note: Agar V1 kaam na kare to bina V1 ke try karna
+                        // Note: If V1 fails, try without V1
                         var empUrl = $"api/v1/employee/{userSecurityId}/employee-details-by-userid";
                         
                         Console.WriteLine($"[AUTH] Fetching ProfileId from: {empUrl}");
 
-                        // Hum Repository use kar sakte hain kyunke token save ho chuka hai,
-                        // ya direct httpClient use karlo same token ke sath
+                        // We can use Repository because token is saved,
+                        // or use direct httpClient with the same token
                         httpClient.DefaultRequestHeaders.Authorization = 
                             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiResponse.token);
 
@@ -95,18 +98,23 @@ public class AuthenticationDataService : IAuthenticationDataService
                         else
                         {
                             Console.WriteLine($"[AUTH] ❌ Failed to fetch ProfileId. Status: {empResponse.StatusCode}");
+                            // DEBUG ALERT
+                            await Application.Current.MainPage.DisplayAlert("Login Debug", $"Failed to fetch Profile ID. Status: {empResponse.StatusCode}", "OK");
                         }
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"[AUTH] Error fetching profile details: {ex.Message}");
+                        // DEBUG ALERT
+                         await Application.Current.MainPage.DisplayAlert("Login Debug", $"Error fetching Profile ID: {ex.Message}", "OK");
                     }
 
-                    // Agar API fail ho gayi, to fallback ke tor par UserSecurityId use karlo (risk hai)
-                    // Lekin client ne kaha ProfileId use karo, to hum wahi save karenge
+                    // If API fails, use UserSecurityId as fallback (risky)
+                    // But client said use ProfileId, so we save that
                     if (realProfileId == 0) 
                     {
                         Console.WriteLine("[AUTH] ⚠️ Warning: Using UserSecurityId as fallback");
+                         await Application.Current.MainPage.DisplayAlert("Login Debug", "Warning: Using UserSecurityId as fallback (Profile ID failed). Data might be incorrect.", "OK");
                         realProfileId = apiResponse.user.userSecurityId;
                     }
 
@@ -352,6 +360,166 @@ public class AuthenticationDataService : IAuthenticationDataService
         public string? RefreshToken { get; set; }
         public DateTime? TokenExpiry { get; set; }
         public string? ErrorMessage { get; set; }
+    }
+
+    // Client Setup Methods
+    public async Task<ClientSetupResponse> SetupClientAsync(ClientSetupRequest request)
+    {
+        try
+        {
+            Console.WriteLine($"[SETUP] Starting client setup for: {request.ClientCode}");
+            
+            // Validate input
+            if (string.IsNullOrWhiteSpace(request.ClientCode))
+            {
+                return new ClientSetupResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Please enter your Client Code"
+                };
+            }
+
+            if (string.IsNullOrWhiteSpace(request.PassKey))
+            {
+                return new ClientSetupResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Please enter your Pass Key"
+                };
+            }
+
+            // Call API - api/v1/authentication/client-setup
+            var httpClient = new HttpClient { BaseAddress = new Uri(ApiEndpoints.BaseApiUrl) };
+            httpClient.Timeout = TimeSpan.FromSeconds(30); // Prevent long hangs
+            
+            // Swagger payload: { "clientCode": "...", "passKey": "..." }
+            var payload = new 
+            {
+                clientCode = request.ClientCode,
+                passKey = request.PassKey
+            };
+            
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json-patch+json"); // Content-Type from Swagger
+            
+            Console.WriteLine($"[SETUP] Calling API: {ApiEndpoints.BaseApiUrl}/{ApiEndpoints.SetupClient}");
+            
+            var httpResponse = await httpClient.PostAsync(ApiEndpoints.SetupClient, content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            
+            Console.WriteLine($"[SETUP] Response status: {httpResponse.StatusCode}");
+            Console.WriteLine($"[SETUP] Response content: {responseContent}");
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var apiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ClientSetupResponse>(responseContent);
+                
+                if (apiResponse != null && apiResponse.IsSuccess && apiResponse.ClientSetup != null)
+                {
+                    Console.WriteLine($"[SETUP] ✅ Client setup successful!");
+                    
+                    // Save to Preferences (like Xamarin saves to SQLite)
+                    var setupData = apiResponse.ClientSetup;
+                    
+                    Preferences.Set("ClientSetupId", setupData.ClientSetupId);
+                    Preferences.Set("ClientCode", setupData.ClientCode);
+                    Preferences.Set("APILink", setupData.ApiUrl); // Encrypted in Xamarin, plain here for now
+                    Preferences.Set("PassKey", setupData.PassKey); // Encrypted in Xamarin
+                    Preferences.Set("LoginScreenImage", setupData.LoginScreenImage ?? "");
+                    Preferences.Set("HomeScreenImage", setupData.HomeScreenImage ?? "");
+                    Preferences.Set("LogoImage", setupData.LogoImage ?? "");
+                    Preferences.Set("ThemeConfigId", setupData.ThemeConfigId ?? 0);
+                    Preferences.Set("BrandingImage", setupData.BrandingImage ?? "");
+                    Preferences.Set("HomePageImage", setupData.HomePageImage ?? "");
+                    
+                    Console.WriteLine($"[SETUP] Saved client setup data to Preferences");
+                    Console.WriteLine($"[SETUP] API URL: {setupData.ApiUrl}");
+                    
+                    return apiResponse;
+                }
+                else
+                {
+                    return new ClientSetupResponse
+                    {
+                        IsSuccess = false,
+                        ErrorMessage = apiResponse?.ErrorMessage ?? "Client setup failed"
+                    };
+                }
+            }
+            else
+            {
+                return new ClientSetupResponse
+                {
+                    IsSuccess = false,
+                    ErrorMessage = $"Setup failed: {httpResponse.StatusCode}"
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[SETUP] ❌ Exception: {ex.Message}");
+            return new ClientSetupResponse
+            {
+                IsSuccess = false,
+                ErrorMessage = "Network error. Please check your connection and try again."
+            };
+        }
+    }
+
+    public async Task<bool> HasClientSetupAsync()
+    {
+        await Task.CompletedTask; // Make it async
+        
+        // Check if client setup exists in Preferences
+        var clientCode = Preferences.Get("ClientCode", string.Empty);
+        var apiLink = Preferences.Get("APILink", string.Empty);
+        
+        return !string.IsNullOrEmpty(clientCode) && !string.IsNullOrEmpty(apiLink);
+    }
+
+    public async Task<ClientSetupModel?> GetClientSetupAsync()
+    {
+        await Task.CompletedTask; // Make it async
+        
+        if (!await HasClientSetupAsync())
+            return null;
+
+        return new ClientSetupModel
+        {
+            ClientId = Preferences.Get("ClientSetupId", 0L),
+            ClientCode = Preferences.Get("ClientCode", string.Empty),
+            APILink = Preferences.Get("APILink", string.Empty),
+            Passkey = Preferences.Get("PassKey", string.Empty),
+            LoginScreenImage = Preferences.Get("LoginScreenImage", string.Empty),
+            HomeScreenImage = Preferences.Get("HomeScreenImage", string.Empty),
+            LogoImage = Preferences.Get("LogoImage", string.Empty),
+            ThemeConfigId = Preferences.Get("ThemeConfigId", 0L),
+            BrandingImage = Preferences.Get("BrandingImage", string.Empty),
+            HomePageImage = Preferences.Get("HomePageImage", string.Empty)
+        };
+    }
+
+    public async Task LogoutAsync()
+    {
+        try
+        {
+            // 1. Clear Auth Token
+            SecureStorage.Remove("auth_token");
+            SecureStorage.Remove("profile_id");
+            
+            // 2. Clear Session State
+            FormSession.IsLoggedIn = false;
+            
+            // 3. Call API Logout (Optional, but good practice)
+            // Fire and forget to avoid waiting
+            _ = _repository.PostAsync<object, object>(ApiEndpoints.Logout, new { });
+
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Logout error: {ex.Message}");
+        }
     }
 }
 

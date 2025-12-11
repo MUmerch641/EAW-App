@@ -1,0 +1,60 @@
+@page "/profile/area-of-assignment"
+@using MauiHybridApp.ViewModels
+@inject AreaOfAssignmentViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="GoBack">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Area of Assignment</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading assignment info...</p>
+        </div>
+    }
+    else if (ViewModel.UserProfile != null)
+    {
+        <div class="form-content">
+            <div class="form-group">
+                <label>Work Location</label>
+                <input type="text" class="form-control" value="@ViewModel.UserProfile.WorkLocation" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Branch</label>
+                <input type="text" class="form-control" placeholder="Main Branch" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Division</label>
+                <input type="text" class="form-control" placeholder="Operations" readonly />
+            </div>
+            
+            <div class="form-group">
+                <label>Section</label>
+                <input type="text" class="form-control" placeholder="N/A" readonly />
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/profile");
+    }
+}

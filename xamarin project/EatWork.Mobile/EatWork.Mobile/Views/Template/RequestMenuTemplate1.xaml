@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:control="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.Template.RequestMenuTemplate1">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+                <ResourceDictionary Source="../Requests/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <Grid Margin="0"
+          Padding="0"
+          ColumnSpacing="0"
+          HorizontalOptions="StartAndExpand"
+          RowSpacing="0"
+          IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+
+        <Grid.RowDefinitions>
+            <!--<RowDefinition Height="100" />-->
+            <RowDefinition Height="*" />
+            <!--<RowDefinition Height="15" />-->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=15}" />
+            <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+            <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=15}" />
+        </Grid.ColumnDefinitions>
+
+        <!--<Grid Grid.Row="0" Grid.ColumnSpan="3" HorizontalOptions="Fill">
+             
+             <gradient:SfGradientView>
+             <gradient:SfGradientView.BackgroundBrush>
+             <gradient:SfLinearGradientBrush StartPoint="0.5, 0" EndPoint="0.5, 1">
+             <gradient:SfLinearGradientBrush.GradientStops>
+             <gradient:SfGradientStop Color="{DynamicResource PrimaryColor}" Offset="0.0" />
+             <gradient:SfGradientStop Color="{StaticResource PrimaryGradient}" Offset="1.0" />
+             </gradient:SfLinearGradientBrush.GradientStops>
+             </gradient:SfLinearGradientBrush>
+             </gradient:SfGradientView.BackgroundBrush>
+             </gradient:SfGradientView>
+             </Grid>-->
+
+        <listview:SfListView x:Name="RequestMenuList"
+                             ItemsSource="{Binding MenuItems}"
+                             Style="{StaticResource SfListViewStyle}"
+                             TapCommand="{Binding NavigateCommand}"
+                             Grid.ColumnSpan="3"
+                             Margin="0"
+                             Padding="5"
+                             AutoFitMode="Height"
+                             ColumnSpacing="0"
+                             FocusBorderColor="Transparent"
+                             HorizontalOptions="FillAndExpand"
+                             IsStickyHeader="True"
+                             ItemSpacing="0"
+                             RowSpacing="0">
+
+            <listview:SfListView.ItemTemplate>
+                <DataTemplate>
+                    <converter:CustomShadowFrame CornerRadius="4"
+                                                 HasShadow="True"
+                                                 BorderColor="{DynamicResource Gray-White}"
+                                                 BackgroundColor="{DynamicResource Gray-White}"
+                                                 Margin="6" Padding="0" BorderWidth="1">
+
+                        <converter:CustomShadowFrame.Content>
+                            <Grid RowSpacing="0" ColumnSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!--<ffsvg:SvgCachedImage x:Name="MenuImage"
+                                     Aspect="AspectFill"
+                                     Margin="{x:OnIdiom Phone='0,0,0,0', Desktop='0',Tablet='0'}"
+                                     BackgroundColor="{StaticResource Transparent}"
+                                     HeightRequest="{core:OnPlatformOrientationDoubleValue
+                                     Default=100,
+                                     AndroidPhonePortrait=170,
+                                     AndroidPhoneLandscape=170,
+                                     iOSPhonePortrait=170,
+                                     iOSPhoneLandscape=170}"
+                                     Source="{Binding Icon}"
+                                     VerticalOptions="Center"
+                                     Grid.Column="0"
+                                     Grid.Row="0"
+                                     WidthRequest="{x:OnIdiom Phone=343, Desktop=423, Tablet=343}"
+                                     FadeAnimationEnabled="False"
+                                     DownsampleToViewSize="True" />-->
+
+                                <Image Aspect="AspectFill"  Grid.Row="0"
+                                       HeightRequest="{OnIdiom Phone=170, Tablet=170, Desktop=170}" 
+                                       WidthRequest="{OnIdiom Phone=343, Tablet=343, Desktop=423}"
+                                       Source="{Binding Icon}" />
+
+                                <!--  OverLay Effect  -->
+                                <Frame  CornerRadius="4" Opacity="0.35" BackgroundColor="{DynamicResource Gray-Black}" Grid.Row="0" />
+
+                                <StackLayout Grid.Row="0" Margin="16,70,16,0" Spacing="0" VerticalOptions="EndAndExpand">
+
+                                    <Label Text="{Binding Title}"
+                                           Margin="0,8"
+                                           FontSize="16"
+                                           FontFamily="{DynamicResource SemiBold}" LineBreakMode="WordWrap"
+                                           TextColor="{DynamicResource Gray-White}" VerticalOptions="End"  LineHeight="{OnPlatform Default=-1,Android=1.5}" />
+                                </StackLayout>
+                            </Grid>
+                        </converter:CustomShadowFrame.Content>
+                    </converter:CustomShadowFrame>
+                </DataTemplate>
+            </listview:SfListView.ItemTemplate>
+
+            <listview:SfListView.LayoutManager>
+                <listview:GridLayout SpanCount="{core:OnPlatformOrientationIntValue Desktop=5, PhonePortrait=1, PhoneLandscape=4, TabletPortrait=4, TabletLandscape=5}" />
+            </listview:SfListView.LayoutManager>
+
+        </listview:SfListView>
+    </Grid>
+
+
+</StackLayout>

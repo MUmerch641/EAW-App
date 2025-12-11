@@ -1,0 +1,55 @@
+@page "/profile/relevant-dates"
+@using MauiHybridApp.ViewModels
+@inject RelevantEmploymentDatesViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="GoBack">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Relevant Employment Dates</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading dates...</p>
+        </div>
+    }
+    else if (ViewModel.UserProfile != null)
+    {
+        <div class="form-content">
+            <div class="form-group">
+                <label>Date Hired</label>
+                <input type="date" class="form-control" value="@(ViewModel.UserProfile.HireDate?.ToString("yyyy-MM-dd"))" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Date Regularized</label>
+                <input type="date" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Date Resigned</label>
+                <input type="date" class="form-control" readonly />
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/profile");
+    }
+}

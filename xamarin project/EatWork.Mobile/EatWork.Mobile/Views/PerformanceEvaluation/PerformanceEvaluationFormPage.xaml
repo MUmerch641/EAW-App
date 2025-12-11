@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:self="clr-namespace:EatWork.Mobile.Views.PerformanceEvaluation"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:effects="clr-namespace:Syncfusion.XForms.EffectsView;assembly=Syncfusion.Core.XForms"
+             xmlns:expander="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.PerformanceEvaluation.PerformanceEvaluationFormPage"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}"
+             x:Name="ContentPage">
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Performance Evaluation" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <!--PAGE CONTENT-->
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     Margin="0,0,0,0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <ScrollView HorizontalScrollBarVisibility="Never"
+                            VerticalScrollBarVisibility="Never"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            VerticalOptions="StartAndExpand"
+                            Padding="0,0"
+                            Margin="0,16,0,0"
+                            IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+
+                    <Grid ColumnDefinitions="Auto, *"
+                          ColumnSpacing="0"
+                          RowDefinitions="Auto, Auto, Auto, *, Auto, Auto"
+                          RowSpacing="0"
+                          VerticalOptions="FillAndExpand">
+
+                        <!--HEADER-->
+                        <self:HeaderTemplate2 Margin="0,0" />
+
+                        <!--INDIVIDUAL OBJECTIVES-->
+                        <Grid Grid.Row="3" Margin="8,8" RowSpacing="0"
+                              RowDefinitions="Auto,Auto">
+
+                            <Label Margin="8,8,0,8"
+                                   FontSize="14"
+                                   HorizontalOptions="Start"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   Text="Individual Objectives" />
+
+                            <!--<self:IndividualObjectivesTemplate />-->
+
+                            <StackLayout Margin="0,0,0,0"
+                                         BindableLayout.ItemsSource="{Binding Holder.ObjectivesDisplay}"
+                                         x:Name="Details"
+                                         Grid.Row="1">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+
+                                        <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                                 Margin="0,0,0,4"
+                                                                 HorizontalOptions="FillAndExpand"
+                                                                 VerticalOptions="FillAndExpand"
+                                                                 CornerRadius="0"
+                                                                 Padding="0,0"
+                                                                 BorderColor="Transparent">
+                                            <utils:CustomShadowFrame.Content>
+
+                                                <expander:SfExpander HeaderBackgroundColor="{DynamicResource PrimaryColor}"
+                                                                     HeaderIconPosition="End"
+                                                                     IconColor="{DynamicResource Gray-White}"
+                                                                     IsExpanded="True">
+                                                    <expander:SfExpander.Header>
+                                                        <StackLayout Padding="10,12">
+                                                            <!--PARENT OBJECTIVE-->
+                                                            <Label Style="{StaticResource HeaderStyle}"
+                                                                   LineBreakMode="TailTruncation">
+                                                                <Label.FormattedText>
+                                                                    <FormattedString>
+                                                                        <Span Text="{DynamicResource StringFlagIcon}"
+                                                                              FontFamily="{DynamicResource FontAwesomeSolid}"
+                                                                              FontSize="15" />
+                                                                        <Span Text=" " />
+                                                                        <Span Text="{Binding Header}" />
+                                                                    </FormattedString>
+                                                                </Label.FormattedText>
+                                                            </Label>
+                                                        </StackLayout>
+                                                    </expander:SfExpander.Header>
+
+                                                    <expander:SfExpander.Content>
+                                                        <StackLayout Padding="0,0,0,0"
+                                                                     Spacing="1"
+                                                                     BindableLayout.ItemsSource="{Binding ObjectiveDetailHeaderDto}"
+                                                                     x:Name="DetailsList">
+                                                            <BindableLayout.ItemTemplate>
+                                                                <DataTemplate>
+
+                                                                    <expander:SfExpander HeaderBackgroundColor="{DynamicResource GrayShadowBackgroundColor}"
+                                                                                         HeaderIconPosition="End"
+                                                                                         IconColor="{DynamicResource Gray-900}"
+                                                                                         IsExpanded="True">
+                                                                        <expander:SfExpander.Header>
+                                                                            <StackLayout Padding="0,12">
+                                                                                <!--GOAL NAME-->
+                                                                                <Label Style="{DynamicResource DescriptionLabelStyle}"
+                                                                                       FontSize="{DynamicResource Smaller}"
+                                                                                       LineHeight="{OnPlatform Default=-1, Android=1.5}"
+                                                                                       HorizontalOptions="StartAndExpand"
+                                                                                       VerticalOptions="End"
+                                                                                       LineBreakMode="TailTruncation"
+                                                                                       HorizontalTextAlignment="Start"
+                                                                                       FontFamily="{DynamicResource SemiBold}"
+                                                                                       MaxLines="3"
+                                                                                       Margin="0,0"
+                                                                                       IsVisible="{Binding ObjectiveHeader,Converter={utils:EmptyToBoolConverter}}"
+                                                                                       Text="{Binding ObjectiveHeader}"
+                                                                                       Padding="10,0" />
+
+                                                                                <!--GOAL NAME-->
+                                                                                <Label Style="{DynamicResource DescriptionLabelStyle}"
+                                                                                       FontSize="{DynamicResource Smaller}"
+                                                                                       LineHeight="{OnPlatform Default=-1, Android=1.5}"
+                                                                                       HorizontalOptions="StartAndExpand"
+                                                                                       VerticalOptions="End"
+                                                                                       LineBreakMode="TailTruncation"
+                                                                                       HorizontalTextAlignment="Start"
+                                                                                       FontFamily="{DynamicResource SemiBold}"
+                                                                                       MaxLines="3"
+                                                                                       Margin="0,0"
+                                                                                       IsVisible="{Binding ObjectiveHeader,Converter={utils:EmptyToInverseBoolConverter}}"
+                                                                                       Text=" - "
+                                                                                       Padding="10,0" />
+                                                                            </StackLayout>
+                                                                        </expander:SfExpander.Header>
+
+                                                                        <expander:SfExpander.Content>
+
+                                                                            <StackLayout Padding="0,0,0,0"
+                                                                                         Spacing="1"
+                                                                                         BindableLayout.ItemsSource="{Binding ObjectiveDetailDto}"
+                                                                                         x:Name="DetailsList1">
+
+                                                                                <BindableLayout.ItemTemplate>
+                                                                                    <DataTemplate>
+
+                                                                                        <effects:SfEffectsView Style="{DynamicResource RippleEffectStyle}">
+
+                                                                                            <border:SfBorder BorderColor="Transparent"
+                                                                                                             BorderWidth="0"
+                                                                                                             CornerRadius="4">
+
+                                                                                                <StackLayout Spacing="5"
+                                                                                                             VerticalOptions="Start"
+                                                                                                             Margin="0,0"
+                                                                                                             Padding="0,5,0,0">
+
+                                                                                                    <self:ObjectiveListDataTemplate />
+
+                                                                                                    <!--Review-->
+                                                                                                    <Grid ColumnSpacing="0"
+                                                                                                          RowSpacing="0"
+                                                                                                          Margin="0,5,0,0"
+                                                                                                          Style="{StaticResource GridMyScheduleDetails}"
+                                                                                                          ColumnDefinitions="40*,60*">
+
+                                                                                                        <Label Grid.Column="0"
+                                                                                                               Margin="10,0,0,0"
+                                                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                                                               Text="Review:"
+                                                                                                               FontFamily="{DynamicResource SemiBold}"
+                                                                                                               TextColor="{DynamicResource PrimaryColor}"
+                                                                                                               HorizontalOptions="Start"
+                                                                                                               VerticalOptions="Center" />
+
+                                                                                                        <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                                                                                                                   Hint=""
+                                                                                                                                   Grid.Column="1"
+                                                                                                                                   Margin="0,0,10,0">
+
+                                                                                                            <Editor FontSize="{DynamicResource Small}"
+                                                                                                                    Text="{Binding EmployeeReview,Mode=TwoWay}"
+                                                                                                                    FontFamily="{DynamicResource Regular}"
+                                                                                                                    IsTextPredictionEnabled="True"
+                                                                                                                    AutoSize="TextChanges"
+                                                                                                                    HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                                                                                                                    TextColor="{StaticResource Gray-800}">
+                                                                                                                <Editor.Behaviors>
+                                                                                                                    <utils:EventToCommandBehavior Command="{Binding BindingContext.UnFocusCommand, Source={x:Reference Name=ContentPage}}"
+                                                                                                                                                  CommandParameter="{Binding .}"
+                                                                                                                                                  EventName="Unfocused" />
+                                                                                                                </Editor.Behaviors>
+                                                                                                            </Editor>
+                                                                                                        </control:SfTextInputLayout>
+                                                                                                    </Grid>
+
+                                                                                                    <!--ACTUAL-->
+                                                                                                    <Grid ColumnSpacing="0"
+                                                                                                          RowSpacing="0"
+                                                                                                          Margin="0,5,0,0"
+                                                                                                          Style="{StaticResource GridMyScheduleDetails}"
+                                                                                                          ColumnDefinitions="40*,60*">
+
+                                                                                                        <Label Grid.Column="0"
+                                                                                                               Margin="10,0,0,0"
+                                                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                                                               Text="Actual:"
+                                                                                                               FontFamily="{DynamicResource SemiBold}"
+                                                                                                               TextColor="{DynamicResource PrimaryColor}"
+                                                                                                               HorizontalOptions="Start"
+                                                                                                               VerticalOptions="Center" />
+
+                                                                                                        <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                                                                                                                   Hint=""
+                                                                                                                                   Grid.Column="1"
+                                                                                                                                   Margin="0,0,10,0">
+
+                                                                                                            <Editor FontSize="{DynamicResource Small}"
+                                                                                                                    Text="{Binding Actual,Mode=TwoWay}"
+                                                                                                                    FontFamily="{DynamicResource Regular}"
+                                                                                                                    IsTextPredictionEnabled="True"
+                                                                                                                    AutoSize="TextChanges"
+                                                                                                                    HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                                                                                                                    TextColor="{StaticResource Gray-800}">
+                                                                                                                <Editor.Behaviors>
+                                                                                                                    <utils:EventToCommandBehavior Command="{Binding BindingContext.UnFocusCommand, Source={x:Reference Name=ContentPage}}"
+                                                                                                                                                  CommandParameter="{Binding .}"
+                                                                                                                                                  EventName="Unfocused" />
+                                                                                                                </Editor.Behaviors>
+                                                                                                            </Editor>
+                                                                                                        </control:SfTextInputLayout>
+                                                                                                    </Grid>
+                                                                                                    
+                                                                                                    <!--EMPLOYEE RATING-->
+                                                                                                    <Grid ColumnSpacing="0"
+                                                                                                          RowSpacing="0"
+                                                                                                          Margin="0,5,0,0"
+                                                                                                          Style="{StaticResource GridMyScheduleDetails}"
+                                                                                                          ColumnDefinitions="40*,60*">
+
+                                                                                                        <Label Grid.Column="0"
+                                                                                                               Margin="10,0,0,0"
+                                                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                                                               Text="Rating:"
+                                                                                                               FontFamily="{DynamicResource SemiBold}"
+                                                                                                               TextColor="{DynamicResource PrimaryColor}"
+                                                                                                               HorizontalOptions="Start"
+                                                                                                               VerticalOptions="Center" />
+
+                                                                                                        <control:SfTextInputLayout Style="{DynamicResource inputLayoutStyle}"
+                                                                                                                                   Hint=""
+                                                                                                                                   Grid.Column="1"
+                                                                                                                                   Margin="0,0,10,0">
+
+                                                                                                            <numeric:SfNumericTextBox Value="{Binding EmployeeRating, Mode=TwoWay}"
+                                                                                                                                      Style="{StaticResource SfNumericTextBoxStyle}">
+                                                                                                                <numeric:SfNumericTextBox.Behaviors>
+                                                                                                                    <utils:EventToCommandBehavior Command="{Binding BindingContext.UnFocusCommand, Source={x:Reference Name=ContentPage}}"
+                                                                                                                                                  CommandParameter="{Binding .}"
+                                                                                                                                                  EventName="Unfocused" />
+                                                                                                                </numeric:SfNumericTextBox.Behaviors>
+                                                                                                            </numeric:SfNumericTextBox>
+                                                                                                        </control:SfTextInputLayout>
+                                                                                                    </Grid>
+
+                                                                                                    <StackLayout Margin="0,5" />
+
+                                                                                                    <BoxView Style="{DynamicResource SeparatorStyle}"
+                                                                                                             BackgroundColor="{DynamicResource Gray-500}"
+                                                                                                             Margin="0,5,0,5"
+                                                                                                             IsVisible="{Binding ShowLine}" />
+                                                                                                </StackLayout>
+                                                                                            </border:SfBorder>
+                                                                                        </effects:SfEffectsView>
+                                                                                    </DataTemplate>
+                                                                                </BindableLayout.ItemTemplate>
+                                                                            </StackLayout>
+                                                                        </expander:SfExpander.Content>
+                                                                    </expander:SfExpander>
+                                                                </DataTemplate>
+                                                            </BindableLayout.ItemTemplate>
+                                                        </StackLayout>
+                                                    </expander:SfExpander.Content>
+                                                </expander:SfExpander>
+                                            </utils:CustomShadowFrame.Content>
+                                        </utils:CustomShadowFrame>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </Grid>
+
+                        <StackLayout Margin="0,40" Grid.Row="4" />
+                    </Grid>
+                </ScrollView>
+
+                <!--BUTTONS-->
+                <StackLayout x:Name="ScanView"
+                             AbsoluteLayout.LayoutBounds="0,1,1,0.10"
+                             AbsoluteLayout.LayoutFlags="All"
+                             BackgroundColor="{DynamicResource Gray-Bg}"
+                             IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+
+                    <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                             Style="{StaticResource SeparatorStyle}"
+                             BackgroundColor="{DynamicResource Gray-300}" />
+
+                    <buttons:SfButton x:Name="NextButtonText"
+                                      Margin="10,10"
+                                      Command="{Binding MoveToQuestionnaireCommand}"
+                                      Style="{StaticResource WalkthroughButtonStyle}"
+                                      Text="Next"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Center"
+                                      WidthRequest="180" />
+                </StackLayout>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

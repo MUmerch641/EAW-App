@@ -1,0 +1,129 @@
+@page "/change-work-schedule"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@using MauiHybridApp.Services.Navigation
+@inject ChangeWorkScheduleViewModel ViewModel
+@inject INavigationService NavigationService
+
+<div class="page-container p-0 bg-light-subtle h-100">
+    <div class="animate-fade-in-up h-100 d-flex flex-column">
+        <!-- Header -->
+        <div class="app-header bg-primary text-white p-3 shadow-sm sticky-top z-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link text-white p-0 me-3" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+                        <i class="fas fa-arrow-left fa-lg"></i>
+                    </button>
+                    <h5 class="mb-0 fw-bold">Change Schedule</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-grow-1 overflow-auto p-3 pb-5">
+            @if (ViewModel.Holder != null)
+            {
+                <div class="row g-3">
+                    
+                    <!-- Date Selection -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase mb-2">Work Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0 text-primary"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control border-0 bg-light fw-bold" 
+                                           @bind="ViewModel.Holder.WorkDate" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shift Selection -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase mb-2">Select Shift</label>
+                                
+                                <select class="form-select border-0 bg-light fw-bold py-2" 
+                                        @onchange="@(e => { 
+                                            var id = long.Parse(e.Value.ToString());
+                                            var shift = ViewModel.Holder.ShiftList.FirstOrDefault(s => s.ShiftId == id);
+                                            ViewModel.SelectShiftCommand.Execute(shift);
+                                        })">
+                                    <option value="0" selected disabled>Tap to select shift</option>
+                                    @foreach(var shift in ViewModel.Holder.ShiftList)
+                                    {
+                                        <option value="@shift.ShiftId" selected="@(ViewModel.Holder.ShiftSelectedItem?.ShiftId == shift.ShiftId)">
+                                            @shift.Code - @shift.Description
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reason -->
+                     <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase mb-2">Reason</label>
+                                <select class="form-select border-0 bg-light fw-bold py-2" @bind="ViewModel.Holder.ChangeWorkScheduleModel.Reason">
+                                    <option value="" selected disabled>Select Reason</option>
+                                     @foreach(var reason in ViewModel.Holder.ReasonList)
+                                    {
+                                        <option value="@reason.Id">@reason.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details/Remarks -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase mb-2">Remarks</label>
+                                <textarea class="form-control border-0 bg-light" rows="3" 
+                                          placeholder="Enter details here..."
+                                          @bind="ViewModel.Holder.ChangeWorkScheduleModel.Details"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                 <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            }
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-3 bg-white border-top shadow-lg sticky-bottom z-3">
+            <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                    @onclick="@(() => ViewModel.SubmitCommand.Execute(null))"
+                    disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Submitting...</span>
+                }
+                else
+                {
+                    <i class="fas fa-paper-plane me-2"></i>
+                    <span>Submit Request</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

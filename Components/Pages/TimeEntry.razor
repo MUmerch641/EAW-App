@@ -5,105 +5,186 @@
 @implements IDisposable
 
 <div class="page-container">
-    <PageHeader 
-        Title="Time Entry" 
-        Subtitle="Clock in and out" 
-        IconClass="fa-clock" />
+    <div class="page-header-container d-flex justify-content-between align-items-center mb-0">
+        <PageHeader 
+            Title="My Time Logs" 
+            Subtitle="Clock in and out" 
+            IconClass="fa-clock" />
+        
+        <button class="btn btn-light rounded-circle shadow-sm" style="width: 40px; height: 40px;" @onclick="() => ViewModel.ShowFilter = true">
+            <i class="fas fa-filter text-primary"></i>
+        </button>
+    </div>
     
-    @if (ViewModel.IsBusy)
-    {
-        <LoadingIndicator Message="Loading..." />
-    }
-    else
-    {
-        <div class="content-section">
-            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
-            {
-                <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
-            }
-            
-            @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
-            {
-                <AlertMessage Type="success" Message="@ViewModel.SuccessMessage" />
-            }
-            
-            <!-- Current Status Card -->
-            <StatusCard 
-                Title="Current Status" 
-                Value="@ViewModel.StatusText" 
-                IconClass="fa-user-clock"
-                AdditionalClass="@ViewModel.StatusClass">
-                <div class="status-details">
-                    <div class="time-display">
-                        <div class="current-time">@ViewModel.CurrentTimeFormatted</div>
-                        <div class="current-date">@ViewModel.CurrentDateFormatted</div>
+    <div class="animate-fade-in-up">
+        @if (ViewModel.IsBusy)
+        {
+             <div class="p-4">
+                <SkeletonLoader height="150px" width="100%" class="mb-4" /> <!-- Status Card -->
+                <SkeletonLoader height="50px" width="100%" class="mb-3" />  <!-- Buttons -->
+                <SkeletonLoader height="80px" width="100%" class="mb-3" />  <!-- List -->
+            </div>
+        }
+        else
+        {
+            <div class="content-section pt-2 px-3">
+                @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+                {
+                    <div class="alert alert-danger shadow-sm border-0 mb-3 animate-fade-in">
+                        <i class="fas fa-exclamation-circle me-2"></i> @ViewModel.ErrorMessage
+                    </div>
+                }
+                
+                @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+                {
+                     <div class="alert alert-success shadow-sm border-0 mb-3 animate-fade-in">
+                        <i class="fas fa-check-circle me-2"></i> @ViewModel.SuccessMessage
+                    </div>
+                }
+                
+                <!-- Premium Status Card -->
+                <div class="premium-status-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="status-header-text">Current Status</div>
+                            <div class="status-value">@ViewModel.StatusText</div>
+                        </div>
+                        <div class="location-badge">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="text-truncate" style="max-width: 120px;">@ViewModel.CurrentLocation</span>
+                        </div>
                     </div>
                     
+                    <div class="time-display">
+                        <div class="clock-icon-box">
+                            <i class="far fa-clock fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="current-time-text">@ViewModel.CurrentTimeFormatted</div>
+                            <div class="current-date-text">@ViewModel.CurrentDateFormatted</div>
+                        </div>
+                    </div>
+
                     @if (ViewModel.IsCurrentlyClockedIn && ViewModel.CurrentTimeEntry != null)
                     {
-                        <div class="info-row">
-                            <span class="label">Time In:</span>
-                            <span class="value">@ViewModel.CurrentTimeEntry.TimeEntry.ToString("hh:mm tt")</span>
+                        <div class="d-flex align-items-center gap-2 mt-2 ps-1">
+                            <div class="status-badge badge-posted">
+                                <i class="fas fa-sign-in-alt me-1"></i> In at @ViewModel.CurrentTimeEntry.TimeEntry.ToString("hh:mm tt")
+                            </div>
                         </div>
                     }
-                    
-                    <div class="info-row">
-                        <span class="label">Location:</span>
-                        <span class="value">@ViewModel.CurrentLocation</span>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <button class="action-btn w-100 @(ViewModel.IsCurrentlyClockedIn ? "btn-disabled" : "btn-in")"
+                                @onclick="@(() => ViewModel.ClockInCommand.Execute(null))"
+                                disabled="@(ViewModel.IsCurrentlyClockedIn || ViewModel.IsBusy)">
+                            <i class="fas fa-sign-in-alt fs-2 mb-2"></i>
+                            <span class="fw-bold">Clock In</span>
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="action-btn w-100 @(!ViewModel.IsCurrentlyClockedIn ? "btn-disabled" : "btn-out")"
+                                @onclick="@(() => ViewModel.ClockOutCommand.Execute(null))"
+                                disabled="@(!ViewModel.IsCurrentlyClockedIn || ViewModel.IsBusy)">
+                            <i class="fas fa-sign-out-alt fs-2 mb-2"></i>
+                            <span class="fw-bold">Clock Out</span>
+                        </button>
                     </div>
                 </div>
-            </StatusCard>
-            
-            <!-- Action Buttons -->
-            <div class="action-section">
-                <ActionButton 
-                    Text="Clock In" 
-                    OnClick="@(() => ViewModel.ClockInCommand.Execute(null))" 
-                    IsDisabled="@(ViewModel.IsCurrentlyClockedIn || ViewModel.IsBusy)"
-                    IsPrimary="true"
-                    IconClass="fa-sign-in-alt" />
-                    
-                <ActionButton 
-                    Text="Clock Out" 
-                    OnClick="@(() => ViewModel.ClockOutCommand.Execute(null))" 
-                    IsDisabled="@(!ViewModel.IsCurrentlyClockedIn || ViewModel.IsBusy)"
-                    IsPrimary="false"
-                    IconClass="fa-sign-out-alt" />
-            </div>
-            
-            <!-- Time Entry History -->
-            <div class="history-section">
-                <h3 class="section-title">
-                    <i class="fa fa-history"></i>
-                    Recent Entries
-                </h3>
                 
-                @if (ViewModel.TimeEntries.Any())
-                {
-                    <div class="entry-list">
-                        @foreach (var entry in ViewModel.TimeEntries.Take(10))
-                        {
-                            <div class="entry-item">
-                                <div class="entry-icon @(entry.Type == "Time-In" ? "icon-in" : "icon-out")">
-                                    <i class="fa @(entry.Type == "Time-In" ? "fa-sign-in-alt" : "fa-sign-out-alt")"></i>
+                <!-- Time Entry History -->
+                <div class="history-section">
+                    <h5 class="section-title">Recent Log History</h5>
+                    
+                    @if (ViewModel.TimeEntries.Any())
+                    {
+                        <div class="d-flex flex-column">
+                            @foreach (var entry in ViewModel.TimeEntries.Take(10))
+                            {
+                                <div class="history-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="history-icon @(entry.Type == "Time-In" ? "icon-in" : "icon-out")">
+                                                <i class="fas @(entry.Type == "Time-In" ? "fa-sign-in-alt" : "fa-sign-out-alt")"></i>
+                                            </div>
+                                            <div>
+                                                <div class="history-type">@entry.Type</div>
+                                                <div class="history-time">@entry.TimeEntry.ToString("MMM dd, yyyy - hh:mm tt")</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <span class="status-badge @(entry.Status == "Posted" ? "badge-posted" : "badge-pending")">
+                                            @entry.Status
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="entry-details">
-                                    <div class="entry-type">@entry.Type</div>
-                                    <div class="entry-time">@entry.TimeEntry.ToString("MMM dd, yyyy - hh:mm tt")</div>
-                                </div>
-                                <div class="entry-status @entry.Status.ToLower()">
-                                    @entry.Status
-                                </div>
-                            </div>
-                        }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <EmptyState 
+                            Message="No time entries found" 
+                            IconClass="fa-clock" />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Modern Filter Modal -->
+    @if (ViewModel.ShowFilter)
+    {
+        <div class="modal-overlay d-flex align-items-end justify-content-center" 
+             @onclick="() => ViewModel.ShowFilter = false"
+             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1050;">
+             
+            <div class="card shadow-lg border-0 w-100 animate-slide-up" 
+                 style="border-top-left-radius: 25px; border-top-right-radius: 25px; max-height: 85vh; overflow-y: auto;"
+                 @onclick:stopPropagation="true">
+                 
+                 <div class="card-header bg-white border-bottom-0 pt-4 px-4 text-center">
+                     <div class="bg-light rounded-pill mx-auto mb-3" style="width: 40px; height: 5px;"></div>
+                     <h5 class="fw-bold mb-0">Filter Logs</h5>
+                 </div>
+                 
+                 <div class="card-body px-4 pb-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted text-uppercase">Date Range</label>
+                        <div class="grid-cols-2 gap-2">
+                             <div>
+                                 <label class="small text-muted mb-1">From</label>
+                                 <input type="date" class="form-control modern-input bg-light border-0" @bind="ViewModel.FilterStartDate" />
+                             </div>
+                             <div>
+                                 <label class="small text-muted mb-1">To</label>
+                                 <input type="date" class="form-control modern-input bg-light border-0" @bind="ViewModel.FilterEndDate" />
+                             </div>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <EmptyState 
-                        Message="No time entries found" 
-                        IconClass="fa-clock" />
-                }
+                    
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase">Status</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach(var status in ViewModel.FilterStatuses)
+                            {
+                                <div class="form-check form-check-inline m-0">
+                                    <input type="checkbox" class="btn-check" id="status_@status.Value" @bind="status.IsSelected" autocomplete="off">
+                                    <label class="btn btn-outline-primary rounded-pill btn-sm" for="status_@status.Value">@status.Name</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light flex-grow-1 rounded-pill py-2 fw-bold" @onclick="ViewModel.ResetFilterCommand.Execute">Reset</button>
+                        <button class="btn btn-primary flex-grow-1 rounded-pill py-2 fw-bold" @onclick="ViewModel.ApplyFilterCommand.Execute">Apply Filters</button>
+                    </div>
+                 </div>
             </div>
         </div>
     }
@@ -131,4 +212,4 @@
         ViewModel?.Dispose();
     }
 }
-}
+

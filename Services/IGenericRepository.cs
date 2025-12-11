@@ -27,13 +27,30 @@ public class GenericRepository : IGenericRepository
     public GenericRepository(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri(ApiEndpoints.BaseUrl);
+        
+        var dynamicUrl = Preferences.Get("APILink", string.Empty);
+        if (!string.IsNullOrEmpty(dynamicUrl))
+        {
+            if (!dynamicUrl.EndsWith("/")) dynamicUrl += "/";
+            if (Uri.TryCreate(dynamicUrl, UriKind.Absolute, out var uri))
+            {
+                _httpClient.BaseAddress = uri;
+            }
+            else
+            {
+                _httpClient.BaseAddress = new Uri(ApiEndpoints.BaseUrl);
+            }
+        }
+        else
+        {
+            _httpClient.BaseAddress = new Uri(ApiEndpoints.BaseUrl);
+        }
     }
 
     // 🔥 MAIN JADOO: Ye helper method har request par Token lagayega
     private async Task PrepareHeaderAsync(HttpRequestMessage request, string authToken)
     {
-        // Agar caller ne token nahi diya, to Storage se uthao
+        // If caller didn't provide token, get it from Storage
         if (string.IsNullOrEmpty(authToken))
         {
             authToken = await SecureStorage.GetAsync("auth_token") ?? "";
@@ -47,12 +64,23 @@ public class GenericRepository : IGenericRepository
 
     public async Task<T?> GetAsync<T>(string uri, string authToken = "")
     {
+        string fullUrl = _httpClient.BaseAddress + uri;
         try
         {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            await PrepareHeaderAsync(request, authToken); // ✅ Helper Call
+            await PrepareHeaderAsync(request, authToken);
 
             var response = await _httpClient.SendAsync(request);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                 var err = await response.Content.ReadAsStringAsync();
+                 Console.WriteLine($"[REPO] GET Failed: {response.StatusCode} - {fullUrl}");
+                 Console.WriteLine($"[REPO] Response: {err}");
+                 // DEBUG ALERT
+                 await Application.Current.MainPage.DisplayAlert("API Error", $"Request to {uri} failed.\nStatus: {response.StatusCode}\nMsg: {err}", "OK");
+            }
+            
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -60,7 +88,9 @@ public class GenericRepository : IGenericRepository
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"GET Error: {ex.Message}");
+            Console.WriteLine($"[REPO] GET Exception: {ex.Message} for {fullUrl}");
+            // DEBUG ALERT
+            await Application.Current.MainPage.DisplayAlert("API Crash", $"Exception calling {uri}:\n{ex.Message}", "OK");
             return default;
         }
     }
@@ -115,8 +145,10 @@ public class GenericRepository : IGenericRepository
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"API ERROR: {response.StatusCode} - {errorContent}");
+                // DEBUG ALERT - Show actual error to user
+                await Application.Current.MainPage.DisplayAlert("API Error", $"POST to {uri} failed.\nStatus: {response.StatusCode}\nMsg: {errorContent}", "OK");
+                return default;
             }
-            response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<R>(content);
@@ -124,6 +156,8 @@ public class GenericRepository : IGenericRepository
         catch (Exception ex)
         {
             Console.WriteLine($"POST Error: {ex.Message}");
+            // DEBUG ALERT - Show exception to user
+            await Application.Current.MainPage.DisplayAlert("API Crash", $"Exception calling POST {uri}:\n{ex.Message}", "OK");
             return default;
         }
     }

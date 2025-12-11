@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             Title="Official Business Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Approvals.OfficialBusinessApprovalPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}"/>
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <converter:TitleView Title="Official Business Request" TitleColor="{StaticResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </converter:TitleView.LeadingView>
+                <converter:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource InfoIcon}"
+                                            Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}" />
+                    </StackLayout>
+                </converter:TitleView.TrailingView>
+            </converter:TitleView>
+        </ContentView>
+
+
+
+        <StackLayout Grid.Row="2" Spacing="0">
+            <AbsoluteLayout>
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyleForms}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <shared:NoItemsPartialPage DetailsText="No items available to display."
+                                           IsVisible="{Binding ShowPage, Converter={converter:InverseBoolConverter}}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Grid.Row="1"
+                                           x:Name="Header1"
+                                           AbsoluteLayout.LayoutFlags="All"
+                                           AbsoluteLayout.LayoutBounds="0,0,1,1" />
+
+                <ScrollView AbsoluteLayout.LayoutFlags="All"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            Orientation="Vertical"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions ="FillAndExpand"
+                            IsVisible="{Binding ShowPage}">
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--APPROVAL SHARED PAGE-->
+                        <local:ApprovalHeaderPage BindingContext="{Binding .}" />
+
+                        <!--REQUEST DETAILS-->
+                        <StackLayout Style="{StaticResource RequestDetails}">
+                            <Grid Margin="0,0"
+                                  Padding="0"
+                                  ColumnSpacing="0"
+                                  HorizontalOptions="StartAndExpand"
+                                  RowSpacing="0"
+                                  BackgroundColor="{StaticResource Gray-100}"
+                                  IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=5}" />
+                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=5}" />
+                                </Grid.ColumnDefinitions>
+
+                                <converter:CustomShadowFrame Grid.Row="0"
+                                                             Grid.Column="1"
+                                                             Margin="0,0,0,0"
+                                                             Padding="0,0,0,10"
+                                                             BackgroundColor="{StaticResource Transparent}"
+                                                             BorderColor="{StaticResource Transparent}"
+                                                             BorderWidth="1"
+                                                             CornerRadius="8"
+                                                             HasShadow="true"
+                                                             HorizontalOptions="FillAndExpand"
+                                                             Radius="4"
+                                                             ShadowOffSetHeight="4"
+                                                             ShadowOffsetWidth="0"
+                                                             ShadowOpacity="0.12">
+
+                                    <StackLayout Spacing="0">
+                                        <StackLayout BackgroundColor="{DynamicResource Transparent}">
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Date Filed:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.DateFiled,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OB Date:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OBDate,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OB Time:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OBTime,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="OB Hours:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OBHours,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Charge Code:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OfficialBusinessModel.ChargeCode,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Reason:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.Reason,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Details:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.OfficialBusinessModel.Remarks,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+
+                                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                                <Label Grid.Column="0"
+                                                       Margin="16,0,0,0"
+                                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                                       Text="Apply Against:" />
+
+                                                <Label Grid.Column="2"
+                                                       Style="{StaticResource LabelStyleProfile}"
+                                                       Text="{Binding FormHelper.ApplyAgainst,Mode=OneWay}"
+                                                       Margin="0,10" />
+                                            </Grid>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </converter:CustomShadowFrame>
+                            </Grid>
+                            <!--FILE ATTACHMENT-->
+                            <cards:SfCardView Style="{StaticResource CardsApproval}">
+                                <Grid>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ViewFileAttachmentsCommand}" />
+                                    </Grid.GestureRecognizers>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="145" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="EndAndExpand">
+                                        <iconize:IconImage Icon="{StaticResource FileAttachmentIcon}" Style="{StaticResource IconImageApproval}" />
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1" Grid.ColumnSpan="1" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand">
+                                        <Label Grid.Column="1" Text="File Attachments" TextColor="{DynamicResource HyperLink}" FontFamily="{DynamicResource Regular}" />
+                                    </StackLayout>
+                                </Grid>
+                            </cards:SfCardView>
+                        </StackLayout>
+                    </Grid>
+                </ScrollView>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

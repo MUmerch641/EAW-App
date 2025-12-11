@@ -1,0 +1,457 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Contracts\ITimeOffRequestPageDataService.cs" />
+    <Compile Remove="Models\FormHolder\MyApprovalHolder.cs" />
+    <Compile Remove="Services\EAW_MOBILEContext.cs" />
+    <Compile Remove="Services\TestServices\TimeOffRequestPageDataService.cs" />
+    <Compile Remove="Services\TimeOffRequestPageDataService.cs" />
+    <Compile Remove="ViewModels\EmployeeListViewModel.cs" />
+    <Compile Remove="ViewModels\MyRequests\TimeOffRequestPageViewModel.cs" />
+    <Compile Remove="ViewModels\NewExpenseReportViewModel.cs" />
+    <Compile Remove="ViewModels\TimeOffRequestPageViewModel.cs" />
+    <Compile Remove="Views\Expense\ExpenseItemPage.xaml.cs" />
+    <Compile Remove="Views\Expense\NewExpenseReportPage.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Views\Expense\ExpenseItemPage.xaml" />
+    <EmbeddedResource Remove="Views\Expense\NewExpenseReportPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Utils\Database\EAW_QA_AZURE202012212137.zip" />
+    <None Remove="Utils\DLL\AIS.Attendance.TimeEntry.dll" />
+    <None Remove="Utils\DLL\AIS.Common.dll" />
+    <None Remove="Utils\DLL\AIS.Leave.Common.dll" />
+    <None Remove="Utils\DLL\AIS.Leave.LeaveRequest.dll" />
+    <None Remove="Utils\DLL\AIS.Schedule.Common.dll" />
+    <None Remove="Utils\DLL\AIS.Security.Common.dll" />
+    <None Remove="Utils\DLL\AIS.Utilities.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="7.1.0.481" />
+    <PackageReference Include="Autofac" Version="6.0.0" />
+    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie" Version="4.0.4" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.6" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="Syncfusion.Xamarin.Buttons" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.Cards" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.Core" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.DataSource" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfAutoComplete" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfBadgeView" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfCalendar" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfChart" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfComboBox" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPopupLayout" Version="18.3.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfRotator" Version="18.3.0.50" />
+    <PackageReference Include="Xam.Plugin.Connectivity" Version="3.2.0" />
+    <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
+    <PackageReference Include="Xam.Plugin.Iconize.FontAwesome" Version="3.4.0.100" />
+    <PackageReference Include="Xam.Plugin.Iconize.Ionicons" Version="3.5.0.114" />
+    <PackageReference Include="Xam.Plugin.Iconize.Material" Version="3.5.0.114" />
+    <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
+    <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="3.1.1.1-beta" />
+    <PackageReference Include="Xam.Plugins.Settings" Version="4.0.0.7" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
+    <PackageReference Include="Xamarin.FFImageLoading.Svg.Forms" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />
+    <PackageReference Include="Xamarin.Plugin.FilePicker" Version="2.1.41" />  
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EAW.API.DataContracts">
+      <HintPath>Utils\DLL\EAW.API.DataContracts.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Views\Approvals\LeaveRequest\GeneratedLeaveListPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Approvals\LeaveRequest\LeaveDocumentListPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Approvals\LeaveRequest\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Expense\ExpenseItemTemplate.xaml.cs">
+      <DependentUpon>ExpenseItemTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Expense\VendorDetailTemplate.xaml.cs">
+      <DependentUpon>VendorDetailTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Expense\ExpenseTypeTemplate.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Expense\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MyAttendancePage.xaml.cs">
+      <DependentUpon>MyAttendancePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MyExpensesPage.xaml.cs">
+      <DependentUpon>MyExpensesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ForgetPasswordPage.xaml.cs">
+      <DependentUpon>ForgetPasswordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MyProfile\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Requests\LeaveRequest\LeaveDocumentAttachmentPage.xaml.cs">
+      <DependentUpon>LeaveDocumentAttachmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Requests\LeaveRequest\LeaveDocumentListPage.xaml.cs">
+      <DependentUpon>LeaveDocumentListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Requests\LeaveRequest\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Requests\OfficialBusinessRequestPage.xaml.cs">
+      <DependentUpon>OfficialBusinessRequestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shared\ConfirmationPage.xaml.cs">
+      <DependentUpon>ConfirmationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shared\NoInternetConnectionPage.xaml.cs">
+      <DependentUpon>NoInternetConnectionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shared\SelectableListView3.xaml.cs">
+      <DependentUpon>SelectableListView3.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Shared\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeListTemplate.xaml.cs">
+      <DependentUpon>EmployeeListTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeProfileCategoryTemplate2.xaml.cs">
+      <DependentUpon>EmployeeProfileCategoryTemplate2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeProfileCategoryTemplate1.xaml.cs">
+      <DependentUpon>EmployeeProfileCategoryTemplate1.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeProfileTemplateBody2.xaml.cs">
+      <DependentUpon>EmployeeProfileTemplateBody2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeProfileTemplateBody1.xaml.cs">
+      <DependentUpon>EmployeeProfileTemplateBody1.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\EmployeeProfileTemplate.xaml.cs">
+      <DependentUpon>EmployeeProfileTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\MyApprovalTemplate.xaml.cs">
+      <DependentUpon>MyApprovalTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestLeaveTemplate.xaml.cs">
+      <DependentUpon>RequestLeaveTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestMenuTemplate2.xaml.cs">
+      <DependentUpon>RequestMenuTemplate2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestMenuTemplate1.xaml.cs">
+      <DependentUpon>RequestMenuTemplate1.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestTimeEntryLogTemplate.xaml.cs">
+      <DependentUpon>RequestTimeEntryLogTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestChangeRestdayTemplate.xaml.cs">
+      <DependentUpon>RequestChangeRestdayTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestScheduleRequestTemplate.xaml.cs">
+      <DependentUpon>RequestScheduleRequestTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestLoanTemplate.xaml.cs">
+      <DependentUpon>RequestLoanTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\RequestDocumentTemplate.xaml.cs">
+      <DependentUpon>RequestDocumentTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Template\Styles.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Themes\LightTheme.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Utils\CustomIconNavigationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\ChangeRestdaySchedApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\SpecialWorkScheduleApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ConnectionPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\DashboardPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Dialogs\AlertPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Dialogs\ConfirmationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Dialogs\DialogBase.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Dialogs\InputDialogPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Dialogs\Styles.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyAttendancePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\AreaOfAssignmentPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\ContactInformationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\CurrentJobInformationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\EmergencyContactPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\EmployeeProfilePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\FamilyBackgroundPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\PersonalDetailsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\ProfileCategoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\ProfileMainCategoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\RelevantEmploymentDatesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfile\TaxGovernmentRelatedInfoPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyTimeLogsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\NotificationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\OnlineTimeEntryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\ChangeRestdayPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\ChangeRestDay\EmployeeListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\LeaveRequest\GeneratedLeaveListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\LeaveRequest\LeaveDocumentListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\SpecialWorkSchedulePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\ErrorPage2.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\SelectableListView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\SelectableListView2.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TaskNotificationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\ApprovalHeaderPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\DocumentApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\LeaveRequestApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\LoanApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\Styles.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Approvals\UndertimeApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyExpensesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Expense\ExpenseReportMainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ForgetPasswordPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\HomePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\LoginPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MainMenuPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyApprovalPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyProfilePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MyRequestsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MySchedulePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\ChangeWorkSchedulePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\ChangeWorkSchedule\EmployeeListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\DocumentRequest\DocumentListpage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\DocumentRequest\DocumentReasonListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\LeaveRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\OfficialBusinessRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\OvertimeRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\RequestMenuPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\Styles.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\TimeEntryRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\TimeOffRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Requests\UndertimeRequestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\ComingSoonPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\ErrorPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\FileAttachmentPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\ListHeaderPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\NoItemsPartialPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\SuccessPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Shared\SuccessPage2.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SignupPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\EmployeeListTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\LeaveTypeListTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\MyRequestTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\RequestFooterTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Template\ShiftListTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TransactionHistoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Walkthrough\WalkthroughItemPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Walkthrough\WalkthroughPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utils\Database\" />
+  </ItemGroup>
+</Project>

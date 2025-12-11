@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.AttendanceViewTemplate2.AttendanceTemplate2ListPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleLabelStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+            <Style x:Key="DescriptionLabelStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowSpacing="0"
+          Style="{DynamicResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <utils:TitleView x:Name="TitleView"
+                             Title="My Detailed Attendance"
+                             TitleColor="{DynamicResource Gray-White}">
+                <utils:TitleView.LeadingView>
+
+                    <iconize:IconButton Command="{Binding MenuButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource HamburgerIcon}" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               IsBusy="{Binding IsBusy}"
+                                               Style="{StaticResource BusyIndicatorStyle}" />
+
+                <StackLayout AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             AbsoluteLayout.LayoutFlags="PositionProportional"
+                             HorizontalOptions="CenterAndExpand"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             VerticalOptions="CenterAndExpand">
+
+                    <local:NoItemsPartialPage Margin="0,0"
+                                              DetailsText="No items available to display."
+                                              HorizontalOptions="CenterAndExpand"
+                                              IsVisible="{Binding ShowList, Converter={utils:InverseBoolConverter}}"
+                                              VerticalOptions="CenterAndExpand" />
+
+                    <local:NoItemsPartialPage Margin="0,0"
+                                              DetailsText="Please try again with different keywords/criteria."
+                                              HorizontalOptions="CenterAndExpand"
+                                              IsVisible="{Binding NoItems}"
+                                              TitleText="No Result Found"
+                                              VerticalOptions="CenterAndExpand" />
+                </StackLayout>
+
+                <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      AbsoluteLayout.LayoutFlags="All"
+                      HorizontalOptions="FillAndExpand"
+                      IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                      VerticalOptions="FillAndExpand">
+
+                    <StackLayout Padding="16"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 IsVisible="{Binding ShowList}"
+                                 Spacing="16">
+
+                        <syncfusion:SfListView x:Name="AttendanceListPage"
+                                               AutoFitMode="Height"
+                                               HeaderSize="{OnPlatform Android=50,
+                                                                       iOS=60,
+                                                                       UWP=60}"
+                                               HeaderTemplate="{StaticResource CatalogDefaultHeaderTemplate}"
+                                               IsBusy="{Binding IsBusy}"
+                                               IsScrollBarVisible="False"
+                                               IsStickyGroupHeader="False"
+                                               IsStickyHeader="True"
+                                               ItemSpacing="0,10"
+                                               ItemsSource="{Binding ListSource}"
+                                               LoadMoreCommand="{Binding LoadItemsCommand}"
+                                               LoadMoreCommandParameter="{Binding Source={x:Reference Name=AttendanceListPage}}"
+                                               LoadMoreOption="AutoOnScroll"
+                                               SelectionGesture="Tap"
+                                               SelectionMode="None"
+                                               TapCommand="{Binding ViewItemCommand}">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid Margin="0"
+                                                  Padding="0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <utils:CustomShadowFrame Grid.Column="1"
+                                                                         Margin="{OnPlatform Android='0,0',
+                                                                                             iOS='0,2,0,0'}"
+                                                                         BackgroundColor="{StaticResource Gray-White}"
+                                                                         BorderColor="{StaticResource Gray-White}"
+                                                                         BorderWidth="1"
+                                                                         CornerRadius="4"
+                                                                         HasShadow="True"
+                                                                         HorizontalOptions="FillAndExpand"
+                                                                         Radius="4"
+                                                                         ShadowOffSetHeight="4"
+                                                                         ShadowOffsetWidth="0"
+                                                                         ShadowOpacity="0.12">
+                                                    <StackLayout VerticalOptions="StartAndExpand">
+                                                        <Grid Margin="0,0"
+                                                              ColumnDefinitions="60*,40*"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridMyScheduleDetails}">
+
+                                                            <StackLayout Padding="0,0,0,0">
+                                                                <Label Margin="0,0"
+                                                                       FontFamily="{DynamicResource SemiBold}"
+                                                                       FontSize="{DynamicResource Smaller}"
+                                                                       Style="{StaticResource LabelStyleMySchedule}"
+                                                                       Text="{Binding ReferenceNumber}" />
+                                                            </StackLayout>
+
+                                                            <StackLayout Grid.Column="1">
+                                                                <border:SfBorder Grid.Row="0"
+                                                                                 Grid.Column="1"
+                                                                                 Padding="0"
+                                                                                 BorderColor="Transparent"
+                                                                                 CornerRadius="12"
+                                                                                 HasShadow="False"
+                                                                                 HeightRequest="24"
+                                                                                 HorizontalOptions="FillAndExpand">
+                                                                    <border:SfBorder.Content>
+                                                                        <Grid>
+                                                                            <BoxView BackgroundColor="{Binding Status, Converter={utils:StatusColorConverter}}"
+                                                                                     Style="{DynamicResource StatusBoxViewStyle}" />
+
+                                                                            <Label FontFamily="{DynamicResource SemiBold}"
+                                                                                   FontSize="{StaticResource Smaller}"
+                                                                                   HorizontalOptions="CenterAndExpand"
+                                                                                   LineBreakMode="TailTruncation"
+                                                                                   Text="{Binding Status}"
+                                                                                   TextColor="{Binding Status, Converter={utils:StatusColorConverter}}"
+                                                                                   VerticalOptions="Center" />
+                                                                        </Grid>
+                                                                    </border:SfBorder.Content>
+                                                                </border:SfBorder>
+                                                            </StackLayout>
+                                                        </Grid>
+
+                                                        <!--  SEPARATOR  -->
+                                                        <Label BackgroundColor="{DynamicResource Gray-200}"
+                                                               HeightRequest="1"
+                                                               HorizontalOptions="FillAndExpand"
+                                                               VerticalOptions="Center" />
+
+                                                        <Grid RowDefinitions="*">
+                                                            <StackLayout Padding="0,0">
+                                                                <iconize:IconImage HeightRequest="18"
+                                                                                   HorizontalOptions="StartAndExpand"
+                                                                                   Icon="{StaticResource DateIcon}"
+                                                                                   IconColor="Gray"
+                                                                                   VerticalOptions="Center"
+                                                                                   WidthRequest="18" />
+                                                            </StackLayout>
+
+                                                            <StackLayout Padding="35,0,0,0">
+                                                                <Label Margin="0,0"
+                                                                       FontFamily="{DynamicResource Regular}"
+                                                                       FontSize="{DynamicResource Smaller}"
+                                                                       Style="{StaticResource LabelStyleMySchedule}"
+                                                                       Text="{Binding CutoffDate}" />
+                                                            </StackLayout>
+                                                        </Grid>
+
+                                                        <Grid Margin="0,0"
+                                                              ColumnSpacing="0"
+                                                              RowSpacing="1"
+                                                              Style="{StaticResource GridMyScheduleDetails}">
+
+                                                            <StackLayout Padding="0,0,0,0">
+                                                                <Label Margin="0,0"
+                                                                       FontFamily="{DynamicResource Regular}"
+                                                                       FontSize="{DynamicResource Smaller}"
+                                                                       Style="{StaticResource LabelStyleMySchedule}"
+                                                                       Text="{Binding AttendanceType}" />
+                                                            </StackLayout>
+                                                        </Grid>
+                                                    </StackLayout>
+                                                </utils:CustomShadowFrame>
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+                    </StackLayout>
+                </Grid>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

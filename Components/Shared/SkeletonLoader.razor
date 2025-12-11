@@ -1,0 +1,43 @@
+@namespace MauiHybridApp.Components.Shared
+
+<div class="skeleton @ShapeClass" style="@StyleString"></div>
+
+@code {
+    /// <summary>
+    /// Width of the skeleton (e.g., "100%", "50px")
+    /// </summary>
+    [Parameter] public string Width { get; set; } = "100%";
+
+    /// <summary>
+    /// Height of the skeleton (e.g., "20px", "100%")
+    /// </summary>
+    [Parameter] public string Height { get; set; } = "20px";
+
+    /// <summary>
+    /// Shape variation: "text" (default), "rect", "circle"
+    /// </summary>
+    [Parameter] public string Shape { get; set; } = "text";
+    
+    /// <summary>
+    /// Optional Extra CSS classes
+    /// </summary>
+    [Parameter] public string Class { get; set; } = "";
+    
+    private string ShapeClass => Shape switch
+    {
+        "circle" => "rounded-circle " + Class,
+        "rect" => "rounded-md " + Class,
+        _ => "rounded-sm " + Class
+    };
+    
+    private string StyleString => $"width: {Width}; height: {Height};";
+    
+    // Add rounded-circle style helper if not exists globally
+    // We assume .rounded (border-radius: var(--radius-md)) exists from previous steps
+}
+
+<style>
+    .rounded-circle { border-radius: 50% !important; }
+    .rounded-md { border-radius: var(--radius-md) !important; }
+    .rounded-sm { border-radius: var(--radius-sm) !important; }
+</style>

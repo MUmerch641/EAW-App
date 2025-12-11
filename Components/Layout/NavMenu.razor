@@ -5,43 +5,38 @@
 @inject IJSRuntime JSRuntime
 @using MauiHybridApp.Models.DataObjects
 
-<div class="nav-menu">
-    <div class="user-profile">
+<div class="modern-nav-menu">
+    <!-- Optional: Profile Summary in Menu (if desired) -->
+    <div class="nav-profile-section">
         @if (AuthState.CurrentUser != null)
         {
-            <div class="profile-image">
-                @if (!string.IsNullOrEmpty(AuthState.CurrentUser.ProfilePicture))
-                {
-                    <img src="@AuthState.CurrentUser.ProfilePicture" alt="Profile" />
-                }
-                else
-                {
-                    <div class="profile-placeholder">@GetInitials()</div>
-                }
-            </div>
-            <div class="profile-info">
-                <h3>@AuthState.CurrentUser.FullName</h3>
-                <p>@AuthState.CurrentUser.Position</p>
+            <div class="nav-profile-info">
+                <span class="nav-profile-name">@AuthState.CurrentUser.FullName</span>
+                <span class="nav-profile-role">@AuthState.CurrentUser.Position</span>
             </div>
         }
     </div>
 
-    <nav class="flex-column">
+    <nav class="nav-links">
         @if (menuItems != null)
         {
             @foreach (var item in menuItems)
             {
-                <div class="nav-item px-3">
-                    <a class="nav-link" href="@item.Route" @onclick:preventDefault="true" @onclick="() => OnNavigate(item.Route)">
-                        <span class="@item.Icon" aria-hidden="true"></span> @item.Title
-                    </a>
+                <div class="nav-item-wrapper">
+                    <NavLink class="modern-nav-link" href="@item.Route" Match="NavLinkMatch.All">
+                        <span class="nav-icon @item.Icon" aria-hidden="true"></span>
+                        <span class="nav-text">@item.Title</span>
+                    </NavLink>
                 </div>
             }
         }
 
-        <div class="nav-item px-3">
-            <button class="nav-link btn-logout" @onclick="Logout">
-                <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+        <div class="nav-divider"></div>
+
+        <div class="nav-item-wrapper">
+            <button class="modern-nav-link logout-btn" @onclick="Logout">
+                <span class="nav-icon oi oi-account-logout" aria-hidden="true"></span>
+                <span class="nav-text">Logout</span>
             </button>
         </div>
     </nav>
@@ -66,12 +61,17 @@
                 new MenuItem { Title = "Leave", Route = "/leave", Icon = "oi oi-calendar" },
                 new MenuItem { Title = "Overtime", Route = "/overtime", Icon = "oi oi-clock" },
                 new MenuItem { Title = "Official Business", Route = "/official-business", Icon = "oi oi-briefcase" },
+                new MenuItem { Title = "Time Off", Route = "/time-off-request", Icon = "oi oi-timer" },
                 new MenuItem { Title = "Time Entry", Route = "/time-entry", Icon = "oi oi-clock" },
                 new MenuItem { Title = "Expenses", Route = "/expenses", Icon = "oi oi-dollar" },
                 new MenuItem { Title = "Approvals", Route = "/approvals", Icon = "oi oi-check" },
                 new MenuItem { Title = "Payslips", Route = "/payslips", Icon = "oi oi-document" },
                 new MenuItem { Title = "Attendance", Route = "/attendance", Icon = "oi oi-target" },
-                new MenuItem { Title = "Profile", Route = "/profile", Icon = "oi oi-person" }
+                new MenuItem { Title = "Performance Evaluation", Route = "/performance-evaluation", Icon = "oi oi-graph" },
+                new MenuItem { Title = "Individual Objectives", Route = "/individual-objectives", Icon = "oi oi-bullseye" },
+                new MenuItem { Title = "Employees", Route = "/employee-list", Icon = "oi oi-people" },
+                new MenuItem { Title = "Profile", Route = "/profile", Icon = "oi oi-person" },
+                new MenuItem { Title = "Settings", Route = "/settings", Icon = "oi oi-cog" }
             };
 
             // PRODUCTION CODE (commented out for demo):
@@ -109,6 +109,7 @@
             "leave" => "/leave",
             "overtime" => "/overtime",
             "official business" => "/official-business",
+            "time off" => "/time-off-request",
             "time entry" => "/time-entry",
             "approvals" => "/approvals",
             "payslips" => "/payslips",
@@ -130,6 +131,7 @@
             "leave" => "oi oi-calendar",
             "overtime" => "oi oi-clock",
             "official business" => "oi oi-briefcase",
+            "time off" => "oi oi-timer",
             "time entry" => "oi oi-timer",
             "approvals" => "oi oi-check",
             "payslips" => "oi oi-document",
@@ -172,29 +174,19 @@
     private async Task Logout()
     {
         await AuthState.LogoutAsync();
-        await NavigationService.NavigateToAsync("/login");
+        await NavigationService.NavigateToAsync("/");
     }
 
-    private async Task OnNavigate(string route)
+    private void OnNavigate(string route)
     {
         try
         {
-            // Navigate first using NavigationManager
-            NavManager.NavigateTo(route, forceLoad: false);
-
-            // Then close the sidebar via JS interop (await to catch errors)
-            await JSRuntime.InvokeVoidAsync("blazorHelpers.closeSidebar").AsTask().ConfigureAwait(false);
+            Console.WriteLine($"[NAV] Navigating to: {route}");
+            NavManager.NavigateTo(route);
         }
         catch (Exception ex)
         {
-            // Log and show a temporary alert via JS so the user sees something helpful
-            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
-            await JSRuntime.InvokeVoidAsync("console.error", $"Navigation error: {ex.Message}");
-            try
-            {
-                await JSRuntime.InvokeVoidAsync("alert", "Navigation failed: " + ex.Message);
-            }
-            catch { /* swallow */ }
+            Console.WriteLine($"[NAV] Navigation error: {ex.Message}");
         }
     }
 

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage x:Class="EatWork.Mobile.Views.MainFlyoutPage"
+            xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:local="clr-namespace:EatWork.Mobile.Views">
+
+    <FlyoutPage.Flyout>
+        <local:MainMenuPage />
+    </FlyoutPage.Flyout>
+
+
+    <FlyoutPage.Detail>
+        <NavigationPage>
+            <x:Arguments>
+                <local:DashboardPage />
+            </x:Arguments>
+        </NavigationPage>
+    </FlyoutPage.Detail>
+
+</FlyoutPage>

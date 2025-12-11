@@ -1,0 +1,113 @@
+@page "/leave-history"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
+@inject LeaveHistoryViewModel ViewModel
+@inject NavigationManager NavManager
+
+<PageHeader Title="Leave History" ShowBackButton="true" />
+
+<div class="content-container leave-history-container">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab @(ViewModel.SelectedStatus == "All" ? "active" : "")" 
+                @onclick="@(() => ViewModel.SelectedStatus = "All")">
+            All
+        </button>
+        <button class="filter-tab @(ViewModel.SelectedStatus == "Pending" ? "active" : "")" 
+                @onclick="@(() => ViewModel.SelectedStatus = "Pending")">
+            Pending
+        </button>
+        <button class="filter-tab @(ViewModel.SelectedStatus == "Approved" ? "active" : "")" 
+                @onclick="@(() => ViewModel.SelectedStatus = "Approved")">
+            Approved
+        </button>
+        <button class="filter-tab @(ViewModel.SelectedStatus == "Rejected" ? "active" : "")" 
+                @onclick="@(() => ViewModel.SelectedStatus = "Rejected")">
+            Rejected
+        </button>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingSpinner IsVisible="true" Message="Loading history..." />
+    }
+    else if (ViewModel.FilteredRequests.Any())
+    {
+        <div class="leave-list">
+            @foreach (var request in ViewModel.FilteredRequests)
+            {
+                <div class="leave-card status-@request.Status?.ToLower()">
+                    <div class="card-header" @onclick="() => ViewModel.ViewDetailCommand.Execute(request)">
+                        <span class="leave-type">@request.LeaveType</span>
+                        <span class="leave-date">Applied: @request.DateFiled?.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="card-body" @onclick="() => ViewModel.ViewDetailCommand.Execute(request)">
+                        <div class="date-range">
+                            <div class="date-item">
+                                <span class="oi oi-calendar"></span>
+                                <span>@request.InclusiveStartDate?.ToString("MMM dd") - @request.InclusiveEndDate?.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="date-item">
+                                <span class="oi oi-clock"></span>
+                                <span>@request.Duration days</span>
+                            </div>
+                        </div>
+                        <div class="card-footer-actions">
+                             <span class="status-badge @request.Status?.ToLower()">@request.Status</span>
+                             <button class="btn-history" @onclick:stopPropagation="true" @onclick="() => OpenHistory(request.LeaveRequestId)">
+                                 <i class="fas fa-history"></i> History
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <span class="oi oi-inbox empty-icon"></span>
+            <h3>No Records Found</h3>
+            <p>You don't have any @(ViewModel.SelectedStatus == "All" ? "" : ViewModel.SelectedStatus.ToLower()) leave requests.</p>
+        </div>
+    }
+
+    <!-- FAB to create new request -->
+    <div class="fab-container">
+        <button class="fab-btn" @onclick="NavigateToCreate">
+            <span class="oi oi-plus"></span>
+        </button>
+    </div>
+    
+    <TransactionHistoryModal 
+        @bind-IsVisible="showHistory" 
+        @ref="historyModal" />
+</div>
+
+
+
+@code {
+    private TransactionHistoryModal? historyModal;
+    private bool showHistory;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    private void NavigateToCreate()
+    {
+        NavManager.NavigateTo("/leave");
+    }
+
+    private async Task OpenHistory(long transactionId)
+    {
+        // 1 = Leave Request Transaction Type (Standard assumption or fetch from constant)
+        long transactionTypeId = 1; 
+        showHistory = true;
+        if (historyModal != null)
+        {
+            await historyModal.LoadHistoryAsync(transactionTypeId, transactionId);
+        }
+    }
+}

@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.CashAdvance.CashAdvanceRequestPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Title="Cash Advance Request"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Requests/Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="ButtonCancelStyle"
+                   BasedOn="{StaticResource ButtonStyle}"
+                   TargetType="buttons:SfButton">
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="EndAndExpand" />
+                <Setter Property="WidthRequest" Value="245" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid RowSpacing="0"
+          Style="{DynamicResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <utils:TitleView x:Name="TitleView"
+                             Title="Cash Advance Request"
+                             TitleColor="{DynamicResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </utils:TitleView.LeadingView>
+
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Command="{Binding ViewFileAttachmentCommand}"
+                                            IsVisible="{Binding Holder.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource FileAttachmentIcon}" />
+
+                        <iconize:IconButton Command="{Binding ViewTransactionHistoryCommand}"
+                                            IsVisible="{Binding Holder.IsEnabled, Converter={utils:InverseBoolConverter}}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource InfoIcon}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never"
+                        VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}" />
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Padding="15"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              RowSpacing="0"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+
+                                    <control:SfTextInputLayout Hint="Request No.  "
+                                                               IsEnabled="False"
+                                                               Style="{StaticResource inputLayoutStyle}">
+
+                                        <Entry x:Name="txtRequestNo"
+                                               IsReadOnly="True"
+                                               Style="{DynamicResource TextBoxStyle}"
+                                               Text="{Binding Holder.RequestNo, Mode=TwoWay}" />
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout Hint="Date Requested  "
+                                                               IsEnabled="False"
+                                                               Style="{StaticResource inputLayoutStyle}">
+
+                                        <DatePicker Date="{Binding Holder.DateRequested, Mode=TwoWay}"
+                                                    Style="{DynamicResource DatePickerStyle}" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                               Text="{StaticResource DateIcon}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout ErrorText="{Binding Holder.DateNeededValidation.Message}"
+                                                               HasError="{Binding Holder.DateNeededValidation.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                               Hint="Date Needed  "
+                                                               Style="{StaticResource inputLayoutStyle}">
+
+                                        <DatePicker Date="{Binding Holder.DateNeeded, Mode=TwoWay}"
+                                                    IsEnabled="{Binding Holder.IsEnabled}"
+                                                    Style="{DynamicResource DatePickerStyle}" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                               Text="{StaticResource DateIcon}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout ErrorText="{Binding Holder.Amount.Message}"
+                                                               HasError="{Binding Holder.Amount.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                               Hint="Amount Requested"
+                                                               Style="{StaticResource InputLayoutStyleWithIcon}">
+                                        <numeric:SfNumericTextBox x:Name="txtAmount"
+                                                                  IsEnabled="{Binding Holder.IsEnabled}"
+                                                                  ReturnCommand="{Binding EntryFocusCommand}"
+                                                                  ReturnCommandParameter="{Reference txtDetails}"
+                                                                  ReturnType="Next"
+                                                                  Style="{StaticResource SfNumericTextBoxStyle}"
+                                                                  Value="{Binding Holder.Amount.Value, Mode=TwoWay}" />
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                               Text="{StaticResource AmountIcon}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout ErrorText="{Binding Holder.Reason.Message}"
+                                                               HasError="{Binding Holder.Reason.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                               Hint="Specify details  "
+                                                               Style="{StaticResource InputLayoutStyleEditor}">
+                                        <Editor x:Name="txtDetails"
+                                                IsEnabled="{Binding Holder.IsEnabled}"
+                                                Style="{DynamicResource EditorStyle}"
+                                                Text="{Binding Holder.Reason.Value, Mode=TwoWay}" />
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout EnableFloating="{Binding Holder.IsEnabled}"
+                                                               ErrorText="{Binding Holder.ChargeCode.Message}"
+                                                               HasError="{Binding Holder.ChargeCode.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                               Hint="Charge Code   "
+                                                               Style="{StaticResource inputLayoutStyle}">
+
+                                        <combobox:SfComboBox DataSource="{Binding Holder.ChargeCodeSource}"
+                                                             DisplayMemberPath="Value"
+                                                             IsEnabled="{Binding Holder.IsEnabled}"
+                                                             SelectedItem="{Binding Holder.SelectedChargeCode, Mode=TwoWay}"
+                                                             SelectedValue="{Binding Holder.Model.CostCenterId, Mode=TwoWay}"
+                                                             SelectedValuePath="Id"
+                                                             Style="{StaticResource ComboBoxStyle}">
+
+                                            <combobox:SfComboBox.Behaviors>
+                                                <utils:EventToCommandBehavior Command="{Binding ChargeCodeSelectionCommand}"
+                                                                              EventName="SelectionChanged" />
+                                            </combobox:SfComboBox.Behaviors>
+                                        </combobox:SfComboBox>
+                                    </control:SfTextInputLayout>
+
+                                    <control:SfTextInputLayout ErrorText="{Binding Holder.ChargeCode.Message}"
+                                                               HasError="{Binding Holder.ChargeCode.IsValid, Converter={utils:InverseBoolConverter}}"
+                                                               Hint="Other Charge Code  "
+                                                               IsVisible="{Binding Holder.ShowOtherChargeCode}"
+                                                               Style="{StaticResource inputLayoutStyle}">
+
+                                        <Entry x:Name="txtChargeCode"
+                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                               Style="{DynamicResource TextBoxStyle}"
+                                               Text="{Binding Holder.ChargeCode.Value, Mode=TwoWay}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--  BUTTONS AND FILE ATTACHMENTS  -->
+                                    <template:RequestFooterTemplate2 />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

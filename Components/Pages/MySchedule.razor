@@ -1,0 +1,143 @@
+@page "/schedule"
+@using MauiHybridApp.ViewModels
+@inject MyScheduleViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <PageHeader 
+        Title="My Schedule" 
+        Subtitle="View your work calendar" 
+        IconClass="fa-calendar-alt" />
+
+    <div class="animate-fade-in-up">
+        <!-- Month Navigator -->
+        <div class="d-flex justify-content-between align-items-center bg-white rounded-pill shadow-sm p-2 mb-4">
+            <button class="btn btn-icon rounded-circle hover-bg-light" 
+                    @onclick="@(() => ViewModel.PreviousMonthCommand.Execute(null))"
+                    style="width: 40px; height: 40px;">
+                <i class="fas fa-chevron-left text-primary"></i>
+            </button>
+            
+            <h5 class="mb-0 fw-bold text-dark user-select-none">@ViewModel.CurrentMonthDisplay</h5>
+            
+            <button class="btn btn-icon rounded-circle hover-bg-light" 
+                    @onclick="@(() => ViewModel.NextMonthCommand.Execute(null))"
+                    style="width: 40px; height: 40px;">
+                <i class="fas fa-chevron-right text-primary"></i>
+            </button>
+        </div>
+
+        @if (ViewModel.IsBusy)
+        {
+             <div class="p-4">
+                <SkeletonLoader height="100px" width="100%" class="mb-3" />
+                <SkeletonLoader height="80px" width="100%" class="mb-2" />
+                <SkeletonLoader height="80px" width="100%" class="mb-2" />
+                <SkeletonLoader height="80px" width="100%" />
+            </div>
+        }
+        else
+        {
+            <!-- Action Buttons -->
+            <div class="grid-cols-2 gap-3 mb-4">
+                <button class="btn btn-white shadow-sm border-0 p-3 rounded-lg d-flex flex-column align-items-center justify-content-center hover-lift"
+                        @onclick='() => ViewModel.NavigateToRequestCommand.Execute("work-schedule")'
+                        style="height: 100px;">
+                    <div class="icon-circle bg-primary-subtle text-primary rounded-circle mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                         <i class="fas fa-calendar-check fs-5"></i>
+                    </div>
+                    <span class="small fw-bold text-dark">Change Schedule</span>
+                </button>
+                    
+                <button class="btn btn-white shadow-sm border-0 p-3 rounded-lg d-flex flex-column align-items-center justify-content-center hover-lift"
+                        @onclick='() => ViewModel.NavigateToRequestCommand.Execute("rest-day")'
+                        style="height: 100px;">
+                     <div class="icon-circle bg-warning-subtle text-warning rounded-circle mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                         <i class="fas fa-chair fs-5"></i>
+                    </div>
+                    <span class="small fw-bold text-dark">Change Rest Day</span>
+                </button>
+            </div>
+            
+            <!-- Schedule List -->
+            @if (ViewModel.Schedules != null && ViewModel.Schedules.Any())
+            {
+                <div class="schedule-list d-flex flex-column gap-3 pb-4">
+                    @foreach (var item in ViewModel.Schedules)
+                    {
+                        var isRestDay = item.IsRestday;
+                        var isHoliday = item.IsHoliday;
+                        var isToday = (item.WorkDate ?? DateTime.MinValue).Date == DateTime.Today;
+                        
+                        var cardClass = isToday ? "border-primary border-2" : "border-0";
+                        var bgClass = isToday ? "bg-white" : "bg-white";
+                        
+                        <div class="card shadow-sm rounded-lg p-3 hover-lift @cardClass @bgClass" style="transition: transform 0.2s;">
+                            <div class="d-flex align-items-center">
+                                <!-- Date Column -->
+                                <div class="d-flex flex-column align-items-center justify-content-center me-3 pe-3 border-end" style="min-width: 60px;">
+                                    <span class="small text-uppercase fw-bold text-muted">@((item.WorkDate ?? DateTime.MinValue).ToString("ddd"))</span>
+                                    <span class="h4 mb-0 fw-bold @(isToday ? "text-primary" : "text-dark")">@((item.WorkDate ?? DateTime.MinValue).Day)</span>
+                                </div>
+                                
+                                <!-- Content Column -->
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <div class="fw-bold text-dark">
+                                            @(string.IsNullOrEmpty(item.WorkSchedule) ? "No Schedule" : item.WorkSchedule)
+                                        </div>
+                                        
+                                        @if (isHoliday)
+                                        {
+                                             <span class="badge bg-danger rounded-pill">Holiday</span>
+                                        }
+                                        else if (isRestDay)
+                                        {
+                                             <span class="badge bg-warning text-dark rounded-pill">Rest Day</span>
+                                        }
+                                        else
+                                        {
+                                             <span class="badge bg-light text-muted rounded-pill border">Regular</span>
+                                        }
+                                    </div>
+                                    
+                                     @if (item.IsHoliday)
+                                    {
+                                         <div class="small text-danger"><i class="fas fa-star me-1"></i> Holiday</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <EmptyState 
+                    Message="No schedule found for this month." 
+                    IconClass="fa-calendar-times" />
+            }
+        }
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

@@ -2,6 +2,7 @@
 <button class="action-btn @CssClass @SizeClass @VariantClass" 
         @onclick="OnClick" 
         disabled="@(IsDisabled || IsLoading)"
+        style="@StyleAttribute"
         type="@ButtonType">
     @if (IsLoading)
     {
@@ -79,6 +80,12 @@
     [Parameter]
     public EventCallback OnClick { get; set; }
 
+    /// <summary>
+    /// Custom background color (overrides Variant)
+    /// </summary>
+    [Parameter]
+    public string? BackgroundColor { get; set; }
+
     private string SizeClass => Size switch
     {
         "small" => "btn-sm",
@@ -97,12 +104,21 @@
         _ => "btn-primary"
     };
 
+    private string StyleAttribute => !string.IsNullOrEmpty(BackgroundColor) 
+        ? $"background-color: {BackgroundColor}; border-color: {BackgroundColor}; color: white;" 
+        : "";
+
     // Compatibility parameters
     [Parameter] public string IconClass { get => Icon; set => Icon = value; }
+    
     [Parameter] 
-    public bool IsPrimary 
-    { 
-        get => Variant == "primary"; 
-        set => Variant = value ? "primary" : "secondary"; 
+    public bool IsPrimary { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (IsPrimary)
+        {
+            Variant = "primary";
+        }
     }
 }

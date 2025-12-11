@@ -1,0 +1,80 @@
+@page "/profile/emergency-contact"
+@using MauiHybridApp.ViewModels
+@inject EmergencyContactViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="GoBack">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Emergency Contact</h1>
+        <button class="btn-icon" @onclick="@(() => ViewModel.SaveCommand.Execute(null))">
+            <i class="fas fa-save"></i>
+        </button>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading contact info...</p>
+        </div>
+    }
+    else if (ViewModel.UserProfile != null)
+    {
+        <div class="form-content">
+            @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+            {
+                <div class="alert success">
+                    <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+            {
+                <div class="alert error">
+                    <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+                </div>
+            }
+
+            <div class="form-group">
+                <label>Contact Name</label>
+                <input type="text" class="form-control" @bind="ViewModel.UserProfile.EmergencyContactName" />
+            </div>
+
+            <div class="form-group">
+                <label>Relationship</label>
+                <input type="text" class="form-control" @bind="ViewModel.UserProfile.EmergencyContactRelationship" />
+            </div>
+
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" class="form-control" @bind="ViewModel.UserProfile.EmergencyContactPhone" />
+            </div>
+
+            <div class="form-group">
+                <label>Telephone Number</label>
+                <input type="tel" class="form-control" placeholder="Optional" />
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <textarea class="form-control" rows="3" placeholder="Contact Address"></textarea>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/profile");
+    }
+}

@@ -16,16 +16,20 @@
             <EditForm Model="@registrationModel" OnValidSubmit="@HandleRegistration">
                 <DataAnnotationsValidator />
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <InputText id="firstName" class="form-control" @bind-Value="registrationModel.FirstName" placeholder="Enter your first name" />
-                        <ValidationMessage For="@(() => registrationModel.FirstName)" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <InputText id="firstName" class="modern-input" @bind-Value="registrationModel.FirstName" placeholder="Enter your first name" />
+                            <ValidationMessage For="@(() => registrationModel.FirstName)" />
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <InputText id="lastName" class="form-control" @bind-Value="registrationModel.LastName" placeholder="Enter your last name" />
-                        <ValidationMessage For="@(() => registrationModel.LastName)" />
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <InputText id="lastName" class="modern-input" @bind-Value="registrationModel.LastName" placeholder="Enter your last name" />
+                            <ValidationMessage For="@(() => registrationModel.LastName)" />
+                        </div>
                     </div>
                 </div>
 
@@ -100,152 +104,7 @@
     </div>
 </div>
 
-<style>
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 20px;
-    }
 
-    .login-card {
-        background: white;
-        border-radius: 10px;
-        padding: 40px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        max-width: 450px;
-        width: 100%;
-    }
-
-    .login-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .login-header .logo {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 15px;
-    }
-
-    .login-header h1 {
-        font-size: 24px;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .login-header p {
-        color: #666;
-        font-size: 14px;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 15px;
-    }
-
-    .form-row .form-group {
-        flex: 1;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        color: #333;
-        font-weight: 500;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .btn-block {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        font-weight: 500;
-        margin-top: 10px;
-    }
-
-    .login-footer {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 14px;
-    }
-
-    .login-footer a {
-        color: #667eea;
-        text-decoration: none;
-    }
-
-    .login-footer a:hover {
-        text-decoration: underline;
-    }
-
-    .alert {
-        padding: 10px 15px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
-
-    .success-message {
-        text-align: center;
-        padding: 20px 0;
-    }
-
-    .success-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #28a745;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 24px;
-    }
-
-    .success-message h3 {
-        color: #333;
-        margin-bottom: 15px;
-    }
-
-    .success-message p {
-        color: #666;
-        margin-bottom: 10px;
-        line-height: 1.5;
-    }
-
-    @@media (max-width: 768px) {
-        .form-row {
-            flex-direction: column;
-            gap: 0;
-        }
-    }
-</style>
 
 @code {
     private RegistrationModel registrationModel = new();

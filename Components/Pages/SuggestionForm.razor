@@ -1,0 +1,84 @@
+@page "/suggestion/new"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@inject SuggestionFormViewModel ViewModel
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>New Suggestion</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-content">
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert error">
+                <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+        {
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Category</label>
+            <select class="form-control" @bind="ViewModel.SelectedCategory">
+                <option value="">Select Category</option>
+                @if (ViewModel.Categories != null)
+                {
+                    @foreach (var item in ViewModel.Categories)
+                    {
+                        <option value="@item">@item.Name</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Suggestion Detail</label>
+            <textarea class="form-control" rows="5" @bind="ViewModel.Detail" placeholder="Enter your suggestion here..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-small"></span> <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Suggestion</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

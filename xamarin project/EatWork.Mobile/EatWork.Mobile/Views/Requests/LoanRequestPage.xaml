@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:behavior="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d"
+             Title="Loan Request"
+             x:Class="EatWork.Mobile.Views.Requests.LoanRequestPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <behavior:CustomConverter x:Key="EventArgs" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Loan Request" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource FileAttachmentIcon}"
+                                            Command="{Binding ViewFileAttachmentCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+
+                        <iconize:IconButton Text="{StaticResource InfoIcon}"
+                                            Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2" Spacing="0" VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}"
+                                                   IsBusy="{Binding IsBusy}" />
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="55" />-->
+                        </Grid.RowDefinitions>
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                               VerticalOptions="CenterAndExpand"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding ShowPopupList}">
+                            <sfPopup:SfPopupLayout.PopupView>
+                                <sfPopup:PopupView Style="{StaticResource SfPopupStyle}">
+                                    <sfPopup:PopupView.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackLayout>
+                                                <ContentView>
+                                                    <ContentView.Effects>
+                                                        <effect:SafeAreaPaddingEffect />
+                                                    </ContentView.Effects>
+
+                                                    <Grid Margin="10,10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="80" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Label Text="Loan Types" HorizontalOptions="Start"
+                                                               FontSize="20"
+                                                               FontFamily="{DynamicResource Bold}"
+                                                               TextColor="{DynamicResource Gray-900}"
+                                                               Grid.Column="0" />
+
+                                                        <buttons:SfButton x:Name="SkipButton"
+                                                                          Grid.Column="1"
+                                                                          BackgroundColor="Transparent"
+                                                                          Command="{Binding SelectLoanTypesCommand}"
+                                                                          CornerRadius="20"
+                                                                          FontFamily="{DynamicResource SemiBold}"
+                                                                          HeightRequest="40"
+                                                                          HorizontalOptions="End"
+                                                                          Text="Close"
+                                                                          TextColor="{x:StaticResource HyperLink}"
+                                                                          VerticalOptions="StartAndExpand"
+                                                                          WidthRequest="80" />
+                                                    </Grid>
+                                                </ContentView>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.HeaderTemplate>
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <shared:SelectableListView2 ItemsSource="{Binding Holder.LoanTypeList}" BindingContext="{Binding .}" />
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}"
+                                                            AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <Grid Padding="15"
+                              RowSpacing="0"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+
+                                    <!--REQUESTED BY-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               Hint="">
+                                        <Entry Text="{Binding Holder.EmployeeName}"
+                                               IsEnabled="False"
+                                               Style="{StaticResource TextBoxStyle}" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource AccountIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--DATE-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               Hint="Date of Request  ">
+                                        <DatePicker Style="{StaticResource DatePickerStyle}"
+                                                    Date="{Binding Holder.LoanRequestModel.DateRequest, Mode=TwoWay}"
+                                                    IsEnabled="False" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--LOAN TYPE-->
+                                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                                               Hint="Loan Type  "
+                                                               HasError="{Binding Holder.ErrorLoanType,Mode=TwoWay}">
+                                        <Entry Text="{Binding Holder.SelectedLoanType.DisplayText, Mode=TwoWay}"
+                                               IsReadOnly="True"
+                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                               Style="{StaticResource TextBoxStyle}" />
+
+                                        <!--<control:SfTextInputLayout.LeadingView>
+                                             <iconize:IconLabel Text="{StaticResource ReasonIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                             </control:SfTextInputLayout.LeadingView>-->
+                                        <control:SfTextInputLayout.TrailingView>
+                                            <iconize:IconLabel Text="{StaticResource EllipsisIcon}" Style="{StaticResource IconizeIconStyle}" IsEnabled="{Binding Holder.IsEnabled}">
+                                                <iconize:IconLabel.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding SelectLoanTypesCommand}" />
+                                                </iconize:IconLabel.GestureRecognizers>
+                                            </iconize:IconLabel>
+                                        </control:SfTextInputLayout.TrailingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--REQUESTED AMOUNT-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               ErrorText="Please specify requested amount. "
+                                                               HasError="{Binding Holder.ErrorRequestedAmount,Mode=TwoWay}"
+                                                               Hint="Requested Amount  ">
+                                        <numeric:SfNumericTextBox Value="{Binding Holder.LoanRequestModel.RequestedAmount, Mode=TwoWay}"
+                                                                  x:Name="txtLoanRequestAmount"
+                                                                  IsEnabled="{Binding Holder.IsEnabled}"
+                                                                  Style="{StaticResource SfNumericTextBoxStyle}" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource AmountIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--DETAILS-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                               Hint="Specify details  ">
+                                        <Editor Text="{Binding Holder.LoanRequestModel.Remarks, Mode=TwoWay}"
+                                                IsEnabled="{Binding Holder.IsEnabled}"
+                                                Style="{DynamicResource EditorStyle}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--AGREEMENT-->
+                                    <buttons:SfCheckBox Style="{StaticResource checkbox}"
+                                                        IsChecked="{Binding Holder.Aggreed, Mode=TwoWay}"
+                                                        Text="I agree to the terms and conditions."
+                                                        FontSize="15"
+                                                        IsEnabled="{Binding Holder.IsEnabled}" />
+
+                                    <!--BUTTONS-->
+                                    <template:RequestFooterTemplate2 />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

@@ -1,6 +1,6 @@
 namespace MauiHybridApp.Models;
 
-// 1. Jab hum List mangwate hain (GET Response)
+// 1. When we request List (GET Response)
 public class TimeEntryListResponse
 {
     public List<TimeEntryLogItem> ListData { get; set; } = new();

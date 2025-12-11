@@ -1,0 +1,77 @@
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models.IndividualObjectives
+@using MauiHybridApp.Components.Shared
+
+<div class="detail-form">
+    <div class="form-group">
+        <label>Goal / Header</label>
+        <input type="text" class="form-control" @bind="ViewModel.Holder.Goal.Value" />
+    </div>
+    
+    <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" @bind="ViewModel.Holder.GoalDescription.Value"></textarea>
+    </div>
+
+    <!-- KPI Selection -->
+    <div class="form-group">
+        <label>KPI</label>
+        <select class="form-control" @bind="ViewModel.Holder.KPI.Value">
+            <option value="0">Select KPI</option>
+            @if (ViewModel.Holder.KPISource != null)
+            {
+                @foreach (var kpi in ViewModel.Holder.KPISource)
+                {
+                    <option value="@kpi.Id">@kpi.DisplayText</option>
+                }
+            }
+        </select>
+    </div>
+
+    @if (ViewModel.Holder.KPI.Value < 0) // Custom KPI
+    {
+        <div class="form-group">
+            <label>Custom KPI</label>
+            <input type="text" class="form-control" @bind="ViewModel.Holder.CustomKPI.Value" />
+        </div>
+    }
+
+    <div class="form-row">
+        <div class="form-group col">
+            <label>Target</label>
+            <input type="text" class="form-control" @bind="ViewModel.Holder.Target.Value" />
+        </div>
+        <div class="form-group col">
+            <label>Unit</label>
+            <input type="text" class="form-control" @bind="ViewModel.Holder.UnitOfMeasure.Value" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Weight</label>
+        <input type="text" class="form-control" @bind="ViewModel.Holder.Weight.Value" />
+    </div>
+
+    <div class="form-actions mt-3 d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <button class="btn btn-primary" @onclick="Save">Save</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] [EditorRequired] public ObjectiveDetailViewModel ViewModel { get; set; } = default!;
+    [Parameter] public EventCallback<ObjectiveDetailDto> OnSave { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private async Task Save()
+    {
+        // Validate logic could go here
+        var result = ViewModel.GetResult();
+        await OnSave.InvokeAsync(result);
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

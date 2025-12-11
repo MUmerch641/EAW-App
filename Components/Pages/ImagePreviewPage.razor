@@ -1,0 +1,36 @@
+@page "/preview-image"
+@inject NavigationManager Navigation
+@inject MauiHybridApp.Services.Navigation.INavigationService NavigationService
+
+<div class="h-100 bg-black d-flex flex-column">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center p-3 text-white" style="background: rgba(0,0,0,0.5); position: absolute; top: 0; left: 0; right: 0; z-index: 10;">
+        <button class="btn btn-link text-white" @onclick="GoBack">
+            <i class="fas fa-arrow-left fa-lg"></i>
+        </button>
+        <div class="fw-bold">Preview</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- Image Container with Zoom support (simplified) -->
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden position-relative">
+        @if (!string.IsNullOrEmpty(ImageUrl))
+        {
+            <img src="@ImageUrl" class="img-fluid" style="max-height: 100vh; max-width: 100vw; object-fit: contain;" alt="Preview" />
+        }
+        else
+        {
+            <p class="text-white">No image to display</p>
+        }
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? ImageUrl { get; set; }
+
+    private async Task GoBack()
+    {
+        await NavigationService.NavigateBackAsync();
+    }
+}

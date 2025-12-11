@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.MyRequestsPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             Title="My Requests"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:CustomConverter x:Key="EventArgs" />
+            <converter:StringToColorConverter x:Key="StringToColorConverter" />
+            <converter:TextToBoolConverter x:Key="TextToBoolConverter" />
+            <converter:MyRequestTemplateSelector x:Key="MyRequestTemplateSelector" />
+            <Style x:Key="lblFullNameStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="{StaticResource Large}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Bold}" />
+                <Setter Property="LineBreakMode" Value="TailTruncation" />
+            </Style>
+            <Style x:Key="lblEmployeeIdStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="{StaticResource Medium}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <!--<Setter Property="Margin" Value="0,30,0,0" />-->
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+            </Style>
+            <Style x:Key="lblDepartmentNameStyle"
+                   TargetType="Label">
+                <!--<Setter Property="Margin" Value="0,85,0,0" />-->
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="FontSize" Value="{StaticResource Medium}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineBreakMode" Value="TailTruncation" />
+            </Style>
+            <Style x:Key="lblJobDescriptionStyle"
+                   TargetType="Label">
+                <Setter Property="FontSize" Value="{StaticResource Medium}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <!--<Setter Property="Margin" Value="0,65,0,0" />-->
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineBreakMode" Value="TailTruncation" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <converter:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                          EventName="Appearing" />
+        <converter:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                          EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid x:Name="MainGrid"
+          HorizontalOptions="FillAndExpand"
+          VerticalOptions="FillAndExpand">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{OnPlatform Android=180, iOS=200, Default=200}" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <RelativeLayout>
+                <!--<Image RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                     RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"
+                     Aspect="AspectFill"
+                     Source="{core:OnPlatformOrientationStringValue Default=SideMenu.jpg}"
+                     IsVisible="{Binding HasBackgroundImage}" />-->
+
+                <ffimageloading:CachedImage Aspect="AspectFill"
+                                            DownsampleToViewSize="true"
+                                            IsVisible="{Binding HasBackgroundImage}"
+                                            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                   Property=Height}"
+                                            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                  Property=Width}"
+                                            Source="{Binding SourceImage}" />
+
+                <gradient:SfGradientView IsVisible="{Binding HasBackgroundImage, Converter={converter:InverseBoolConverter}}"
+                                         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                Property=Height}"
+                                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                               Property=Width}"
+                                         Style="{DynamicResource NavBarStyle}" />
+
+                <gradient:SfGradientView IsVisible="{Binding HasBackgroundImage}"
+                                         Opacity="0.6"
+                                         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                Property=Height}"
+                                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                               Property=Width}"
+                                         Style="{StaticResource SfGradientViewStyle2}" />
+            </RelativeLayout>
+            <ContentView>
+                <ContentView.Effects>
+                    <effect:SafeAreaPaddingEffect />
+                </ContentView.Effects>
+                <Grid>
+                    <converter:TitleView Title="My Requests"
+                                         HeightRequest="57"
+                                         TitleColor="{StaticResource Gray-White}">
+                        <converter:TitleView.LeadingView>
+                            <iconize:IconButton Command="{Binding MenuButtonCommand}"
+                                                Style="{StaticResource IconButtonStyle}"
+                                                Text="{StaticResource HamburgerIcon}" />
+                        </converter:TitleView.LeadingView>
+                    </converter:TitleView>
+
+                    <Grid Grid.Row="1"
+                          Margin="0,-30,0,0">
+                        <StackLayout IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                     Orientation="Vertical"
+                                     Spacing="1">
+
+                            <Label x:Name="lblFullName"
+                                   Style="{StaticResource lblFullNameStyle}"
+                                   Text="{Binding UserInfo.EmployeeName}" />
+                            <Label x:Name="lblEmployeeNo"
+                                   Style="{StaticResource lblEmployeeIdStyle}"
+                                   Text="{Binding UserInfo.EmployeeNo}" />
+
+                            <Label x:Name="lblJobDescription"
+                                   Style="{StaticResource lblJobDescriptionStyle}"
+                                   Text="{Binding UserInfo.Position}" />
+
+                            <!--<Label Text="{Binding UserInfo.Department}"
+                                 x:Name="lblDepartmentName"
+                                 Style="{StaticResource lblDepartmentNameStyle}" />-->
+                        </StackLayout>
+
+                        <BoxView HeightRequest="10"
+                                 IsVisible="{Binding HasBackgroundImage}"
+                                 Opacity="0.4"
+                                 VerticalOptions="EndAndExpand"
+                                 Color="{StaticResource Error}" />
+                    </Grid>
+                </Grid>
+            </ContentView>
+
+            <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                   HorizontalOptions="CenterAndExpand"
+                                   IsOpen="{Binding DisplayFilter}"
+                                   VerticalOptions="CenterAndExpand">
+                <sfPopup:SfPopupLayout.PopupView>
+                    <sfPopup:PopupView AcceptButtonText="Filter"
+                                       AcceptCommand="{Binding FilterTypeCommand}"
+                                       AppearanceMode="TwoButton"
+                                       DeclineButtonText="Reset"
+                                       DeclineCommand="{Binding ResetFilteredTypeCommand}"
+                                       HeaderTitle="Transaction Types"
+                                       HeightRequest="630"
+                                       WidthRequest="350">
+                        <sfPopup:PopupView.ContentTemplate>
+                            <DataTemplate>
+                                <shared:SelectableListView BindingContext="{Binding .}" />
+                            </DataTemplate>
+                        </sfPopup:PopupView.ContentTemplate>
+
+                        <sfPopup:PopupView.PopupStyle>
+                            <sfPopup:PopupStyle AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                DeclineButtonTextColor="{StaticResource Error}"
+                                                HeaderFontAttribute="Bold"
+                                                HeaderFontFamily="{StaticResource Medium}" />
+                        </sfPopup:PopupView.PopupStyle>
+                    </sfPopup:PopupView>
+                </sfPopup:SfPopupLayout.PopupView>
+            </sfPopup:SfPopupLayout>
+
+            <StackLayout Grid.Row="2"
+                         Spacing="0">
+                <AbsoluteLayout HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   Style="{StaticResource BusyIndicatorStyle}" />
+
+                    <StackLayout AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                                 AbsoluteLayout.LayoutFlags="PositionProportional"
+                                 HorizontalOptions="CenterAndExpand"
+                                 IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                 VerticalOptions="CenterAndExpand">
+
+                        <shared:NoItemsPartialPage x:Name="Header1"
+                                                   Grid.Row="1"
+                                                   Margin="0,40"
+                                                   DetailsText="You don't have any requests yet! Tap + to create a request."
+                                                   HorizontalOptions="Center"
+                                                   IsVisible="{Binding ShowList, Converter={converter:InverseBoolConverter}}" />
+
+                        <shared:NoItemsPartialPage x:Name="Header2"
+                                                   Grid.Row="1"
+                                                   Margin="0,40"
+                                                   DetailsText="Please try again with different keywords/criteria."
+                                                   HorizontalOptions="Center"
+                                                   IsVisible="{Binding NoItems}"
+                                                   TitleText="No Result Found" />
+                    </StackLayout>
+
+                    <Grid x:Name="GridListView"
+                          Grid.Row="1"
+                          IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+                        <syncfusion:SfListView x:Name="MyRequestListView"
+                                               HeaderSize="{OnPlatform Android=50,
+                                                                       iOS=60,
+                                                                       UWP=60}"
+                                               HeaderTemplate="{StaticResource HeaderTemplateWithTransactionType}"
+                                               IsBusy="{Binding IsBusy}"
+                                               IsScrollBarVisible="False"
+                                               IsStickyGroupHeader="False"
+                                               IsStickyHeader="True"
+                                               IsVisible="{Binding ShowList}"
+                                               ItemSize="190"
+                                               ItemSpacing="0,0,0,0"
+                                               ItemsSource="{Binding MyRequest}"
+                                               LoadMoreCommand="{Binding LoadItemsCommand}"
+                                               LoadMoreCommandParameter="{Binding Source={x:Reference Name=MyRequestListView}}"
+                                               LoadMoreOption="AutoOnScroll"
+                                               SelectionGesture="Tap"
+                                               SelectionMode="None"
+                                               TapCommand="{Binding ViewItemCommand}">
+                            <syncfusion:SfListView.GroupHeaderTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid Margin="0"
+                                                  Padding="0">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackLayout Grid.Column="1"
+                                                             Padding="10,10,0,0">
+                                                    <iconize:IconImage HeightRequest="20"
+                                                                       HorizontalOptions="StartAndExpand"
+                                                                       Icon="{StaticResource DateIcon}"
+                                                                       IconColor="Gray"
+                                                                       VerticalOptions="Center"
+                                                                       WidthRequest="20" />
+                                                </StackLayout>
+                                                <StackLayout Grid.Column="1"
+                                                             Padding="40,10,0,0">
+                                                    <Label FontAttributes="Bold"
+                                                           FontFamily="{DynamicResource Medium}"
+                                                           FontSize="{StaticResource Smaller}"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           Text="{Binding Key}"
+                                                           TextColor="{DynamicResource Warning}"
+                                                           VerticalOptions="Center" />
+                                                </StackLayout>
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.GroupHeaderTemplate>
+
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid Margin="0"
+                                                  Padding="0">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <template:MyRequestTemplate Grid.Column="1"
+                                                                            BindingContext="{Binding .}" />
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+                    </Grid>
+
+                    <iconize:IconButton Command="{Binding AddNewCommand}"
+                                        IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                        Style="{DynamicResource FABStyle}" />
+                </AbsoluteLayout>
+            </StackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

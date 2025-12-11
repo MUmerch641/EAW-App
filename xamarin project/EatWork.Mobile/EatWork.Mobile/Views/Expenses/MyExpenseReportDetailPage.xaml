@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.Expenses.MyExpenseReportDetailPage"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}"
+             Title="Expense Report">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="lblFullNameStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="{StaticResource Large}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="TextColor" Value="{StaticResource Gray-White}" />
+                <Setter Property="FontFamily" Value="{DynamicResource Bold}" />
+                <Setter Property="LineBreakMode" Value="TailTruncation" />
+            </Style>
+
+            <Style x:Key="ButtonCancelStyle" TargetType="buttons:SfButton" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="EndAndExpand" />
+                <Setter Property="WidthRequest" Value="245" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid VerticalOptions="FillAndExpand"
+          HorizontalOptions="FillAndExpand"
+          x:Name="MainGrid">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{OnPlatform Android=180, iOS=200, Default=200}" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <RelativeLayout>
+                <gradient:SfGradientView RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                                         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"
+                                         Style="{DynamicResource NavBarStyle}" />
+            </RelativeLayout>
+
+            <ContentView>
+                <ContentView.Effects>
+                    <effect:SafeAreaPaddingEffect />
+                </ContentView.Effects>
+
+                <Grid>
+                    <utils:TitleView Title="Expense Report"
+                                     TitleColor="{StaticResource Gray-White}"
+                                     HeightRequest="57">
+                        <utils:TitleView.LeadingView>
+                            <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                                Command="{Binding BackButtonCommand}"
+                                                Style="{StaticResource IconButtonStyle}" />
+                        </utils:TitleView.LeadingView>
+
+                        <utils:TitleView.TrailingView>
+                            <StackLayout Orientation="Horizontal">
+                                <!--<iconize:IconButton Text="{StaticResource PrintIcon}"
+                                     Command="{Binding PrintFileCommand}"
+                                     Style="{StaticResource IconButtonStyle}" />-->
+                            </StackLayout>
+                        </utils:TitleView.TrailingView>
+                    </utils:TitleView>
+
+                    <Grid Grid.Row="1"
+                          Margin="20,-30,20,0">
+
+                        <StackLayout Orientation="Vertical">
+
+                            <Label x:Name="lblFullName"
+                                   Style="{StaticResource lblFullNameStyle}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Php " />
+                                        <Span Text="{Binding Holder.TotalAmountDisplay}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Padding="0,10,0,0"
+                                  Style="{StaticResource GridMyScheduleDetails}"
+                                  BackgroundColor="{DynamicResource Transparent}">
+
+                                <Label Style="{StaticResource LabelStyleMySchedule}"
+                                       FontSize="{DynamicResource Small}"
+                                       Text="Expense Report No."
+                                       Margin="0,0"
+                                       FontFamily="{DynamicResource Medium}"
+                                       TextColor="{DynamicResource Gray-White}" />
+
+                                <Label Style="{StaticResource LabelStyleMySchedule}"
+                                       FontSize="{DynamicResource Small}"
+                                       Text="{Binding Holder.ReportNo}"
+                                       Margin="15,0,0,0"
+                                       FontFamily="{DynamicResource Medium}"
+                                       TextColor="{DynamicResource Gray-White}"
+                                       Grid.Column="1" />
+
+                                <Label Style="{StaticResource LabelStyleMySchedule}"
+                                       FontSize="{DynamicResource Small}"
+                                       Text="Date"
+                                       Margin="0,0"
+                                       FontFamily="{DynamicResource Medium}"
+                                       TextColor="{DynamicResource Gray-White}"
+                                       Grid.Row="1" />
+
+                                <Label Style="{StaticResource LabelStyleMySchedule}"
+                                       FontSize="{DynamicResource Small}"
+                                       Text="{Binding Holder.DateDisplay}"
+                                       Margin="15,0,0,0"
+                                       FontFamily="{DynamicResource Medium}"
+                                       TextColor="{DynamicResource Gray-White}"
+                                       Grid.Column="1"
+                                       Grid.Row="1" />
+                            </Grid>
+                        </StackLayout>
+                    </Grid>
+                </Grid>
+            </ContentView>
+
+            <StackLayout Grid.Row="2"
+                         Spacing="0">
+                <AbsoluteLayout VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand">
+
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyle}"
+                                                   IsBusy="{Binding IsBusy}" />
+
+                    <StackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 VerticalOptions="FillAndExpand"
+                                 Padding="20,0"
+                                 Margin="0,10"
+                                 Spacing="10">
+                        <ScrollView HorizontalScrollBarVisibility="Never"
+                                    VerticalScrollBarVisibility="Never">
+                            <StackLayout Margin="0,0,0,0"
+                                         BindableLayout.ItemsSource="{Binding Holder.Details}"
+                                         x:Name="Details">
+
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout VerticalOptions="StartAndExpand"
+                                                     HorizontalOptions="StartAndExpand"
+                                                     Padding="0,15">
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridMyScheduleDetails}"
+                                                  BackgroundColor="{DynamicResource Transparent}">
+
+                                                <StackLayout Padding="0,0">
+                                                    <iconize:IconImage Icon="{Binding IconEquivalent}"
+                                                                       HeightRequest="23"
+                                                                       WidthRequest="23"
+                                                                       IconColor="{DynamicResource Gray-900}"
+                                                                       HorizontalOptions="StartAndExpand"
+                                                                       VerticalOptions="Center" />
+                                                </StackLayout>
+
+                                                <StackLayout Padding="35,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="{Binding ExpenseType}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource SemiBold}" />
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" Margin="15,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="{Binding ExpenseDateDisplay}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}" />
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                                                     Style="{StaticResource SeparatorStyle}"
+                                                     BackgroundColor="{DynamicResource Gray-300}" />
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridMyScheduleDetails}"
+                                                  BackgroundColor="{DynamicResource Transparent}">
+
+                                                <StackLayout Padding="35,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="Receipt Reference"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}" />
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" Margin="15,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="{Binding ORNo}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}" />
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridMyScheduleDetails}"
+                                                  BackgroundColor="{DynamicResource Transparent}">
+
+                                                <StackLayout Padding="35,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="{Binding VendorName}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}" />
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" Margin="15,0,0,0">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}">
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="Php " />
+                                                                <Span Text="{Binding AmountDisplay}" />
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridMyScheduleDetails}"
+                                                  BackgroundColor="{DynamicResource Transparent}">
+
+                                                <StackLayout Padding="35,0,0,0"
+                                                             Grid.ColumnSpan="2">
+                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                           FontSize="{DynamicResource Smaller}"
+                                                           Text="{Binding Notes}"
+                                                           Margin="0,0"
+                                                           FontFamily="{DynamicResource Regular}" />
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!--VIEW FILE ATTACHMENT-->
+                                            <Grid ColumnSpacing="0"
+                                                  RowSpacing="1"
+                                                  Margin="0,0"
+                                                  Style="{StaticResource GridMyScheduleDetails}"
+                                                  ColumnDefinitions="60*,40*"
+                                                  IsVisible="{Binding HasAttachment}">
+
+                                                <StackLayout Padding="35,0,0,0"
+                                                             Grid.ColumnSpan="2">
+                                                    <Label Text="view attachment"
+                                                           FontSize="{DynamicResource Tiny}"
+                                                           FontAttributes="Bold"
+                                                           TextDecorations="Underline"
+                                                           TextColor="{DynamicResource HyperLink}"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           FontFamily="{DynamicResource Medium}"
+                                                           VerticalOptions="Center">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Path=BindingContext.ViewFileCommand, Source={x:Reference Details}}"
+                                                                                  CommandParameter="{Binding .}" />
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                </StackLayout>
+                                            </Grid>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </ScrollView>
+
+                        <!--TO DISPLAY BOTTOM ITEM ON LIST IF MULTIPLE MODE-->
+                        <StackLayout Margin="0,40"
+                                     IsVisible="{Binding Holder.ForSubmission}" />
+                    </StackLayout>
+
+                    <StackLayout x:Name="ScanView"
+                                 AbsoluteLayout.LayoutBounds="0,1,1,0.170"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 BackgroundColor="{DynamicResource Gray-Bg}"
+                                 IsVisible="{Binding Holder.ForSubmission}">
+
+                        <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                                 Style="{StaticResource SeparatorStyle}"
+                                 BackgroundColor="{DynamicResource Gray-300}" />
+
+                        <StackLayout Margin="0,5,0,5"
+                                     VerticalOptions="End"
+                                     Padding="{OnIdiom Default='0, 0, 0, 0', Phone=0}"
+                                     IsVisible="{Binding Holder.IsMultipleMode}"
+                                     BackgroundColor="{DynamicResource Transparent}">
+
+                            <FlexLayout BackgroundColor="{DynamicResource Transparent}"
+                                        JustifyContent="SpaceEvenly">
+
+                                <buttons:SfButton HorizontalOptions="End"
+                                                  BackgroundColor="{StaticResource Transparent}"
+                                                  Command="{Binding GoBackPageCommand}"
+                                                  IsVisible="{Binding Holder.IsEnabled}">
+                                    <buttons:SfButton.Content>
+                                        <Grid Margin="0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="50" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <iconize:IconButton Text="{StaticResource CancelIcon}"
+                                                                Style="{StaticResource BtnRequestStyle}" />
+                                            <Label Text="Cancel"
+                                                   Style="{StaticResource FooterButtonLabelStyle}" />
+                                        </Grid>
+                                    </buttons:SfButton.Content>
+                                </buttons:SfButton>
+
+                                <buttons:SfButton HorizontalOptions="End"
+                                                  BackgroundColor="{StaticResource Transparent}"
+                                                  Command="{Binding SubmitExpenseReportCommand}"
+                                                  IsVisible="{Binding Holder.IsEnabled}">
+                                    <buttons:SfButton.Content>
+                                        <Grid Margin="0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="50" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <iconize:IconButton Text="{StaticResource SaveIcon}"
+                                                                Style="{StaticResource BtnRequestStyle}" />
+                                            <Label Text="Submit"
+                                                   Style="{StaticResource FooterButtonLabelStyle}" />
+                                        </Grid>
+                                    </buttons:SfButton.Content>
+                                </buttons:SfButton>
+
+                                <StackLayout IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}">
+                                    <buttons:SfButton Style="{StaticResource ButtonCancelStyle}"
+                                                      Command="{Binding CancelRequestCommand}"
+                                                      Text="Cancel"
+                                                      IsVisible="{Binding FormHelper.ShowCancelButton}"
+                                                      VerticalOptions="Center"
+                                                      Margin="0,10"
+                                                      BackgroundColor="{StaticResource Cancel}" />
+                                </StackLayout>
+
+                             
+                            </FlexLayout>
+                        </StackLayout>
+                    </StackLayout>
+                </AbsoluteLayout>
+            </StackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

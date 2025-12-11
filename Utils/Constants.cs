@@ -250,20 +250,33 @@ public static class RequestStatusValue
 public static class ApiEndpoints
 {
     public const string BaseUrl = "https://mobile-api.everythingatworksupport.com:443/";
+    public const string BaseApiUrl = "https://mobile-api.everythingatworksupport.com:443"; // Updated to match Swagger
+    public const string SetupClient = "api/v1/authentication/client-setup"; // Updated to match Swagger
     public const string Dashboard = "api/dashboard";
     public const string MenuItems = "api/menu";
     public const string Leave = "api/leave";
     public const string Overtime = "api/overtime";
     public const string Attendance = "api/attendance";
+    public const string PerformanceEvaluation = "api/performanceevaluation";
+    public const string IndividualObjectives = "api/individual-objective";
+
+    // Schedule endpoints
+    public const string MySchedule = "api/workschedule/my-schedule";
+    public const string CurrentSchedule = "api/workschedule/current-schedule";
+    public const string SubmitChangeWorkScheduleRequest = "api/changeworkschedule";
+    public const string SubmitChangeRestdayRequest = "api/changerestday";
+
+    // Workflow/Generics
+    public const string GetMyRequests = "api/v1/workflow/my-requests";
 
     // Leave endpoints
-    public const string GetLeaveRequests = "api/leave/requests";
+    public const string GetLeaveRequests = "api/calendar/list"; // Legacy endpoint (same as Xamarin)
     public const string GetLeaveRequestById = "api/leave/requests/{0}";
     public const string CreateLeaveRequest = "api/v1/leave";
     public const string UpdateLeaveRequest = "api/leave/requests/{0}";
     public const string SubmitLeaveRequest = "api/leave/requests/{0}/submit";
     public const string DeleteLeaveRequest = "api/leave/requests/{0}";
-    public const string GetLeaveTypes = "api/leave/types";
+    public const string GetLeaveTypes = "api/v1/leave/types"; // Updated to v1 (Guessing pattern)
     public const string CalculateLeaveSummary = "api/leave/calculate-summary";
 
     // Overtime endpoints
@@ -284,7 +297,7 @@ public static class ApiEndpoints
     public const string DeleteOfficialBusinessRequest = "api/officialbusiness/requests/{0}";
 
     // Time Entry endpoints
-    public const string GetTimeEntries = "api/timeentry/entries";
+    public const string GetTimeEntries = "api/timeentrylogs/my-timelogs";
     public const string GetTimeEntryById = "api/timeentry/entries/{0}";
     public const string CreateTimeEntry = "api/timeentry/entries";
     public const string UpdateTimeEntry = "api/timeentry/entries/{0}";
@@ -300,19 +313,24 @@ public static class ApiEndpoints
     public const string DisapproveRequest = "api/approvals/{0}/disapprove";
 
     // Attendance endpoints
-    public const string GetAttendanceRecords = "api/attendance/records";
+    public const string GetAttendanceRecords = "api/myattendance/list";
     public const string GetAttendanceSummary = "api/attendance/summary";
 
+    // Online Time Entry
+    public const string SubmitOnlineTimeEntryRequest = "api/onlinetimeentry";
+    public const string GetOnlineTimeEntryFormHelper = "api/onlinetimeentry/initialize-ote";
+
     // User Profile endpoints
-public const string GetUserProfile = "api/v1/employee/{0}"; 
-        public const string UpdateUserProfile = "api/v1/employee/update"; 
+    public const string GetUserProfile = "api/v1/employee/{0}/personal-details"; 
+    public const string UpdateUserProfile = "api/v1/employee/update"; 
 
     // Authentication endpoints
-    public const string Login = "api/authentication/login";
-    public const string Register = "api/authentication/employee-registration";
-    public const string ForgotPassword = "api/authentication/forgot-password";
-    public const string RefreshToken = "api/authentication/refresh-token";
-    public const string ValidateToken = "api/authentication/validate-token";
+    // Authentication endpoints
+    public const string Login = "api/v1/authentication/login";
+    public const string Register = "api/v1/authentication/employee-registration";
+    public const string ForgotPassword = "api/v1/authentication/forgot-password";
+    public const string RefreshToken = "api/v1/authentication/refresh-token";
+    public const string ValidateToken = "api/v1/authentication/validate-token";
     public const string Logout = "api/authentication/logout";
 
     // File Upload endpoints
@@ -331,8 +349,17 @@ public const string GetUserProfile = "api/v1/employee/{0}";
 
     // EXPENSES
     public const string GetExpenseList = "api/v1/expense/list";
-    public const string CreateExpense = "api/v1/expense";
+    public const string CreateExpense = "api/expense"; // Legacy (same as Xamarin)
     public const string GetExpenseSetup = "api/v1/expense/expense-setup-list"; // Dropdown ke liye
+
+    // Employee Relations
+    public const string Suggestion = "api/v1/suggestion";
+    public const string Questionnaire = "api/v1/questionnaire";
+    public const string FormAnswer = "api/v1/form-answer";
+    
+    // Employee Directory
+    public const string GetEmployeeList = "api/employee/list";
+    public const string GetEmployeeById = "api/employee";
 }
 
 public enum SourceEnum

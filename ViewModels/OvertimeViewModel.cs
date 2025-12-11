@@ -2,38 +2,43 @@ using System.Windows.Input;
 using MauiHybridApp.Commands;
 using MauiHybridApp.Models.Schedule;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using MauiHybridApp.Utils;
 using Microsoft.AspNetCore.Components;
+using System.Collections.ObjectModel;
 
 namespace MauiHybridApp.ViewModels;
 
 public class OvertimeViewModel : BaseViewModel
 {
     private readonly IOvertimeDataService _overtimeService;
-    private readonly NavigationManager _navigationManager;
+    private readonly INavigationService _navigationService;
     
     private OvertimeModel _overtimeRequest;
     private string _successMessage = string.Empty;
+    private ObservableCollection<OvertimeModel> _recentRequests;
 
     public OvertimeViewModel(
         IOvertimeDataService overtimeService,
-        NavigationManager navigationManager)
+        INavigationService navigationService)
     {
         _overtimeService = overtimeService ?? throw new ArgumentNullException(nameof(overtimeService));
-        _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         
         _overtimeRequest = new OvertimeModel
         {
             OvertimeDate = DateTime.Today,
-            StartTime = DateTime.Today.AddHours(8),
-            EndTime = DateTime.Today.AddHours(17),
+            StartTime = DateTime.Today.AddHours(17), // Default to 5 PM
+            EndTime = DateTime.Today.AddHours(19),   // Default to 7 PM
             StatusId = RequestStatusValue.Draft,
             SourceId = (short)SourceEnum.Mobile,
             DateFiled = DateTime.Now
         };
         
+        _recentRequests = new ObservableCollection<OvertimeModel>();
+        
         SubmitCommand = new AsyncRelayCommand(SubmitRequestAsync);
-        GoBackCommand = new RelayCommand(GoBack);
+        GoBackCommand = new AsyncRelayCommand(GoBackAsync);
     }
 
     public OvertimeModel OvertimeRequest
@@ -41,11 +46,11 @@ public class OvertimeViewModel : BaseViewModel
         get => _overtimeRequest;
         set => SetProperty(ref _overtimeRequest, value);
     }
-
-    public string SuccessMessage
+    
+    public ObservableCollection<OvertimeModel> RecentRequests
     {
-        get => _successMessage;
-        private set => SetProperty(ref _successMessage, value);
+        get => _recentRequests;
+        set => SetProperty(ref _recentRequests, value);
     }
 
     public decimal TotalHours => CalculateHours();
@@ -54,12 +59,19 @@ public class OvertimeViewModel : BaseViewModel
     public ICommand SubmitCommand { get; }
     public ICommand GoBackCommand { get; }
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
         await ExecuteBusyAsync(async () =>
         {
-            await Task.CompletedTask;
-        }, "Loading...");
+            // Load history for the last 30 days to show recent requests
+            var history = await _overtimeService.GetOvertimeHistoryAsync(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30));
+            
+            // Sort by date descending
+            var sorted = history.OrderByDescending(x => x.OvertimeDate).ToList();
+            
+            RecentRequests = new ObservableCollection<OvertimeModel>(sorted);
+            
+        }, "Loading overtime data...");
     }
 
     private decimal CalculateHours()
@@ -80,6 +92,11 @@ public class OvertimeViewModel : BaseViewModel
         {
             ClearError();
             SuccessMessage = string.Empty;
+            
+            // Update calculated fields before submission
+            OvertimeRequest.OROTHrs = CalculateHours(); 
+            // Note: In a real scenario, we might split OROT/NSOT based on time of day (night shift diff),
+            // but for this MVP we put total into OROTHrs (Regular Overtime).
 
             var result = await _overtimeService.SubmitOvertimeRequestAsync(OvertimeRequest);
 
@@ -87,7 +104,7 @@ public class OvertimeViewModel : BaseViewModel
             {
                 SuccessMessage = "Overtime request submitted successfully!";
                 await Task.Delay(1500);
-                GoBack();
+                await GoBackAsync();
             }
             else
             {
@@ -117,8 +134,8 @@ public class OvertimeViewModel : BaseViewModel
         return true;
     }
 
-    private void GoBack()
+    private async Task GoBackAsync()
     {
-        _navigationManager.NavigateTo("/dashboard");
+        await _navigationService.NavigateBackAsync();
     }
 }

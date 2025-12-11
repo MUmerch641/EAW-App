@@ -1,0 +1,132 @@
+@page "/time-off-request"
+@using MauiHybridApp.ViewModels
+@inject TimeOffViewModel ViewModel
+@implements IDisposable
+
+<div class="page-container scrollable">
+    <PageHeader 
+        Title="Time Off Request" 
+        Subtitle="Submit a time off request" 
+        IconClass="fa-clock" 
+        ShowBackButton="true" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading..." />
+    }
+    else
+    {
+        <div class="form-container">
+            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+            {
+                <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
+            }
+            
+            @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+            {
+                <AlertMessage Type="success" Message="@ViewModel.SuccessMessage" />
+            }
+            
+            <div class="form-section">
+                <div class="card p-4">
+                    <h3 class="section-title mb-4">Time Off Details</h3>
+                    
+                    <FormGroup Label="Date" IsRequired="true">
+                        <input type="date" 
+                               class="modern-input" 
+                               value="@ViewModel.OBRequest.OfficialBusinessDate.ToString("yyyy-MM-dd")"
+                               @onchange="@((e) => ViewModel.OBRequest.OfficialBusinessDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
+                    </FormGroup>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <FormGroup Label="Start Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@(ViewModel.OBRequest.StartTime?.ToString("HH:mm") ?? "08:00")"
+                                       @onchange="@((e) => ViewModel.OBRequest.StartTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+                        </div>
+                        <div class="col-6">
+                            <FormGroup Label="End Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@(ViewModel.OBRequest.EndTime?.ToString("HH:mm") ?? "17:00")"
+                                       @onchange="@((e) => ViewModel.OBRequest.EndTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card my-3 p-3 bg-light rounded text-center">
+                        <div class="info-item">
+                            <span class="info-label text-muted">Total Hours:</span>
+                            <span class="info-value fw-bold text-primary">@ViewModel.TotalHours.ToString("F2") hours</span>
+                        </div>
+                    </div>
+                    
+                    <FormGroup Label="Purpose/Reason" IsRequired="true">
+                        <textarea class="modern-input" 
+                                  rows="4" 
+                                  placeholder="Enter reason for time off..."
+                                  @bind="ViewModel.OBRequest.Reason"></textarea>
+                    </FormGroup>
+                    
+                    <FormGroup Label="Remarks">
+                        <textarea class="modern-input" 
+                                  rows="3" 
+                                  placeholder="Additional remarks (optional)..."
+                                  @bind="ViewModel.OBRequest.Remarks"></textarea>
+                    </FormGroup>
+                
+
+                    <div class="form-actions mt-4 d-flex gap-2">
+                        <div class="flex-grow-1">
+                             <ActionButton 
+                                Text="Submit Request" 
+                                OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="true"
+                                IconClass="fa-paper-plane" />
+                        </div>
+                        <div class="flex-grow-1">
+                             <ActionButton 
+                                Text="Cancel" 
+                                OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="false"
+                                IconClass="fa-times" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private System.ComponentModel.PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+        
+        await ViewModel.InitializeAsync();
+    }
+    
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null && ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        
+        // Don't dispose ViewModel here if it's transient/scoped and managed by DI container lifetime for the page,
+        // but if we created it manually or if we want to ensure resources are freed, we can.
+        // Given it's injected, usually Blazor handles disposal if the VM implements IDisposable.
+        // Our BaseViewModel implements IDisposable via ObservableObject (usually), checking BaseViewModel...
+        // BaseViewModel inherits ObservableObject.
+        // For safety, leaving it to container or specific logic if VM holds heavy resources.
+    }
+}

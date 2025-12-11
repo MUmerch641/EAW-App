@@ -1,0 +1,1007 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.Payslips.MyPayslipDetailPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             Title="My Payslip"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+        <Style x:Key="HeaderStyle"
+               BasedOn="{StaticResource PriceLabelStyle}"
+               TargetType="Label">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+            <Setter Property="LineHeight" Value="{OnPlatform Android=1.25, Default=-1}" />
+            <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+            <Setter Property="Margin" Value="0,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowSpacing="0" Style="{DynamicResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <converter:TitleView x:Name="TitleView"
+                                 Title="My Payslip"
+                                 TitleColor="{DynamicResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </converter:TitleView.LeadingView>
+
+                <converter:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Command="{Binding PrintPayslipCommand}"
+                                            IsVisible="false"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Text="{StaticResource PrintIcon}" />
+                    </StackLayout>
+                </converter:TitleView.TrailingView>
+            </converter:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2" Spacing="0">
+            <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               IsBusy="{Binding IsBusy}"
+                                               Style="{StaticResource BusyIndicatorStyle}" />
+
+                <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            HorizontalOptions="StartAndExpand"
+                            HorizontalScrollBarVisibility="Never"
+                            IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                            VerticalOptions="StartAndExpand"
+                            VerticalScrollBarVisibility="Never">
+                    <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand">
+
+                        <!--  HEADER  -->
+                        <converter:CustomShadowFrame Margin="0,0,0,0"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+
+                            <StackLayout HorizontalOptions="StartAndExpand"
+                                         Spacing="5"
+                                         VerticalOptions="StartAndExpand">
+
+                                <Grid Style="{DynamicResource GridMyScheduleDetails}">
+
+                                    <StackLayout Padding="0,0">
+                                        <iconize:IconImage HeightRequest="18"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           Icon="{StaticResource DateIcon}"
+                                                           IconColor="{DynamicResource HyperLink}"
+                                                           VerticalOptions="Center"
+                                                           WidthRequest="18" />
+                                    </StackLayout>
+
+                                    <StackLayout Padding="30,0,0,0">
+                                        <Label FontFamily="{DynamicResource Medium}"
+                                               FontSize="{DynamicResource Small}"
+                                               HorizontalOptions="StartAndExpand"
+                                               Style="{StaticResource LabelStyleMySchedule}"
+                                               Text="Issued Date:"
+                                               VerticalOptions="Center" />
+                                    </StackLayout>
+
+                                    <Label Grid.Column="1"
+                                           Margin="0,0"
+                                           FontFamily="{DynamicResource Medium}"
+                                           FontSize="{DynamicResource Small}"
+                                           Style="{StaticResource LabelStyleMySchedule}"
+                                           Text="{Binding Holder.Model.IssuedDateDisplay}" />
+                                </Grid>
+
+                                <Grid Style="{StaticResource GridMyScheduleDetails}">
+                                    <StackLayout Padding="0,0">
+                                        <iconize:IconImage HeightRequest="18"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           Icon="{StaticResource DateIcon}"
+                                                           IconColor="{DynamicResource Error}"
+                                                           VerticalOptions="Center"
+                                                           WidthRequest="18" />
+                                    </StackLayout>
+                                    <StackLayout Padding="30,0,0,0">
+                                        <Label FontFamily="{DynamicResource Medium}"
+                                               FontSize="{DynamicResource Small}"
+                                               HorizontalOptions="StartAndExpand"
+                                               Style="{StaticResource LabelStyleMySchedule}"
+                                               Text="Period:"
+                                               VerticalOptions="Center" />
+                                    </StackLayout>
+
+                                    <Label Grid.Column="1"
+                                           Margin="0,0"
+                                           FontFamily="{DynamicResource Medium}"
+                                           FontSize="{DynamicResource Small}"
+                                           LineBreakMode="NoWrap"
+                                           MaxLines="2"
+                                           Style="{DynamicResource LabelStyleMySchedule}"
+                                           Text="{Binding Holder.Model.PeriodDate}" />
+                                </Grid>
+
+                                <Grid Style="{StaticResource GridMyScheduleDetails}">
+                                    <Label FontFamily="{DynamicResource Medium}"
+                                           FontSize="{DynamicResource Small}"
+                                           HorizontalOptions="StartAndExpand"
+                                           Style="{StaticResource LabelStyleMySchedule}"
+                                           Text="Reference Number:"
+                                           VerticalOptions="Center" />
+
+                                    <Label Grid.Column="1"
+                                           Margin="0,0"
+                                           FontFamily="{DynamicResource Medium}"
+                                           FontSize="{DynamicResource Small}"
+                                           Style="{DynamicResource LabelStyleMySchedule}"
+                                           Text="{Binding Holder.Model.ReferenceNumber}" />
+                                </Grid>
+
+                                <Grid Style="{StaticResource GridMyScheduleDetails}">
+                                    <Label Grid.ColumnSpan="2"
+                                           FontFamily="{DynamicResource Medium}"
+                                           FontSize="{DynamicResource Small}"
+                                           HorizontalOptions="StartAndExpand"
+                                           Style="{StaticResource LabelStyleMySchedule}"
+                                           Text="{Binding Holder.Model.PayrollType}"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </StackLayout>
+                        </converter:CustomShadowFrame>
+
+                        <!--  EARNINGS  -->
+                        <converter:CustomShadowFrame Margin="0,8,0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.Earnings, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Earnings" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.Earnings, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage x:Name="ErrorImage"
+                                                                      Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label x:Name="ContentText"
+                                                       Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No earnings available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.Earnings, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       LineBreakMode="NoWrap"
+                                                       MaxLines="5"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="1"
+                                                       Padding="0,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Hours"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.Earnings}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="50*,20*,30*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="1"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding HoursDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+
+                        <!--  BENEFITS AND ALLOWANCES  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.Allowances, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Benefits and Allowances" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.Allowances, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No benefits/allowances available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.Allowances, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.Allowances}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+
+                        <!--  GROSS PAY  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     BackgroundColor="{DynamicResource Gray-200}"
+                                                     BorderColor="{DynamicResource Gray-200}"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Label Style="{StaticResource HeaderStyle}" Text="Gross Pay" />
+
+                                <Label Grid.Column="1"
+                                       HorizontalOptions="End"
+                                       Style="{StaticResource HeaderStyle}"
+                                       Text="{Binding Holder.Model.GrossPayDisplay}" />
+                            </Grid>
+                        </converter:CustomShadowFrame>
+
+                        <!--  DEDUCTIONS  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.Deductions, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Deductions" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.Deductions, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No deductions available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.Deductions, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.Deductions}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+
+                        <!--  LOAN PAYMENTS  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.Loans, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Loan Payments" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.Loans, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No loans available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.Loans, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.Loans}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+
+                        <!--  TOTAL DEDUCTIONS  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     BackgroundColor="{DynamicResource Gray-200}"
+                                                     BorderColor="{DynamicResource Gray-200}"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Label Style="{StaticResource HeaderStyle}" Text="Total Deductions" />
+
+                                <Label Grid.Column="1"
+                                       Margin="0,0"
+                                       FontFamily="{DynamicResource SemiBold}"
+                                       FontSize="16"
+                                       HorizontalOptions="End"
+                                       LineHeight="{OnPlatform Android=1.25,
+                                                               Default=-1}"
+                                       Style="{StaticResource PriceLabelStyle}"
+                                       Text="{Binding Holder.Model.TotalDeductionDisplay}"
+                                       TextColor="{DynamicResource Gray-900}" />
+                            </Grid>
+                        </converter:CustomShadowFrame>
+
+                        <!--  NET PAY  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     BackgroundColor="{DynamicResource Gray-200}"
+                                                     BorderColor="{DynamicResource Gray-200}"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Label Style="{StaticResource HeaderStyle}" Text="Net Pay" />
+
+                                <Label Grid.Column="1"
+                                       HorizontalOptions="End"
+                                       Style="{StaticResource HeaderStyle}"
+                                       Text="{Binding Holder.Model.NetPayDisplay}"
+                                       TextColor="{DynamicResource HyperLink}" />
+                            </Grid>
+                        </converter:CustomShadowFrame>
+
+                        <!--  YEAR TO DATE  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.YTDS, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Year-to-date" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.YTDS, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No earnings/deductions available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.YTDS, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.YTDS}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+
+                        <!--  RUNNING BALANCE  -->
+                        <converter:CustomShadowFrame Margin="0,4"
+                                                     Padding="0,20"
+                                                     CornerRadius="0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     IsVisible="{Binding Holder.RunningBalances, Converter={converter:ListToInverseBoolConverter}}"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <control:SfExpander HeaderBackgroundColor="{DynamicResource Gray-White}" HeaderIconPosition="End">
+                                    <control:SfExpander.Header>
+                                        <StackLayout Padding="20,0">
+                                            <Label Style="{StaticResource HeaderStyle}" Text="Running Balance" />
+                                        </StackLayout>
+                                    </control:SfExpander.Header>
+                                    <control:SfExpander.Content>
+                                        <StackLayout Padding="0,10" VerticalOptions="StartAndExpand">
+
+                                            <StackLayout Padding="20,0,20,0"
+                                                         BackgroundColor="Transparent"
+                                                         HorizontalOptions="Center"
+                                                         IsVisible="{Binding Holder.RunningBalances, Converter={converter:ListToBoolConverter}}"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                                                         Desktop='0',
+                                                                                         Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      FadeAnimationEnabled="False"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                                                            AndroidPhonePortrait=170,
+                                                                                                                            AndroidPhoneLandscape=140,
+                                                                                                                            iOSPhonePortrait=170,
+                                                                                                                            iOSPhoneLandscape=140}"
+                                                                      HorizontalOptions="Center"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250,
+                                                                                               Desktop=300,
+                                                                                               Tablet=300}" />
+
+                                                <!--  Label to display content  -->
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Text="No items available to display."
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <Grid ColumnDefinitions="*"
+                                                  IsVisible="{Binding Holder.RunningBalances, Converter={converter:ListToInverseBoolConverter}}"
+                                                  RowDefinitions="Auto,*,Auto">
+
+                                                <BoxView Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+
+                                                <Label Grid.Row="1"
+                                                       Padding="20,5,0,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="Start"
+                                                       Text="Description"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="2"
+                                                       Padding="0,5,20,5"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="{DynamicResource Small}"
+                                                       HorizontalOptions="End"
+                                                       Text="Amount"
+                                                       TextColor="{DynamicResource Gray-800}"
+                                                       VerticalOptions="Center" />
+
+                                                <BoxView Grid.Row="2"
+                                                         Grid.ColumnSpan="3"
+                                                         BackgroundColor="{DynamicResource Gray-300}"
+                                                         HeightRequest="{OnIdiom Default=1,
+                                                                                 Desktop=0}"
+                                                         Style="{StaticResource SeparatorStyle}" />
+                                            </Grid>
+
+                                            <StackLayout Padding="20,0,20,0" BindableLayout.ItemsSource="{Binding Holder.RunningBalances}">
+
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="*" RowDefinitions="Auto">
+
+                                                            <Label Grid.ColumnSpan="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="Start"
+                                                                   Text="{Binding Description}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+
+                                                            <Label Grid.Column="2"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{DynamicResource Small}"
+                                                                   HorizontalOptions="End"
+                                                                   Text="{Binding AmountDisplay}"
+                                                                   TextColor="{DynamicResource Gray-800}"
+                                                                   VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </control:SfExpander.Content>
+                                </control:SfExpander>
+                            </StackLayout>
+
+                        </converter:CustomShadowFrame>
+                    </StackLayout>
+                </ScrollView>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

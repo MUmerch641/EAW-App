@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.Expenses.MyExpensesPage"
+             Title="My Expenses"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <!--<ContentPage.Behaviors>
+         <behavior:MyExpensesPageSelectionBehavior />
+         </ContentPage.Behaviors>-->
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:SelectionModeToVisbileConverter x:Key="SelectionModeToVisbileConverter" />
+            <utils:CustomConverter x:Key="EventArgs" />
+            <Style x:Key="TitleLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-900}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+            <Style x:Key="DescriptionLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowSpacing="0" Style="{DynamicResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView IsVisible="{Binding Holder.IsMultipleMode,Converter={utils:InverseBoolConverter}}">
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <utils:TitleView Title="My Expenses"
+                             TitleColor="{DynamicResource Gray-White}"
+                             x:Name="TitleView">
+                <utils:TitleView.LeadingView>
+
+                    <iconize:IconButton Text="{StaticResource HamburgerIcon}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Command="{Binding MenuButtonCommand}" />
+                </utils:TitleView.LeadingView>
+
+                <utils:TitleView.TrailingView>
+                    <iconize:IconButton Text="{StaticResource MultiSelectListIcon}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Command="{Binding MultiSelectModeCommand}"
+                                        IsVisible="{Binding ShowList}" />
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <ContentView IsVisible="{Binding Holder.IsMultipleMode}">
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <Grid ColumnSpacing="0"
+                  RowSpacing="8"
+                  Padding="0,8,0,0"
+                  VerticalOptions="StartAndExpand">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="8" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1" />
+                </Grid.RowDefinitions>
+
+                <buttons:SfButton HeightRequest="40"
+                                  Text="{Binding Holder.SelectAllText}"
+                                  CornerRadius="4"
+                                  FontSize="14"
+                                  HorizontalOptions="Start"
+                                  VerticalOptions="Center"
+                                  HorizontalTextAlignment="Center"
+                                  VerticalTextAlignment="Center"
+                                  BackgroundColor="{DynamicResource Transparent}"
+                                  FontFamily="{DynamicResource Medium}"
+                                  TextColor="{DynamicResource Gray-White}"
+                                  Command="{Binding SelectAllCommand}"
+                                  Grid.Column="1" />
+
+                <Label LineHeight="{OnPlatform Android='1.5'}"
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Center"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       LineBreakMode="TailTruncation"
+                       FontFamily="{DynamicResource Medium}"
+                       TextColor="{DynamicResource Gray-White}"
+                       Grid.Column="2">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding Holder.SelectedTaskCount}" />
+                            <Span Text=" " />
+                            <Span Text="Item/s Selected" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <buttons:SfButton HeightRequest="40"
+                                  Text="Cancel"
+                                  CornerRadius="4"
+                                  FontSize="14"
+                                  HorizontalOptions="End"
+                                  VerticalOptions="Center"
+                                  HorizontalTextAlignment="Center"
+                                  VerticalTextAlignment="Center"
+                                  BackgroundColor="{DynamicResource Transparent}"
+                                  FontFamily="{DynamicResource Medium}"
+                                  TextColor="{DynamicResource Gray-White}"
+                                  Command="{Binding RegularSelectModeCommand}"
+                                  Grid.Column="3"
+                                  x:Name="CancelMultiSelect" />
+            </Grid>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             HorizontalOptions="CenterAndExpand"
+                             VerticalOptions="CenterAndExpand">
+
+                    <local:NoItemsPartialPage DetailsText="You don't have any expenses yet! Tap + to create a expense."
+                                              IsVisible="{Binding ShowList, Converter={utils:InverseBoolConverter}}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+
+                    <local:NoItemsPartialPage DetailsText="Please try again with different keywords/criteria."
+                                              TitleText="No Result Found"
+                                              IsVisible="{Binding NoItems}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+                </StackLayout>
+
+                <ScrollView AbsoluteLayout.LayoutFlags="All"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalScrollBarVisibility="Never"
+                            VerticalScrollBarVisibility="Never">
+
+                    <StackLayout Padding="16"
+                                 Spacing="16"
+                                 IsVisible="{Binding ShowList}">
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                               VerticalOptions="CenterAndExpand"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding DisplayFilter}">
+                            <sfPopup:SfPopupLayout.PopupView>
+                                <sfPopup:PopupView HeaderTitle="Filters" HeightRequest ="550" WidthRequest="350"
+                                                   AcceptButtonText="Filter"
+                                                   AcceptCommand="{Binding FilterTypeCommand}"
+                                                   DeclineButtonText="Reset"
+                                                   AppearanceMode="TwoButton"
+                                                   DeclineCommand="{Binding ResetFilteredTypeCommand}">
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <ScrollView>
+                                                <StackLayout BackgroundColor="{DynamicResource Gray-White}" Spacing="0" Padding="16,0">
+
+                                                    <Label FontFamily="{DynamicResource Medium}"
+                                                           Margin="0,0,0,4"
+                                                           HeightRequest="18"
+                                                           FontSize="12"
+                                                           Text="Start Date"
+                                                           TextColor="{DynamicResource Gray-800}" />
+
+                                                    <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                               Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                               Hint="Start Date "
+                                                                               EnableFloating="False">
+
+                                                        <utils:NullableDatePicker x:Name="StartDate"
+                                                                                  Style="{StaticResource DatePickerStyle}"
+                                                                                  NullableDate="{Binding Holder.StartDate, Mode=TwoWay}" />
+                                                        <control:SfTextInputLayout.HintLabelStyle>
+                                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                        </control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:SfTextInputLayout.ErrorLabelStyle>
+                                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                        </control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:SfTextInputLayout.LeadingView>
+                                                            <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                                        </control:SfTextInputLayout.LeadingView>
+                                                    </control:SfTextInputLayout>
+
+                                                    <Label FontFamily="{DynamicResource Medium}"
+                                                           Margin="0,10,0,4"
+                                                           HeightRequest="18"
+                                                           FontSize="12"
+                                                           Text="End Date"
+                                                           TextColor="{DynamicResource Gray-800}" />
+
+                                                    <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                               Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                               Hint="End Date"
+                                                                               EnableFloating="False">
+
+                                                        <utils:NullableDatePicker x:Name="EndDate"
+                                                                                  Style="{StaticResource DatePickerStyle}"
+                                                                                  NullableDate="{Binding Holder.EndDate, Mode=TwoWay}" />
+
+                                                        <control:SfTextInputLayout.HintLabelStyle>
+                                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                        </control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:SfTextInputLayout.ErrorLabelStyle>
+                                                            <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                        </control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:SfTextInputLayout.LeadingView>
+                                                            <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                                        </control:SfTextInputLayout.LeadingView>
+                                                    </control:SfTextInputLayout>
+
+                                                    <Label FontFamily="{DynamicResource Medium}"
+                                                           Margin="0,10,0,4"
+                                                           HeightRequest="18"
+                                                           FontSize="12"
+                                                           Text="Expense Types"
+                                                           TextColor="{DynamicResource Gray-800}" />
+
+                                                    <StackLayout x:Name="SelectableNameList"
+                                                                 BindableLayout.ItemsSource="{Binding SelectableListItemSource}">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Grid RowSpacing="0" ColumnSpacing="0">
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="Auto" />
+                                                                    </Grid.RowDefinitions>
+
+                                                                    <buttons:SfCheckBox Grid.Row="0"
+                                                                                        HeightRequest="48"
+                                                                                        Text="{Binding DisplayText}"
+                                                                                        Margin="0,0,1,0"
+                                                                                        HorizontalOptions="Start"
+                                                                                        VerticalOptions="Center"
+                                                                                        TextColor="{DynamicResource Gray-900}"
+                                                                                        IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                                                        CornerRadius="2"
+                                                                                        FontFamily="{DynamicResource Medium}"
+                                                                                        UncheckedColor="{DynamicResource Gray-300}"
+                                                                                        FontSize="{DynamicResource Small}">
+
+                                                                        <buttons:SfCheckBox.Behaviors>
+                                                                            <utils:SfCheckBoxCommandBehavior EventName="StateChanged"
+                                                                                                             Command="{Binding Path=BindingContext.SelectedTypeCommand, Source={x:Reference SelectableNameList}}"
+                                                                                                             Converter="{StaticResource EventArgs}"
+                                                                                                             CommandParameter="{Binding .}" />
+                                                                        </buttons:SfCheckBox.Behaviors>
+                                                                    </buttons:SfCheckBox>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </StackLayout>
+                                                </StackLayout>
+                                            </ScrollView>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}"
+                                                            AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <syncfusion:SfListView x:Name="MyExpensesListView"
+                                               ItemsSource="{Binding Holder.MyExpenses}"
+                                               SelectionMode="Single"
+                                               SelectionGesture="Tap"
+                                               SelectionBackgroundColor="Transparent"
+                                               ItemSpacing="0,10"
+                                               HeaderSize="{OnPlatform Android=50,iOS=60, UWP=60}"
+                                               IsBusy="{Binding IsBusy}"
+                                               IsScrollBarVisible="False"
+                                               AutoFitMode="Height"
+                                               IsStickyHeader="True"
+                                               IsStickyGroupHeader="False"
+                                               HeaderTemplate="{StaticResource HeaderTemplateWithTransactionType}"
+                                               LoadMoreOption="AutoOnScroll"
+                                               LoadMoreCommand="{Binding LoadItemsCommand}"
+                                               LoadMoreCommandParameter="{Binding Source={x:Reference Name=MyExpensesListView}}">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <ViewCell.View>
+                                            <Grid Padding="0"
+                                                  Margin="0"
+                                                  ColumnSpacing="0"
+                                                  RowSpacing="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                    <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <buttons:SfCheckBox Grid.Row="0"
+                                                                    HeightRequest="48"
+                                                                    WidthRequest="48"
+                                                                    Margin="0,0,0,0"
+                                                                    HorizontalOptions="Center"
+                                                                    VerticalOptions="Center"
+                                                                    IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                                    CornerRadius="2"
+                                                                    FontFamily="{DynamicResource Medium}"
+                                                                    UncheckedColor="{DynamicResource Gray-700}"
+                                                                    CheckedColor="{DynamicResource Color}"
+                                                                    FontSize="{StaticResource Small}"
+                                                                    IsVisible="{Binding SelectionMode, Source={x:Reference MyExpensesListView}, Converter={StaticResource SelectionModeToVisbileConverter}}"
+                                                                    Grid.Column="1">
+                                                    <buttons:SfCheckBox.Behaviors>
+                                                        <utils:EventToCommandBehavior EventName="StateChanged"
+                                                                                      Command="{Binding Path=BindingContext.SelectedItemCommand, Source={x:Reference MyExpensesListView}}"
+                                                                                      CommandParameter="{Binding .}" />
+                                                    </buttons:SfCheckBox.Behaviors>
+                                                </buttons:SfCheckBox>
+
+                                                <template:ExpeneseListItemTemplate IsVisible="{Binding Holder.IsMultipleMode,Converter={utils:InverseBoolConverter}}"
+                                                                                   Grid.Row="0"
+                                                                                   Grid.Column="2" />
+                                            </Grid>
+                                        </ViewCell.View>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+
+                        <!--TO DISPLAY BOTTOM ITEM ON LIST IF MULTIPLE MODE-->
+                        <StackLayout Margin="0,40"
+                                     IsVisible="{Binding Holder.IsMultipleMode}" />
+
+                        <StackLayout Margin="0,20"
+                                     IsVisible="{Binding Holder.IsMultipleMode,Converter={utils:InverseBoolConverter}}" />
+                    </StackLayout>
+                </ScrollView>
+
+                <StackLayout x:Name="ScanView"
+                             AbsoluteLayout.LayoutBounds="0,1,1,0.14"
+                             AbsoluteLayout.LayoutFlags="All"
+                             BackgroundColor="{DynamicResource Gray-Bg}"
+                             IsVisible="{Binding Holder.IsMultipleMode}">
+                    <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                             Style="{StaticResource SeparatorStyle}"
+                             BackgroundColor="{DynamicResource Gray-300}" />
+
+                    <StackLayout Margin="0,5"
+                                 VerticalOptions="End"
+                                 Padding="{OnIdiom Default='0, 0, 0, 0', Phone=0}"
+                                 IsVisible="{Binding Holder.IsMultipleMode}"
+                                 BackgroundColor="{DynamicResource Transparent}">
+
+                        <FlexLayout BackgroundColor="{DynamicResource Transparent}"
+                                    JustifyContent="SpaceEvenly"
+                                    Margin="0,0">
+                            <buttons:SfButton x:Name="btnMove"
+                                              HorizontalOptions="Start"
+                                              BackgroundColor="{StaticResource Transparent}"
+                                              Command="{Binding DeleteSelectedItemCommand}">
+                                <buttons:SfButton.Content>
+                                    <Grid Margin="0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <iconize:IconButton Text="{StaticResource DeleteIcon}"
+                                                            Style="{StaticResource BtnRequestStyle}" />
+                                        <Label Text="Remove"
+                                               Style="{StaticResource FooterButtonLabelStyle}" />
+                                    </Grid>
+                                </buttons:SfButton.Content>
+                            </buttons:SfButton>
+
+                            <buttons:SfButton x:Name="btnDelete"
+                                              HorizontalOptions="End"
+                                              BackgroundColor="{StaticResource Transparent}"
+                                              Command="{Binding CreateExpenseReportCommand}">
+                                <buttons:SfButton.Content>
+                                    <Grid Margin="0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <iconize:IconButton Text="{StaticResource ReasonIcon}"
+                                                            Style="{StaticResource BtnRequestStyle}" />
+                                        <Label Text="Create Report"
+                                               Style="{StaticResource FooterButtonLabelStyle}" />
+                                    </Grid>
+                                </buttons:SfButton.Content>
+                            </buttons:SfButton>
+                        </FlexLayout>
+                    </StackLayout>
+                </StackLayout>
+
+                <!--FAB-->
+                <iconize:IconButton Style="{DynamicResource FABStyle}"
+                                    Command="{Binding AddNewItemCommand}"
+                                    IsVisible="{Binding Holder.IsMultipleMode,Converter={utils:InverseBoolConverter}}" />
+            </AbsoluteLayout>
+        </StackLayout>
+
+        <!--<cview:ReceiptView x:Name="ReceiptDetail"
+             Grid.RowSpan="1" />-->
+    </Grid>
+</ContentPage>

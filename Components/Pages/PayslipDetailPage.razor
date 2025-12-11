@@ -1,0 +1,184 @@
+@page "/payslip-details"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@inject PayslipDetailViewModel ViewModel
+@inject INavigationService NavigationService
+
+<div class="page-container p-0 bg-light-subtle h-100">
+    <div class="animate-fade-in-up h-100 d-flex flex-column">
+        @if (ViewModel.IsBusy || ViewModel.Detail == null)
+        {
+             <div class="p-4">
+                <SkeletonLoader height="150px" width="100%" class="mb-3" />
+                <SkeletonLoader height="80px" width="100%" class="mb-3" />
+                <SkeletonLoader height="80px" width="100%" />
+            </div>
+        }
+        else
+        {
+            <!-- Header -->
+            <div class="app-header bg-primary text-white p-4 shadow-sm">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-link text-white p-0 me-3" @onclick="@(() => NavigationService.NavigateBackAsync())">
+                        <i class="fas fa-arrow-left fa-lg"></i>
+                    </button>
+                    <h5 class="mb-0 fw-bold">Payslip Details</h5>
+                </div>
+
+                <div class="text-center pb-2">
+                    <div class="opacity-75 mb-1 small text-uppercase letter-spacing-1">Net Pay</div>
+                    <h1 class="fw-bold mb-0 display-4">₱@ViewModel.Detail.NetPay.ToString("N2")</h1>
+                    <div class="mt-2 text-white-50">@ViewModel.Detail.PayrollType</div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-grow-1 overflow-auto p-3" style="margin-top: -20px;">
+                
+                <!-- Info Grid -->
+                <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                    <div class="card-body p-3">
+                         <div class="grid-cols-2 gap-3">
+                            <div class="p-2 bg-light rounded text-center">
+                                 <div class="small text-muted mb-1 text-uppercase">Issued Date</div>
+                                 <div class="fw-bold text-dark">@ViewModel.Detail.IssuedDate?.ToString("MMM dd, yyyy")</div>
+                            </div>
+                            <div class="p-2 bg-light rounded text-center">
+                                 <div class="small text-muted mb-1 text-uppercase">Reference</div>
+                                 <div class="fw-bold text-dark text-truncate px-1">@ViewModel.Detail.ReferenceNumber</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings -->
+                <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#earningsCollapse" role="button">
+                        <h6 class="mb-0 fw-bold text-success"><i class="fas fa-plus-circle me-2"></i>Earnings</h6>
+                        <span class="text-dark fw-bold">₱@ViewModel.Detail.GrossPay.ToString("N2")</span>
+                    </div>
+                    <div class="collapse show" id="earningsCollapse">
+                         <div class="card-body pt-0 pb-3">
+                            <div class="border-top mb-3"></div>
+                            @foreach (var item in ViewModel.Detail.Earnings)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <div class="text-dark fw-medium">@item.Description</div>
+                                        @if (!string.IsNullOrEmpty(item.Remarks))
+                                        {
+                                            <small class="text-muted d-block">@item.Remarks @(item.Hours > 0 ? $"({item.Hours} hrs)" : "")</small>
+                                        }
+                                    </div>
+                                    <div class="fw-bold text-success">₱@item.Amount.ToString("N2")</div>
+                                </div>
+                            }
+                             @foreach (var item in ViewModel.Detail.Allowances)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="text-dark fw-medium">@item.Description</div>
+                                    <div class="fw-bold text-success">₱@item.Amount.ToString("N2")</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overtime -->
+                @if (ViewModel.Detail.OvertimeDetails != null && ViewModel.Detail.OvertimeDetails.Count > 0)
+                {
+                    <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#otCollapse" role="button">
+                            <h6 class="mb-0 fw-bold text-warning"><i class="fas fa-clock me-2"></i>Overtime</h6>
+                            <span class="text-dark fw-bold">₱@ViewModel.Detail.OvertimeDetails.Sum(x => x.Amount).ToString("N2")</span>
+                        </div>
+                        <div class="collapse show" id="otCollapse">
+                                <div class="card-body pt-0 pb-3">
+                                <div class="border-top mb-3"></div>
+                                @foreach (var item in ViewModel.Detail.OvertimeDetails)
+                                {
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <div class="text-dark fw-medium">@item.Description</div>
+                                            @if (!string.IsNullOrEmpty(item.Remarks))
+                                            {
+                                                <small class="text-muted d-block">@item.Remarks @(item.Hours > 0 ? $"({item.Hours} hrs)" : "")</small>
+                                            }
+                                        </div>
+                                        <div class="fw-bold text-warning">₱@item.Amount.ToString("N2")</div>
+                                    </div>
+                                }
+                                <div class="border-top my-2"></div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="fw-bold text-dark small">TOTAL OT HOURS</div>
+                                    <div class="fw-bold text-dark small">@ViewModel.Detail.OvertimeDetails.Sum(x => x.Hours) hrs</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Deductions -->
+                <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#deductionsCollapse" role="button">
+                        <h6 class="mb-0 fw-bold text-danger"><i class="fas fa-minus-circle me-2"></i>Deductions</h6>
+                        <span class="text-dark fw-bold">₱@ViewModel.Detail.TotalDeduction.ToString("N2")</span>
+                    </div>
+                    <div class="collapse show" id="deductionsCollapse">
+                         <div class="card-body pt-0 pb-3">
+                            <div class="border-top mb-3"></div>
+                            @foreach (var item in ViewModel.Detail.Deductions)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="text-dark fw-medium">@item.Description</div>
+                                    <div class="fw-bold text-danger">- ₱@item.Amount.ToString("N2")</div>
+                                </div>
+                            }
+                            @foreach (var item in ViewModel.Detail.LoanPayments)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <div class="text-dark fw-medium">@item.Description</div>
+                                        @if (!string.IsNullOrEmpty(item.Remarks))
+                                        {
+                                            <small class="text-muted d-block">@item.Remarks</small>
+                                        }
+                                    </div>
+                                    <div class="fw-bold text-danger">- ₱@item.Amount.ToString("N2")</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- YTD -->
+                <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#ytdCollapse" role="button">
+                        <h6 class="mb-0 fw-bold text-primary"><i class="fas fa-calendar-alt me-2"></i>Year to Date</h6>
+                        <i class="fas fa-chevron-down text-muted"></i>
+                    </div>
+                    <div class="collapse" id="ytdCollapse">
+                         <div class="card-body pt-0 pb-3">
+                            <div class="border-top mb-3"></div>
+                            @foreach (var item in ViewModel.Detail.YTDs)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="text-dark fw-medium">@item.Description</div>
+                                    <div class="fw-bold text-dark">₱@item.Amount.ToString("N2")</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

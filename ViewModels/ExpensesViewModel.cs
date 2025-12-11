@@ -1,81 +1,61 @@
 using MauiHybridApp.Models;
 using MauiHybridApp.Services.Data;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace MauiHybridApp.ViewModels;
-
-// INotifyPropertyChanged implement karna zaroori hai MVVM ke liye
-public class ExpensesViewModel : INotifyPropertyChanged
+namespace MauiHybridApp.ViewModels
 {
-    private readonly IExpenseDataService _expenseService;
-    
-    public ExpensesViewModel(IExpenseDataService expenseService)
+    public class ExpensesViewModel : BaseViewModel
     {
-        _expenseService = expenseService;
-        // Default Initialize
-        NewExpense = new ExpenseModel();
-    }
-
-    // --- Properties ---
-    private List<ExpenseModel> _expenses = new();
-    public List<ExpenseModel> Expenses
-    {
-        get => _expenses;
-        set { _expenses = value; OnPropertyChanged(); }
-    }
-
-    private ExpenseModel _newExpense = new ExpenseModel();
-    public ExpenseModel NewExpense
-    {
-        get => _newExpense;
-        set { _newExpense = value; OnPropertyChanged(); }
-    }
-
-    private bool _isLoading = true;
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set { _isLoading = value; OnPropertyChanged(); }
-    }
-
-    private string _message = string.Empty;
-    public string Message
-    {
-        get => _message;
-        set { _message = value; OnPropertyChanged(); }
-    }
-
-    // --- Methods (Logic) ---
-    public async Task LoadExpensesAsync()
-    {
-        IsLoading = true;
-        Expenses = await _expenseService.GetExpensesAsync();
-        IsLoading = false;
-    }
-
-    public async Task SubmitExpenseAsync()
-    {
-    IsLoading = true;
-    var result = await _expenseService.SubmitExpenseAsync(NewExpense);
+        private readonly IExpenseDataService _expenseService;
         
-        if (result.Success)
+        public ExpensesViewModel(IExpenseDataService expenseService)
         {
-            Message = "Expense Submitted!";
-            NewExpense = new ExpenseModel(); // Reset form
-            await LoadExpensesAsync(); // Refresh list
+            _expenseService = expenseService;
+            NewExpense = new ExpenseModel();
         }
-        else
-        {
-            Message = $"Error: {result.ErrorMessage}";
-        }
-        IsLoading = false;
-    }
 
-    // --- MVVM Boilerplate ---
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? name = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name ?? string.Empty));
+        // --- Properties ---
+        private List<ExpenseModel> _expenses = new();
+        public List<ExpenseModel> Expenses
+        {
+            get => _expenses;
+            set => SetProperty(ref _expenses, value);
+        }
+
+        private ExpenseModel _newExpense;
+        public ExpenseModel NewExpense
+        {
+            get => _newExpense;
+            set => SetProperty(ref _newExpense, value);
+        }
+
+        // --- Methods (Logic) ---
+        public async Task LoadExpensesAsync()
+        {
+            await ExecuteBusyAsync(async () =>
+            {
+                Expenses = await _expenseService.GetExpensesAsync();
+            }, "Loading expenses...");
+        }
+
+        public async Task SubmitExpenseAsync()
+        {
+            await ExecuteBusyAsync(async () =>
+            {
+                var result = await _expenseService.SubmitExpenseAsync(NewExpense);
+                
+                if (result.Success)
+                {
+                    SuccessMessage = "Expense Submitted!";
+                    NewExpense = new ExpenseModel(); // Reset form
+                    await LoadExpensesAsync(); // Refresh list
+                }
+                else
+                {
+                    ErrorMessage = $"Error: {result.ErrorMessage}";
+                }
+            }, "Submitting expense...");
+        }
     }
 }

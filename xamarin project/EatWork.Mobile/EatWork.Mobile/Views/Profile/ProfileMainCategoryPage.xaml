@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.MyProfile.ProfileMainCategoryPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Title="Profile Information"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d">
+
+    <ContentPage.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="{DynamicResource Gray-Bg}"
+                     Spacing="0">
+
+            <Grid Margin="0"
+                  HorizontalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{OnPlatform Android=180, iOS=200, Default=200}" />
+                </Grid.RowDefinitions>
+
+                <RelativeLayout>
+
+                    <ffimageloading:CachedImage Aspect="AspectFill"
+                                                BackgroundColor="{StaticResource Transparent}"
+                                                DownsampleToViewSize="true"
+                                                RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                       Property=Height}"
+                                                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                      Property=Width}"
+                                                Source="{Binding SourceImage}" />
+
+                    <gradient:SfGradientView IsVisible="{Binding HasBackgroundImage}"
+                                             Opacity="0.6"
+                                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                    Property=Height}"
+                                             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                   Property=Width}"
+                                             Style="{StaticResource SfGradientViewStyle2}" />
+                </RelativeLayout>
+
+                <ContentView>
+                    <ContentView.Effects>
+                        <effect:SafeAreaPaddingEffect />
+                    </ContentView.Effects>
+                    <Grid>
+                        <utils:TitleView Title="Profile Information"
+                                         HeightRequest="57"
+                                         TitleColor="{StaticResource Gray-White}">
+                            <utils:TitleView.LeadingView>
+                                <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                                    Style="{StaticResource IconButtonStyle}"
+                                                    Text="{StaticResource BackButtonIcon}" />
+                            </utils:TitleView.LeadingView>
+                        </utils:TitleView>
+                    </Grid>
+                </ContentView>
+            </Grid>
+
+            <AbsoluteLayout x:Name="ViewControls"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,-70,0,0"
+                            AbsoluteLayout.LayoutBounds="1,1,1,.50"
+                            AbsoluteLayout.LayoutFlags="All">
+
+                <Grid AbsoluteLayout.LayoutBounds="1,1,1,1"
+                      AbsoluteLayout.LayoutFlags="All">
+                    <local:EmployeeProfileTemplateBody1 BindingContext="{Binding .}" />
+                </Grid>
+            </AbsoluteLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

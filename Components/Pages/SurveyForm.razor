@@ -1,0 +1,114 @@
+@page "/survey/{FormHeaderId:long}/{AnswerId:long}"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models.Questionnaire
+@inject SurveyFormViewModel ViewModel
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.GoBackCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Survey</h1>
+        <div style="width: 24px;"></div> <!-- Spacer -->
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading survey...</p>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+    {
+        <div class="error-banner">
+            <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+        </div>
+    }
+    else
+    {
+        <div class="form-content">
+            @foreach (var control in ViewModel.SurveyHolder.ControlList)
+            {
+                <div class="question-card">
+                    <div class="question-header">
+                        <div class="question-text">
+                            @control.QuestionHeader
+                            @if (control.BaseQuestion.IsRequired)
+                            {
+                                <span class="required-mark">*</span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(control.QuestionDetail))
+                        {
+                            <div class="question-detail">@control.QuestionDetail</div>
+                        }
+                    </div>
+
+                    @switch (control.BaseQuestion.ControlTypeId)
+                    {
+                        case 1: // Textbox
+                            <input type="text" class="form-control" @bind="control.Value" placeholder="Enter your answer..." />
+                            break;
+
+                        case 2: // Multiline Textbox
+                            <textarea class="form-control" @bind="control.Value" placeholder="Enter your answer..."></textarea>
+                            break;
+
+                        case 3: // Dropdown (Simplified for now)
+                            <select class="form-control" @bind="control.Value">
+                                <option value="">Select an option...</option>
+                                @* Options parsing logic would go here if Options string is JSON/CSV *@
+                            </select>
+                            break;
+
+                        case 7: // DatePicker
+                            <input type="date" class="form-control" value="@control.Value" @onchange="@(e => control.Value = e.Value?.ToString())" />
+                            break;
+                            
+                        case 13: // Star Rating
+                             <div class="rating-group">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var rating = i;
+                                    <i class="fas fa-star rating-star @(int.TryParse(control.Value, out int val) && val >= rating ? "active" : "")" 
+                                       @onclick="() => control.Value = rating.ToString()"></i>
+                                }
+                            </div>
+                            break;
+
+                        default:
+                            <input type="text" class="form-control" @bind="control.Value" placeholder="Answer..." />
+                            break;
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="form-footer">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Survey</span>
+                }
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public long FormHeaderId { get; set; }
+
+    [Parameter]
+    public long AnswerId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeFormAsync(FormHeaderId, AnswerId);
+    }
+}

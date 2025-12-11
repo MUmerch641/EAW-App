@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.LoginPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             Title="Login to your account"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Behaviors>
+        <converter:EventToCommandBehavior Command="{Binding PageAppearingCommand}" EventName="Appearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid x:Name="GridContent" Style="{StaticResource TitleViewContent}">
+        <gradient:SfGradientView x:Name="GradientView"
+                                 Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView x:Name="TitleViewBar">
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <converter:TitleView Title="Login to your account"
+                                 SeparatorColor="{DynamicResource Transparent}"
+                                 TitleColor="{StaticResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </converter:TitleView.LeadingView>
+            </converter:TitleView>
+        </ContentView>
+
+        <StackLayout x:Name="ContentView" Spacing="0">
+            <RelativeLayout>
+
+                <ffimageloading:CachedImage Aspect="AspectFill"
+                                            DownsampleToViewSize="true"
+                                            IsVisible="{Binding FormHelper.HasImageSetup}"
+                                            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                   Property=Height}"
+                                            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                                                  Property=Width}"
+                                            Source="{Binding FormHelper.SourceImage}" />
+
+                <Image Aspect="AspectFill"
+                       IsVisible="{Binding FormHelper.HasImageSetup, Converter={converter:InverseBoolConverter}}"
+                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                              Property=Height}"
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                             Property=Width}"
+                       Source="{core:OnPlatformOrientationStringValue Default=LoginBackground2.jpg}" />
+
+                <Grid RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}">
+
+                    <gradient:SfGradientView Style="{StaticResource SfGradientViewStyle}" />
+
+                    <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                        <ScrollView.Content>
+
+                            <AbsoluteLayout>
+
+                                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                               IsBusy="{Binding IsBusy}"
+                                                               Style="{StaticResource BusyIndicatorStyle}" />
+
+                                <Grid Margin="{core:OnPlatformOrientationThickness PhonePortrait='20,32',
+                                                                                   PhoneLandscape='150,32',
+                                                                                   TabletPortrait='200,50',
+                                                                                   TabletLandscape='300,50',
+                                                                                   Desktop='30'}"
+                                      AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                      AbsoluteLayout.LayoutFlags="All"
+                                      BackgroundColor="Transparent"
+                                      HorizontalOptions="Center"
+                                      IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                      RowSpacing="10"
+                                      VerticalOptions="Center"
+                                      WidthRequest="{OnPlatform Default='-1',
+                                                                UWP='350'}">
+
+                                    <Grid.RowDefinitions>
+
+                                        <RowDefinition Height="Auto" />
+                                        <!--<RowDefinition Height="50" />-->
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <!--<RowDefinition Height="Auto" />-->
+                                        <!--<RowDefinition Height="Auto" />-->
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="30" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0"
+                                          Padding="10"
+                                          HeightRequest="80">
+
+                                        <ffimageloading:CachedImage BackgroundColor="Transparent"
+                                                                    IsVisible="{Binding FormHelper.HasLogo}"
+                                                                    Source="{Binding FormHelper.LogoSourceImage}"
+                                                                    WidthRequest="120" />
+
+                                        <Image BackgroundColor="Transparent"
+                                               IsVisible="{Binding FormHelper.HasLogo, Converter={converter:InverseBoolConverter}}"
+                                               Source="eawlogo_transparent.png"
+                                               WidthRequest="80" />
+                                    </Grid>
+
+                                    <Grid Grid.Row="3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                    </Grid>
+
+                                    <Grid Grid.Row="4"
+                                          Padding="0"
+                                          RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <converter:CustomShadowFrame Margin="0,0"
+                                                                     BackgroundColor="{StaticResource White-Smoke}"
+                                                                     BorderColor="{StaticResource Transparent}"
+                                                                     BorderWidth="1"
+                                                                     CornerRadius="8"
+                                                                     HasShadow="true"
+                                                                     HorizontalOptions="FillAndExpand"
+                                                                     Radius="4"
+                                                                     ShadowOffSetHeight="4"
+                                                                     ShadowOffsetWidth="0"
+                                                                     ShadowOpacity="0.12">
+                                            <Grid Padding="0" RowSpacing="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <!--<ColumnDefinition Width="0" />-->
+                                                    <ColumnDefinition Width="*" />
+                                                    <!--<ColumnDefinition Width="0" />-->
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid RowSpacing="20">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <!--<RowDefinition Height="Auto" />-->
+                                                    </Grid.RowDefinitions>
+
+                                                    <control:SfTextInputLayout Grid.Row="0"
+                                                                               EnableFloating="False"
+                                                                               ErrorText="{Binding FormHelper.Username.Message}"
+                                                                               HasError="{Binding FormHelper.Username.IsValid, Converter={converter:InverseBoolConverter}}"
+                                                                               Hint="Username"
+                                                                               Style="{StaticResource inputLayoutStyleLogin}">
+                                                        <Entry x:Name="txtUserName"
+                                                               ReturnCommand="{Binding EntryFocusCommand}"
+                                                               ReturnCommandParameter="{Reference txtPassword}"
+                                                               ReturnType="Next"
+                                                               Style="{StaticResource TextBoxStyle}"
+                                                               Text="{Binding FormHelper.Username.Value, Mode=TwoWay}" />
+                                                        <control:SfTextInputLayout.LeadingView>
+                                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}" Text="{StaticResource AccountIcon}" />
+                                                        </control:SfTextInputLayout.LeadingView>
+                                                    </control:SfTextInputLayout>
+
+                                                    <control:SfTextInputLayout Grid.Row="1"
+                                                                               EnableFloating="False"
+                                                                               EnablePasswordVisibilityToggle="{Binding FormHelper.TogglePassVisibility}"
+                                                                               ErrorText="{Binding FormHelper.Password.Message}"
+                                                                               HasError="{Binding FormHelper.Password.IsValid, Converter={converter:InverseBoolConverter}}"
+                                                                               Hint="Password"
+                                                                               Style="{StaticResource inputLayoutStyleLogin}">
+                                                        <Entry x:Name="txtPassword"
+                                                               IsPassword="True"
+                                                               ReturnCommand="{Binding LoginCommand}"
+                                                               Style="{StaticResource TextBoxStyle}"
+                                                               Text="{Binding FormHelper.Password.Value, Mode=TwoWay}" />
+                                                        <control:SfTextInputLayout.LeadingView>
+                                                            <iconize:IconLabel Style="{StaticResource IconizeIconStyle}" Text="{StaticResource LockIcon}" />
+                                                        </control:SfTextInputLayout.LeadingView>
+                                                    </control:SfTextInputLayout>
+
+                                                    <button:SfCheckBox x:Name="checkboxRememberMe"
+                                                                       Grid.Row="2"
+                                                                       IsChecked="{Binding FormHelper.RememberCredential, Mode=TwoWay}"
+                                                                       Style="{StaticResource checkbox}"
+                                                                       Text="Remember me" />
+
+                                                    <button:SfButton x:Name="btnLogin"
+                                                                     Grid.Row="3"
+                                                                     Command="{Binding LoginCommand}"
+                                                                     Style="{DynamicResource ButtonStyle}"
+                                                                     Text="Sign In" />
+                                                </Grid>
+                                            </Grid>
+                                        </converter:CustomShadowFrame>
+
+                                        <Grid Grid.Row="2" RowSpacing="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="0" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="0" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid Grid.Column="1" RowSpacing="15">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+
+                                                <Grid Grid.Row="0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Label BackgroundColor="#bababa"
+                                                           HeightRequest="1"
+                                                           HorizontalOptions="FillAndExpand"
+                                                           VerticalOptions="Center" />
+                                                    <Label Grid.Column="1"
+                                                           Margin="10,0"
+                                                           FontFamily="{DynamicResource Regular}"
+                                                           Text="OR"
+                                                           TextColor="{DynamicResource LoginTextColor}"
+                                                           VerticalOptions="Center" />
+                                                    <Label Grid.Column="2"
+                                                           BackgroundColor="#bababa"
+                                                           HeightRequest="1"
+                                                           HorizontalOptions="FillAndExpand"
+                                                           VerticalOptions="Center" />
+                                                </Grid>
+
+                                                <Label x:Name="lblForgetPass"
+                                                       Grid.Row="1"
+                                                       HorizontalOptions="Start"
+                                                       Style="{StaticResource lblForgetSignupStyle}"
+                                                       Text="Forgot Password?">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding ForgotCredentialCommand}" />
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+
+                                                <Label x:Name="lblSignUp"
+                                                       Grid.Row="1"
+                                                       HorizontalOptions="End"
+                                                       Style="{StaticResource lblForgetSignupStyle}"
+                                                       Text="Sign Up">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding RegisterCommand}" />
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid Grid.Row="5"
+                                          Padding="10"
+                                          IsVisible="{Binding FormHelper.HasBranding}">
+
+                                        <ffimageloading:CachedImage BackgroundColor="Transparent"
+                                                                    HeightRequest="120"
+                                                                    IsVisible="{Binding FormHelper.HasBranding}"
+                                                                    Source="{Binding FormHelper.BrandingSourceImage}"
+                                                                    WidthRequest="120" />
+                                    </Grid>
+                                </Grid>
+                            </AbsoluteLayout>
+                        </ScrollView.Content>
+                    </ScrollView>
+
+                    <StackLayout Padding="15,48,15,15"
+                                 HorizontalOptions="Start"
+                                 IsVisible="{Binding FormHelper.HasLogo}"
+                                 Orientation="Vertical"
+                                 Spacing="0"
+                                 VerticalOptions="End">
+
+                        <Label FontFamily="{StaticResource Medium}"
+                               HorizontalOptions="StartAndExpand"
+                               HorizontalTextAlignment="Start"
+                               Style="{StaticResource LabelStyle}"
+                               Text="Powered By"
+                               VerticalTextAlignment="Center" />
+
+                        <Image BackgroundColor="Transparent"
+                               Source="eawlogo_transparent.png"
+                               WidthRequest="125" />
+                    </StackLayout>
+                </Grid>
+
+                <!--  CLOCKWORK BUTTON  -->
+                <StackLayout IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                               Property=Width,
+                                                                               Factor=1,
+                                                                               Constant=-80}"
+                             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                               Property=Height,
+                                                                               Factor=1,
+                                                                               Constant=-80}">
+                    <StackLayout IsVisible="{Binding ShowClockWork}">
+
+                        <iconize:IconButton x:Name="btnOnlineTimeEntry"
+                                            Command="{Binding TimeEntryLogCommand}"
+                                            FontSize="30"
+                                            HorizontalOptions="Center"
+                                            Style="{DynamicResource FABStyle}"
+                                            Text="{StaticResource TimeIcon}" />
+                    </StackLayout>
+                </StackLayout>
+            </RelativeLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

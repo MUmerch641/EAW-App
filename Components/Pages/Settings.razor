@@ -1,0 +1,86 @@
+@page "/settings"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
+@inject SettingsViewModel ViewModel
+
+<div class="page-container scrollable">
+    <PageHeader 
+        Title="Settings" 
+        IconClass="fa-cog" 
+        ShowBackButton="true" />
+
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading settings..." />
+    }
+    else
+    {
+        <div class="settings-container">
+            <!-- Application Section -->
+            <div class="section-header">Application</div>
+            <div class="settings-section">
+                <div class="settings-item clickable" @onclick="() => ViewModel.NavigateToProfileCommand.Execute(null)">
+                    <div class="item-left">
+                        <span class="item-icon fa fa-user"></span>
+                        <span class="item-title">My Profile</span>
+                    </div>
+                    <div class="item-right">
+                        <span class="fa fa-chevron-right"></span>
+                    </div>
+                </div>
+                <div class="settings-item clickable">
+                    <div class="item-left">
+                        <span class="item-icon fa fa-palette"></span>
+                        <span class="item-title">Update Theme</span>
+                    </div>
+                     <div class="item-right">
+                        <span class="fa fa-chevron-right"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee List Filters -->
+            <div class="section-header">Employee List</div>
+            <div class="settings-section">
+                @foreach (var filter in ViewModel.FilterList)
+                {
+                    <div class="settings-item">
+                        <div class="item-left">
+                            <span class="item-title">@filter.DisplayText</span>
+                        </div>
+                        <div class="item-right">
+                            <label class="switch">
+                                <input type="checkbox" checked="@filter.IsChecked" 
+                                       @onchange="@(e => ViewModel.ToggleFilterCommand.Execute(filter))" />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- App Info -->
+            <div class="section-header">App Info</div>
+            <div class="settings-section">
+                <div class="settings-item">
+                    <div class="item-left">
+                        <span class="item-icon fa fa-info-circle"></span>
+                        <div class="item-content">
+                            <span class="item-title">Version</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        @ViewModel.VersionNumber (@ViewModel.BuildNumber)
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

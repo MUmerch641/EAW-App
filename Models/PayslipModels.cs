@@ -12,7 +12,7 @@ public class MyPayslipListModel
     public decimal NetPay { get; set; }
 }
 
-// 2. List Response Wrapper (API listData bhejti hai)
+// 2. List Response Wrapper (API sends listData)
 public class PayslipListResponse
 {
     public List<MyPayslipListModel> ListData { get; set; } = new();
@@ -42,11 +42,15 @@ public class PayslipDetailModel
     public decimal WHT { get; set; }
     public decimal Loan { get; set; }
     
-    // 🔥 LISTS (Xamarin mein ye alag holder mein thin, hum yahan combine kar rahe hain)
+    // LISTS (In Xamarin these were in separate holders, we are combining them here)
     public List<PaysheetDetailDto> Earnings { get; set; } = new();
     public List<PaysheetDetailDto> Deductions { get; set; } = new();
     public List<PaysheetDetailDto> OvertimeDetails { get; set; } = new();
     public List<PaysheetDetailDto> LoanPayments { get; set; } = new();
+    
+    // NEW Properties
+    public List<PaysheetDetailDto> Allowances { get; set; } = new();
+    public List<PaysheetDetailDto> YTDs { get; set; } = new();
 }
 
 // 4. Detail Item (Row Item)

@@ -1,22 +1,28 @@
 @* Reusable Page Header Component *@
 <div class="page-header">
-    @if (ShowBackButton)
-    {
-        <button class="btn-back" @onclick="OnBackClick">
-            <span class="oi oi-arrow-left"></span>
-        </button>
-    }
-    <h1>
-        @if (!string.IsNullOrEmpty(IconClass))
+    <div class="header-left">
+        @if (ShowBackButton)
         {
-            <i class="fa @IconClass me-2"></i>
+            <button class="btn-back" @onclick="OnBackClick">
+                <i class="fas fa-chevron-left"></i>
+            </button>
         }
-        @Title
-    </h1>
-    @if (!string.IsNullOrWhiteSpace(Subtitle))
-    {
-        <p class="subtitle">@Subtitle</p>
-    }
+        
+        <div class="header-titles">
+            <h1>
+                @if (!string.IsNullOrEmpty(IconClass))
+                {
+                    <i class="fa @IconClass me-2 header-icon"></i>
+                }
+                @Title
+            </h1>
+            @if (!string.IsNullOrWhiteSpace(Subtitle))
+            {
+                <p class="subtitle">@Subtitle</p>
+            }
+        </div>
+    </div>
+    
     <div class="header-actions">
         @HeaderActions
     </div>

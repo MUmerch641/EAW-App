@@ -1,0 +1,123 @@
+@page "/financial"
+@using MauiHybridApp.ViewModels
+@inject FinancialViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Financial Requests</h1>
+    </div>
+
+    <div class="tabs">
+        <div class="tab-item @(ViewModel.ActiveTab == "cash-advance" ? "active" : "")" 
+             @onclick='() => ViewModel.SwitchTabCommand.Execute("cash-advance")'>
+            Cash Advance
+        </div>
+        <div class="tab-item @(ViewModel.ActiveTab == "loans" ? "active" : "")" 
+             @onclick='() => ViewModel.SwitchTabCommand.Execute("loans")'>
+            Loans
+        </div>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading requests...</p>
+        </div>
+    }
+    else
+    {
+        <div class="request-list">
+            @if (ViewModel.ActiveTab == "cash-advance")
+            {
+                @if (ViewModel.CashAdvances != null && ViewModel.CashAdvances.Any())
+                {
+                    @foreach (var item in ViewModel.CashAdvances)
+                    {
+                        <div class="request-card">
+                            <div class="request-info">
+                                <span class="request-title">@item.RequestNo</span>
+                                <span class="request-date">@item.DateRequestedDisplay</span>
+                            </div>
+                            <div class="request-status">
+                                <span class="amount">@item.AmountDisplay</span>
+                                <span class="status-badge">@item.Status</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <p>No cash advance requests found.</p>
+                    </div>
+                }
+            }
+            else
+            {
+                @if (ViewModel.Loans != null && ViewModel.Loans.Any())
+                {
+                    @foreach (var item in ViewModel.Loans)
+                    {
+                        <div class="request-card">
+                            <div class="request-info">
+                                <span class="request-title">@item.LoanType</span>
+                                <span class="request-date">@item.DateRequestDisplay</span>
+                            </div>
+                            <div class="request-status">
+                                <span class="amount">@item.AmountDisplay</span>
+                                <span class="status-badge">@item.Status</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <p>No loan requests found.</p>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    <div class="fab-container">
+        <button class="fab" @onclick="OnFabClick">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnFabClick()
+    {
+        if (ViewModel.ActiveTab == "cash-advance")
+        {
+            ViewModel.NavigateToCashAdvanceCommand.Execute(null);
+        }
+        else
+        {
+            ViewModel.NavigateToLoanCommand.Execute(null);
+        }
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

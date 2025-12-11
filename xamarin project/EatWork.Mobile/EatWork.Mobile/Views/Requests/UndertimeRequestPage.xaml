@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             mc:Ignorable="d"
+             Title="Undertime Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             x:Class="EatWork.Mobile.Views.Requests.UndertimeRequestPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Undertime Request"
+                             TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource FileAttachmentIcon}"
+                                            Command="{Binding ViewFileAttachmentCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+
+                        <iconize:IconButton Text="{StaticResource InfoIcon}"
+                                            Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never"
+                        VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}"
+                                                   IsBusy="{Binding IsBusy}" />
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="55" />-->
+                        </Grid.RowDefinitions>
+
+                        <Grid Padding="15"
+                              RowSpacing="0"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+                                    <!--DATE-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               HasError="{Binding Holder.ErrorUndertimeDate, Mode=TwoWay}"
+                                                               Hint="Date  ">
+                                        <DatePicker Style="{StaticResource DatePickerStyle}"
+                                                    Date="{Binding Holder.UndertimeModel.UndertimeDate, Mode=TwoWay}"
+                                                    IsEnabled="{Binding Holder.IsEnabled}" />
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource DateIcon}"
+                                                               Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--TIME WHEN WILL BE OUT OF OFFICE-->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="0">
+                                            <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                       Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       Hint="Start Time  ">
+
+                                                <utils:NullableTimePicker x:Name="StartTimePicker"
+                                                                          NullableTime="{Binding Holder.DepartureTime, Mode=TwoWay}"
+                                                                          IsEnabled="{Binding Holder.IsEnabled}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding StartTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.DepartureTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}" />
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="1">
+                                            <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                       Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       Hint="End Time  ">
+
+                                                <utils:NullableTimePicker x:Name="EndTimePicker"
+                                                                          NullableTime="{Binding Holder.ArrivalTime, Mode=TwoWay}"
+                                                                          IsEnabled="{Binding Holder.IsEnabled}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding EndTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.ArrivalTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}" />
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--NUMBER OF HOURS-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               ErrorText="Specify no. of hours."
+                                                               HasError="{Binding Holder.ErrorUTHrs,Mode=TwoWay}"
+                                                               Hint="No. of Hours  ">
+                                        <numeric:SfNumericTextBox Value="{Binding Holder.UndertimeModel.UTHrs, Mode=TwoWay}"
+                                                                  IsEnabled="{Binding Holder.IsEnabled}"
+                                                                  x:Name="txtNoOfHours"
+                                                                  Style="{StaticResource SfNumericTextBoxStyle}" />
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource HourIcon}"
+                                                               Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <StackLayout IsEnabled="{Binding Holder.IsEnabled}">
+                                        <!--REASON-->
+                                        <control:SfTextInputLayout HasError="{Binding Holder.ErrorUndertimeReason,Mode=TwoWay}"
+                                                                   Style="{StaticResource inputLayoutStyle}"
+                                                                   Hint="Reason  "
+                                                                   EnableFloating="{Binding Holder.IsEnabled}">
+
+                                            <combobox:SfComboBox DataSource="{Binding Holder.UndertimeReason}"
+                                                                 DisplayMemberPath="Value"
+                                                                 SelectedValuePath="Id"
+                                                                 SelectedItem="{Binding Holder.UndertimeReasonSelectedItem, Mode=TwoWay}"
+                                                                 SelectedValue="{Binding Holder.UndertimeModel.UndertimeTypeId, Mode=TwoWay}"
+                                                                 Style="{StaticResource ComboBoxStyle}" />
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--DETAILS-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                               HasError="{Binding Holder.ErrorReason,Mode=TwoWay}"
+                                                               Hint="Specify details  ">
+                                        <Editor Text="{Binding Holder.UndertimeModel.Reason, Mode=TwoWay}"
+                                                IsEnabled="{Binding Holder.IsEnabled}"
+                                                Style="{DynamicResource EditorStyle}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--BUTTONS-->
+                                    <template:RequestFooterTemplate2 />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

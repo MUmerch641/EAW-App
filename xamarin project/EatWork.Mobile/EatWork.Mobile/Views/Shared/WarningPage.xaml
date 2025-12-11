@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.Shared.WarningPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sflistview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             Title="SOMETHING WENT WRONG"
+             BackgroundColor="{StaticResource Gray-White}"
+             mc:Ignorable="d">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+
+            <!--<Grid.RowDefinitions>
+                 <RowDefinition Height="*" />
+                 <RowDefinition Height="Auto" />
+                 <RowDefinition Height="Auto" />
+                 <RowDefinition Height="Auto" />
+                 </Grid.RowDefinitions>-->
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="0"
+                         BackgroundColor="Transparent"
+                         HorizontalOptions="Center"
+                         Spacing="0"
+                         VerticalOptions="Center">
+
+                <!--  Image for display svg image  -->
+                <ffsvg:SvgCachedImage x:Name="WalkthroughImage"
+                                      Margin="{x:OnIdiom Phone='0,0,0,0',
+                                                         Desktop='0',
+                                                         Tablet='0'}"
+                                      BackgroundColor="Transparent"
+                                      FadeAnimationEnabled="False"
+                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                                            AndroidPhonePortrait=200,
+                                                                                            AndroidPhoneLandscape=140,
+                                                                                            iOSPhonePortrait=200,
+                                                                                            iOSPhoneLandscape=140}"
+                                      Opacity="{OnPlatform Default=0,
+                                                           UWP=1}"
+                                      Source="InfoContent.svg"
+                                      VerticalOptions="Center"
+                                      WidthRequest="{x:OnIdiom Phone=200,
+                                                               Desktop=300,
+                                                               Tablet=300}" />
+
+                <!--  Label to display header  -->
+                <Label x:Name="Title"
+                       Margin="0,20,0,0"
+                       FontFamily="{DynamicResource SemiBold}"
+                       FontSize="20"
+                       HorizontalTextAlignment="Center"
+                       Style="{StaticResource LabelStyle}"
+                       Text="RESULTS"
+                       VerticalTextAlignment="Center" />
+
+                <!--  Label to display content  -->
+                <!--<Label Margin="8,0,8,0"
+                     FontSize="16"
+                     Text="An error occured. Please contact your System Administrator."
+                     Style="{StaticResource LabelStyle}"
+                     FontFamily="{DynamicResource Medium}"
+                     VerticalTextAlignment="Center"
+                     x:Name="lblMessage" />-->
+            </StackLayout>
+
+            <sflistview:SfListView x:Name="Messages"
+                                   Grid.Row="1"
+                                   AutoFitMode="Height"
+                                   ItemsSource="{Binding Message}">
+                <sflistview:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="{StaticResource Transparent}"
+                              ColumnSpacing="16"
+                              RowSpacing="0">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <iconize:IconLabel Margin="16,20,0,0"
+                                               FontSize="{StaticResource Tiny}"
+                                               Text="{StaticResource NewNotifIcon}"
+                                               TextColor="{StaticResource Error}" />
+
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   Margin="0,16,2,16"
+                                   FontFamily="{DynamicResource Medium}"
+                                   FontSize="16"
+                                   LineHeight="{OnPlatform Android=1.25,
+                                                           Default=-1}"
+                                   Text="{Binding .}"
+                                   TextColor="{DynamicResource Gray-800}"
+                                   TextType="Html" />
+
+                            <BoxView Grid.Row="1"
+                                     Grid.ColumnSpan="2"
+                                     Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+                    </DataTemplate>
+                </sflistview:SfListView.ItemTemplate>
+            </sflistview:SfListView>
+
+            <!--  Try again button  -->
+            <button:SfButton x:Name="lblCloseModal"
+                             Grid.Row="1"
+                             Clicked="CloseModal_Clicked"
+                             Style="{StaticResource WalkthroughButtonStyle}"
+                             Text="CLOSE" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

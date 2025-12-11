@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<modal:FormModal xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:modal="clr-namespace:EatWork.Mobile.Utils"
+                 xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+                 xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+                 xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+                 x:Class="EatWork.Mobile.Views.TravelRequest.SpecialNoteRequestModal">
+
+    <modal:FormModal.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </modal:FormModal.Resources>
+
+    <modal:FormModal.Header>
+        <Grid ColumnSpacing="0"
+              BackgroundColor="{DynamicResource PrimaryColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Special Request Note"
+                   Grid.Column="0"
+                   Style="{DynamicResource ModalPageTitleStyle}" />
+
+            <iconize:IconLabel Grid.Column="1"
+                               Style="{DynamicResource IconizeIconStyle}"
+                               Text="{DynamicResource CloseIcon}"
+                               TextColor="{DynamicResource Gray-White}"
+                               Padding="15,10,0,10"
+                               FontSize="Large">
+                <iconize:IconLabel.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseModalCommand}" />
+                </iconize:IconLabel.GestureRecognizers>
+            </iconize:IconLabel>
+        </Grid>
+    </modal:FormModal.Header>
+
+    <modal:FormModal.Body>
+        <StackLayout Grid.Row="1">
+            <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                       HasError="{Binding Note.IsValid,Converter={modal:InverseBoolConverter}}"
+                                       ErrorText="{Binding Note.Message}"
+                                       Hint="Add notes here">
+
+                <Editor FontSize="{DynamicResource Small}"
+                        Text="{Binding Note.Value}"
+                        FontFamily="{DynamicResource Regular}"
+                        IsTextPredictionEnabled="True"
+                        x:Name="SpecialRequestNote"
+                        AutoSize="TextChanges"
+                        HeightRequest="100"
+                        TextColor="{StaticResource Gray-800}" />
+            </control:SfTextInputLayout>
+
+            <FlexLayout Margin="0,20,0,0"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Direction="Row"
+                        JustifyContent="Center"
+                        AlignItems="Center">
+
+                <buttons:SfButton Text="Save"
+                                  Style="{StaticResource WalkthroughButtonStyle}"
+                                  Command="{Binding AddNoteRequestCommand}" />
+            </FlexLayout>
+        </StackLayout>
+    </modal:FormModal.Body>
+</modal:FormModal>

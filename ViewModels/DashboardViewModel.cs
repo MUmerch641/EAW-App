@@ -2,7 +2,13 @@ using System.Windows.Input;
 using MauiHybridApp.Commands;
 using MauiHybridApp.Models;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using Microsoft.AspNetCore.Components;
+using MauiHybridApp.Models.Questionnaire;
+using System.Collections.ObjectModel;
+using MauiHybridApp.Models.Leave;
+using MauiHybridApp.Models.Schedule;
+using Microsoft.Maui.Storage;
 
 namespace MauiHybridApp.ViewModels;
 
@@ -14,27 +20,51 @@ namespace MauiHybridApp.ViewModels;
 public class DashboardViewModel : BaseViewModel
 {
     private readonly IDashboardDataService _dashboardService;
+    private readonly ISurveyDataService _surveyService;
+    private readonly ILeaveDataService _leaveService;
+    private readonly IOvertimeDataService _overtimeService; // Added missing service
+    private readonly IAuthenticationDataService _authService; // Added missing service
+    private readonly INavigationService _navigationService; // Added missing service
+    
+    // Keeping NavigationManager for legacy support if needed, but trying to move to NavigationService
     private readonly NavigationManager _navigationManager;
     
     private DashboardResponse _dashboardData;
+    private ObservableCollection<PulseSurveyList> _surveys;
     private string _userGreeting = string.Empty;
     private string _currentDate = string.Empty;
 
     public DashboardViewModel(
+        INavigationService navigationService,
+        IAuthenticationDataService authService, 
         IDashboardDataService dashboardService,
-        NavigationManager navigationManager)
+        ISurveyDataService surveyService, // Added back
+        ILeaveDataService leaveService,
+        IOvertimeDataService overtimeService,
+        NavigationManager navigationManager) // Added back
+        : base() // BaseViewModel doesn't take args based on previous read
     {
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         _dashboardService = dashboardService ?? throw new ArgumentNullException(nameof(dashboardService));
+        _surveyService = surveyService ?? throw new ArgumentNullException(nameof(surveyService)); // Init survey service
+        _leaveService = leaveService ?? throw new ArgumentNullException(nameof(leaveService));
+        _overtimeService = overtimeService ?? throw new ArgumentNullException(nameof(overtimeService));
         _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
         
         _dashboardData = new DashboardResponse();
+        _surveys = new ObservableCollection<PulseSurveyList>();
         
         // Initialize commands
-        NavigateToLeaveCommand = new RelayCommand(NavigateToLeave);
-        NavigateToTimeEntryCommand = new RelayCommand(NavigateToTimeEntry);
-        NavigateToOvertimeCommand = new RelayCommand(NavigateToOvertime);
-        NavigateToAttendanceCommand = new RelayCommand(NavigateToAttendance);
+        NavigateToLeaveCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("leave"));
+        NavigateToTimeEntryCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("time-entry"));
+        NavigateToOvertimeCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("overtime"));
+        NavigateToAttendanceCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("attendance"));
+        NavigateToPayslipsCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("payslips"));
+        NavigateToApprovalsCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("approvals"));
+        NavigateToOfficialBusinessCommand = new AsyncRelayCommand(async () => await _navigationService.NavigateToAsync("official-business"));
         RefreshCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
+        EditSurveyCommand = new AsyncRelayCommand<PulseSurveyList>(AnswerSurveyAsync);
     }
 
     #region Properties
@@ -46,6 +76,12 @@ public class DashboardViewModel : BaseViewModel
     {
         get => _dashboardData;
         private set => SetProperty(ref _dashboardData, value);
+    }
+
+    public ObservableCollection<PulseSurveyList> Surveys
+    {
+        get => _surveys;
+        private set => SetProperty(ref _surveys, value);
     }
 
     /// <summary>
@@ -73,8 +109,8 @@ public class DashboardViewModel : BaseViewModel
     {
         get
         {
-            var total = DashboardData.VacationLeaveBalance.InfoboxValue +
-                       DashboardData.SickLeaveBalance.InfoboxValue;
+            var total = (DashboardData.VacationLeaveBalance?.InfoboxValue ?? 0) +
+                       (DashboardData.SickLeaveBalance?.InfoboxValue ?? 0);
             return total.ToString("0.##");
         }
     }
@@ -82,17 +118,22 @@ public class DashboardViewModel : BaseViewModel
     /// <summary>
     /// Absences this month
     /// </summary>
-    public string AbsencesThisMonth => DashboardData.AbsencesMTD.InfoboxValue.ToString("0.##");
+    public string AbsencesThisMonth => (DashboardData.AbsencesMTD?.InfoboxValue ?? 0).ToString("0.##");
 
     /// <summary>
     /// Tardiness (late arrivals) this month
     /// </summary>
-    public string TardinessThisMonth => DashboardData.TardinessMTD.InfoboxValue.ToString("0.##");
+    public string TardinessThisMonth => (DashboardData.TardinessMTD?.InfoboxValue ?? 0).ToString("0.##");
 
     /// <summary>
     /// Total overtime this month
     /// </summary>
-    public string OvertimeThisMonth => DashboardData.TotalOvertimeMTD.InfoboxValue.ToString("0.##");
+    public string OvertimeThisMonth => (DashboardData.TotalOvertimeMTD?.InfoboxValue ?? 0).ToString("0.##");
+
+    // Mini-Chart Data
+    public List<double> VacationLeaveTrend { get; private set; } = new();
+    public List<double> SickLeaveTrend { get; private set; } = new();
+    public List<double> OvertimeTrend { get; private set; } = new();
 
     #endregion
 
@@ -118,10 +159,16 @@ public class DashboardViewModel : BaseViewModel
     /// </summary>
     public ICommand NavigateToAttendanceCommand { get; }
 
+    public ICommand NavigateToPayslipsCommand { get; }
+    public ICommand NavigateToApprovalsCommand { get; }
+    public ICommand NavigateToOfficialBusinessCommand { get; }
+
     /// <summary>
     /// Refresh dashboard data
     /// </summary>
     public ICommand RefreshCommand { get; }
+
+    public ICommand EditSurveyCommand { get; }
 
     #endregion
 
@@ -132,9 +179,70 @@ public class DashboardViewModel : BaseViewModel
     /// </summary>
     public override async Task InitializeAsync()
     {
-        await LoadDashboardDataAsync();
-        SetGreeting();
-        SetCurrentDate();
+        IsBusy = true;
+        BusyText = "Loading dashboard...";
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            // Run parallel tasks for performance
+            var dashboardTask = _dashboardService.GetDashboardAsync();
+            var surveysTask = _surveyService.RetrieveSurveysAsync();
+            var leaveHistoryTask = _leaveService.GetLeaveHistoryAsync(DateTime.Now.AddMonths(-6), DateTime.Now);
+            var overtimeHistoryTask = _overtimeService.GetOvertimeHistoryAsync(DateTime.Now.AddMonths(-6), DateTime.Now);
+
+            await Task.WhenAll(dashboardTask, surveysTask, leaveHistoryTask, overtimeHistoryTask);
+
+            var dashboardData = await dashboardTask;
+            
+            // DEBUG: Check Profile ID loaded 
+            var pid = await SecureStorage.GetAsync("profile_id");
+            if (string.IsNullOrEmpty(pid) || pid == "0")
+            {
+               await Application.Current.MainPage.DisplayAlert("Debug", "Profile ID is MISSING or 0. Data will be empty.", "OK");
+            }
+            else
+            {
+               // await Application.Current.MainPage.DisplayAlert("Debug", $"Loaded Profile ID: {pid}", "OK");
+            }
+
+            var surveys = await surveysTask;
+            var leaveHistory = await leaveHistoryTask;
+            var overtimeHistory = await overtimeHistoryTask;
+
+            // 1. Process Dashboard Stats
+            if (dashboardData != null)
+            {
+                DashboardData = dashboardData;
+                OnPropertyChanged(nameof(TotalLeaveBalance));
+                OnPropertyChanged(nameof(AbsencesThisMonth));
+                OnPropertyChanged(nameof(TardinessThisMonth));
+                OnPropertyChanged(nameof(OvertimeThisMonth));
+            }
+
+            // 2. Process Surveys
+            if (surveys != null)
+            {
+                Surveys = new ObservableCollection<PulseSurveyList>(surveys);
+            }
+
+            // 3. Process Trends
+            CalculateVacationWithSickLeaveTrend(leaveHistory);
+            CalculateSickLeaveTrend(leaveHistory);
+            CalculateOvertimeTrend(overtimeHistory);
+
+            SetGreeting();
+            SetCurrentDate();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Failed to load dashboard data. Please pull to refresh.";
+            Console.WriteLine($"Dashboard Error: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     /// <summary>
@@ -142,41 +250,62 @@ public class DashboardViewModel : BaseViewModel
     /// </summary>
     private async Task LoadDashboardDataAsync()
     {
-        await ExecuteBusyAsync(async () =>
-        {
-            var result = await _dashboardService.GetDashboardAsync();
-            if (result != null)
-            {
-                DashboardData = result;
-                
-                // Notify dependent properties
-                OnPropertyChanged(nameof(TotalLeaveBalance));
-                OnPropertyChanged(nameof(AbsencesThisMonth));
-                OnPropertyChanged(nameof(TardinessThisMonth));
-                OnPropertyChanged(nameof(OvertimeThisMonth));
-            }
-            else
-            {
-                ErrorMessage = "Failed to load dashboard data";
-            }
-        }, "Loading dashboard...");
+        await InitializeAsync();
     }
 
-    /// <summary>
-    /// Gets the current user's profile ID
-    /// </summary>
-    private async Task<long> GetProfileIdAsync()
+    private async Task AnswerSurveyAsync(PulseSurveyList survey)
     {
-        try
+        if (survey == null) return;
+        await _navigationService.NavigateToAsync($"/survey/{survey.FormHeaderId}/{survey.AnswerId}");
+    }
+
+    private void CalculateVacationWithSickLeaveTrend(List<LeaveRequestModel> history)
+    {
+        var grouped = history
+            .Where(x => x.InclusiveStartDate.HasValue)
+            .GroupBy(x => new { x.InclusiveStartDate.Value.Year, x.InclusiveStartDate.Value.Month })
+            .Select(g => new { Date = new DateTime(g.Key.Year, g.Key.Month, 1), Count = g.Sum(x => (double)(x.NoOfDays ?? 0)) })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+         VacationLeaveTrend = FillTrendBuckets(grouped.Select(x => x.Count).ToList());
+         OnPropertyChanged(nameof(VacationLeaveTrend));
+    }
+
+    private void CalculateSickLeaveTrend(List<LeaveRequestModel> history)
+    {
+         var grouped = history
+            .Where(x => x.InclusiveStartDate.HasValue && x.LeaveTypeId == 2) // ID 2 = Sick Leave
+            .GroupBy(x => new { x.InclusiveStartDate.Value.Year, x.InclusiveStartDate.Value.Month })
+            .Select(g => new { Date = new DateTime(g.Key.Year, g.Key.Month, 1), Count = g.Sum(x => (double)(x.NoOfDays ?? 0)) })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+         SickLeaveTrend = FillTrendBuckets(grouped.Select(x => x.Count).ToList());
+         OnPropertyChanged(nameof(SickLeaveTrend));
+    }
+
+    private void CalculateOvertimeTrend(List<OvertimeModel> history)
+    {
+        var grouped = history
+            .GroupBy(x => new { x.OvertimeDate.Year, x.OvertimeDate.Month })
+            .Select(g => new { Date = new DateTime(g.Key.Year, g.Key.Month, 1), Hours = g.Sum(x => (double)(x.OROTHrs + x.NSOTHrs)) })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+         OvertimeTrend = FillTrendBuckets(grouped.Select(x => x.Hours).ToList());
+         OnPropertyChanged(nameof(OvertimeTrend));
+    }
+
+    private List<double> FillTrendBuckets(List<double> data)
+    {
+        // Ensure at least 6 points for sparkline visual appeal
+        var result = new List<double>(data);
+        while (result.Count < 6)
         {
-            var profileIdStr = await SecureStorage.GetAsync("ProfileId");
-            return long.TryParse(profileIdStr, out var profileId) ? profileId : 0;
+            result.Insert(0, 0);
         }
-        catch (Exception ex)
-        {
-            HandleError(ex, "Failed to retrieve user profile");
-            return 0;
-        }
+        return result;
     }
 
     /// <summary>
@@ -195,38 +324,6 @@ public class DashboardViewModel : BaseViewModel
     private void SetCurrentDate()
     {
         CurrentDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
-    }
-
-    /// <summary>
-    /// Navigate to Leave Request page
-    /// </summary>
-    private void NavigateToLeave()
-    {
-        _navigationManager.NavigateTo("/leave");
-    }
-
-    /// <summary>
-    /// Navigate to Time Entry page
-    /// </summary>
-    private void NavigateToTimeEntry()
-    {
-        _navigationManager.NavigateTo("/time-entry");
-    }
-
-    /// <summary>
-    /// Navigate to Overtime page
-    /// </summary>
-    private void NavigateToOvertime()
-    {
-        _navigationManager.NavigateTo("/overtime");
-    }
-
-    /// <summary>
-    /// Navigate to Attendance page
-    /// </summary>
-    private void NavigateToAttendance()
-    {
-        _navigationManager.NavigateTo("/attendance");
     }
 
     #endregion

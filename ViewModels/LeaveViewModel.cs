@@ -4,6 +4,7 @@ using MauiHybridApp.Commands;
 using MauiHybridApp.Models.DataObjects;
 using MauiHybridApp.Models.Leave;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using Microsoft.AspNetCore.Components;
 
 namespace MauiHybridApp.ViewModels;
@@ -14,30 +15,42 @@ namespace MauiHybridApp.ViewModels;
 public class LeaveViewModel : BaseViewModel
 {
     private readonly ILeaveDataService _leaveService;
-    private readonly NavigationManager _navigationManager;
+    private readonly INavigationService _navigationService;
+    private readonly IDashboardDataService _dashboardService; // Added
     
     private LeaveRequestModel _leaveRequest;
     private ObservableCollection<ComboBoxObject> _leaveTypes;
     private ObservableCollection<ComboBoxObject> _applyToOptions;
+    private ObservableCollection<LeaveRequestModel> _recentLeaves;
     private long _selectedLeaveTypeId;
-    private string _successMessage = string.Empty;
+    private List<string> _attachedDocuments = new();
+    private string _leaveBalance = "Loading..."; // Added
 
     public LeaveViewModel(
         ILeaveDataService leaveService,
-        NavigationManager navigationManager)
+        INavigationService navigationService,
+        IDashboardDataService dashboardService) // Added
     {
         _leaveService = leaveService ?? throw new ArgumentNullException(nameof(leaveService));
-        _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        _dashboardService = dashboardService ?? throw new ArgumentNullException(nameof(dashboardService));
         
         _leaveRequest = new LeaveRequestModel();
         _leaveTypes = new ObservableCollection<ComboBoxObject>();
         _applyToOptions = new ObservableCollection<ComboBoxObject>();
+        _recentLeaves = new ObservableCollection<LeaveRequestModel>();
         
         SubmitCommand = new AsyncRelayCommand(SubmitRequestAsync);
-        GoBackCommand = new RelayCommand(GoBack);
+        GoBackCommand = new AsyncRelayCommand(GoBackAsync);
     }
 
     #region Properties
+
+    public string LeaveBalance // Added
+    {
+        get => _leaveBalance;
+        private set => SetProperty(ref _leaveBalance, value);
+    }
 
     public LeaveRequestModel LeaveRequest
     {
@@ -57,6 +70,12 @@ public class LeaveViewModel : BaseViewModel
         private set => SetProperty(ref _applyToOptions, value);
     }
 
+    public ObservableCollection<LeaveRequestModel> RecentLeaves
+    {
+        get => _recentLeaves;
+        private set => SetProperty(ref _recentLeaves, value);
+    }
+
     public long SelectedLeaveTypeId
     {
         get => _selectedLeaveTypeId;
@@ -70,13 +89,11 @@ public class LeaveViewModel : BaseViewModel
         }
     }
 
-    public string SuccessMessage
+    public List<string> AttachedDocuments
     {
-        get => _successMessage;
-        private set => SetProperty(ref _successMessage, value);
+        get => _attachedDocuments;
+        set => SetProperty(ref _attachedDocuments, value);
     }
-
-    public bool HasSuccessMessage => !string.IsNullOrEmpty(SuccessMessage);
 
     #endregion
 
@@ -84,6 +101,7 @@ public class LeaveViewModel : BaseViewModel
 
     public ICommand SubmitCommand { get; }
     public ICommand GoBackCommand { get; }
+    public ICommand NavigateToHistoryCommand { get; } 
 
     #endregion
 
@@ -93,6 +111,30 @@ public class LeaveViewModel : BaseViewModel
     {
         await LoadLeaveTypesAsync();
         LoadApplyToOptions();
+        await LoadRecentHistoryAsync();
+        await LoadLeaveBalanceAsync(); // Added
+    }
+
+    private async Task LoadLeaveBalanceAsync()
+    {
+        try
+        {
+            var dashboard = await _dashboardService.GetDashboardAsync();
+            if (dashboard != null)
+            {
+                 var total = (dashboard.VacationLeaveBalance?.InfoboxValue ?? 0) +
+                             (dashboard.SickLeaveBalance?.InfoboxValue ?? 0);
+                 LeaveBalance = $"{total:0.##} Days";
+            }
+            else
+            {
+                LeaveBalance = "0 Days";
+            }
+        }
+        catch
+        {
+            LeaveBalance = "N/A";
+        }
     }
 
     private async Task LoadLeaveTypesAsync()
@@ -115,6 +157,24 @@ public class LeaveViewModel : BaseViewModel
             new ComboBoxObject { Id = 3, Value = "Half Day - Afternoon" }
         };
     }
+    
+    private async Task LoadRecentHistoryAsync()
+    {
+        try 
+        {
+            // Fetch last 60 days of history
+            var history = await _leaveService.GetLeaveHistoryAsync(DateTime.Now.AddDays(-60), DateTime.Now.AddDays(180));
+            
+            // Sort by date filed descending or start date
+            var sorted = history.OrderByDescending(x => x.InclusiveStartDate).ToList();
+            
+            RecentLeaves = new ObservableCollection<LeaveRequestModel>(sorted);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading recent history: {ex.Message}");
+        }
+    }
 
     private async void OnLeaveTypeChanged(long leaveTypeId)
     {
@@ -128,6 +188,7 @@ public class LeaveViewModel : BaseViewModel
     {
         // Load leave summary/balance for selected type
         // Implementation depends on your service
+        await Task.CompletedTask;
     }
 
     private async Task SubmitRequestAsync()
@@ -145,8 +206,8 @@ public class LeaveViewModel : BaseViewModel
             if (result.Success)
             {
                 SuccessMessage = "Leave request submitted successfully!";
-                await Task.Delay(1500);
-                GoBack();
+                await Task.Delay(1500); // Give user time to see success
+                await GoBackAsync();
             }
             else
             {
@@ -186,9 +247,9 @@ public class LeaveViewModel : BaseViewModel
         return true;
     }
 
-    private void GoBack()
+    private async Task GoBackAsync()
     {
-        _navigationManager.NavigateTo("/dashboard");
+        await _navigationService.NavigateBackAsync();
     }
 
     #endregion

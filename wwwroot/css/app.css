@@ -1,674 +1,314 @@
-html, body {
+/* ========================================
+   APP LAYOUT STYLES
+   Modern Layout Implementation
+   ======================================== */
+
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f0f2f5; /* Global Grey Background */
-    overflow: hidden; /* Scroll sirf content area mein hoga, body mein nahi */
+    overflow: hidden;
+    /* App container handles scrolling */
+    background-color: var(--color-gray-100);
 }
-
 
 #app {
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    
-    /* 3. SAFE AREA LOGIC (Like React Native SafeAreaView) */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
 }
 
-.page-container {
-    flex: 1; /* Baki bachi hui jagah lelo */
+/* --- MAIN LAYOUT STRUCTURE --- */
+.modern-layout {
     display: flex;
-    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--color-gray-50);
+}
+
+/* --- SIDEBAR --- */
+.modern-sidebar {
+    width: 280px;
     height: 100%;
-    overflow: hidden; /* Double scrollbar rokne ke liye */
-}
-
-
-.page-content {
-    flex: 1;
-    overflow-y: auto; /* Sirf content scroll karega */
-    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-    padding: 20px;
-    padding-bottom: 40px; /* Thora extra space neeche */
-}
-
-
-.status-bar-safe-area {
-    padding-top: env(safe-area-inset-top);
-    background-color: #0066cc; /* Color set hai */
-    /* 🔥 Isay height do */
-    height: env(safe-area-inset-top); 
-    width: 100%;
-    position: fixed; /* Top par chipka rahe */
-    top: 0;
-    z-index: 999;
-}
-
-a, .btn-link {
-    color: #0071c1;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.content {
-    padding-top: 1.1rem;
-    min-height: calc(100vh - 3.5rem);
-    background-color: #f8f9fa;
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid #e50000;
-}
-
-.validation-message {
-    color: #e50000;
-}
-
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-.error-message {
-    text-align: center;
-    color: #721c24;
-}
-
-.error-message h3 {
-    color: #721c24;
-    margin-bottom: 1rem;
-}
-
-.error-message p {
-    margin-bottom: 0.5rem;
-}
-
-.error-details {
-    font-size: 0.8rem;
-    color: #856404;
-    background: #fff3cd;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin: 0.5rem 0;
-    word-break: break-word;
-}
-
-.error-message button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.error-message button:hover {
-    background: #0056b3;
-}
-
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
-
-.loading-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    z-index: 9999;
+    background-color: var(--color-white);
+    border-right: 1px solid var(--color-gray-200);
     display: flex;
     flex-direction: column;
+    z-index: var(--z-drawer);
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    height: 80px;
+    display: flex;
     align-items: center;
-    justify-content: center;
+    padding: 0 var(--spacing-lg);
+    border-bottom: 1px solid var(--color-gray-100);
 }
 
-.loading-spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top: 4px solid white;
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.logo-circle {
     width: 40px;
     height: 40px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-colored);
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.brand-name {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+    color: var(--color-gray-900);
 }
 
-.page {
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg) 0;
+}
+
+/* --- NAVIGATION --- */
+.modern-nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: 0 var(--spacing-md);
+}
+
+.nav-profile-section {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--color-gray-50);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.nav-profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-profile-name {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+}
+
+.nav-profile-role {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-divider {
+    height: 1px;
+    background-color: var(--color-gray-200);
+    margin: var(--spacing-sm) 0;
+}
+
+.modern-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    color: var(--color-gray-600);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+}
+
+.modern-nav-link:hover {
+    background-color: var(--color-gray-50);
+    color: var(--color-primary);
+}
+
+.modern-nav-link.active {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.modern-nav-link .nav-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.logout-btn {
+    width: 100%;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.logout-btn:hover {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+/* --- MAIN CONTENT AREA --- */
+.modern-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     position: relative;
-    height: 100vh;
     overflow: hidden;
 }
 
-/* 1. APP CONTAINER (Root) - Poori Screen Pakdo */
-.app-container {
-    position: relative;
-    width: 100%;
-    height: 100vh; /* Viewport Height */
-    background-color: #f0f2f5;
-    overflow: hidden; /* Scroll sirf internal div mein hoga */
-}
-
-/* 2. MAIN VIEW (Base Layer) */
-.main-view {
-    position: absolute; /* Absolute taake ye hamesha 0,0 se shuru ho */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    z-index: 1; /* Sidebar se neeche */
-}
-
-/* 3. HEADER (Top Bar) */
-.top-bar {
-    /* Height ko 'auto' karo aur min-height do */
-    height: auto; 
-    min-height: 60px; 
-    
-    background-color: rgb(255, 255, 255);
+.modern-header {
+    height: 70px;
     display: flex;
     align-items: center;
-    
-    /* Horizontal Padding */
-    padding-left: 15px;
-    padding-right: 15px;
-    
-    /* 🔥 SAFE AREA MAGIC (Yahan hai asli fix) */
-    margin-top: 25px; 
-    padding-bottom: 10px; /* Thora sa neeche space content ke liye */
-    
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    z-index: 10;
-    flex-shrink: 0; /* Shrink na ho */
-}
-
-.menu-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-right: 15px;
-    padding: 5px;
-    margin-top: 5px; /* Thora adjust */
-}
-
-.app-title {
-    font-weight: 600;
-    font-size: 18px;
-    flex-grow: 1;
-    margin-top: 5px; /* Thora adjust */
-}
-
-/* 4. CONTENT AREA (Scrollable) */
-.content-scroll-area {
-    flex: 1; /* Bachi hui jagah lelo */
-    overflow-y: auto; /* Sirf ye area scroll karega */
-    -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
-    position: relative;
-}
-
-/* 5. SIDEBAR DRAWER (Floating Layer) */
-.sidebar-drawer {
-    position: fixed; /* Screen ke upar float karega */
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px; /* Standard Mobile Drawer Width */
-    background-color: #ffffff; /* Tumhara Dark Blue */
-    z-index: 1000; /* Sab se upar */
-    
-    /* Animation Logic */
-    transform: translateX(-100%); /* Default hidden (Left side bahar) */
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-
-    /* 🔥 SAFE AREA MAGIC (Sidebar ke content ko notch se bachao) */
-    padding-top: env(safe-area-inset-top);
-}
-
-.sidebar-drawer.open {
-    transform: translateX(0); /* Slide In */
-}
-
-/* 6. BACKDROP (Dimmer) */
-.drawer-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent Black */
-    z-index: 900; /* Sidebar se neeche, Content se upar */
-    animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Navbar Icon */
-.navbar-toggler-icon {
-    display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
-    vertical-align: middle;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
-}
-
-.sidebar-drawer .top-row {
-    background-color: rgba(0,0,0,0.4);
-}
-
-.sidebar-drawer .navbar-brand {
-    font-size: 1.1rem;
-}
-
-.sidebar-drawer .oi {
-    width: 2rem;
-    font-size: 1.1rem;
-    vertical-align: text-top;
-    top: -2px;
-}
-
-.sidebar-drawer .nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
-}
-
-    .sidebar-drawer .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
-
-    .sidebar-drawer .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
-
-    .sidebar-drawer .nav-item ::deep a {
-        color: #d7d7d7;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-    }
-
-        .sidebar-drawer .nav-item ::deep a.active {
-            background-color: rgba(255,255,255,0.25);
-            color: white;
-        }
-
-        .sidebar-drawer .nav-item ::deep a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-.main-content-area .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
     justify-content: space-between;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
+    padding: 0 var(--spacing-lg);
+    z-index: var(--z-sticky);
+    /* Glass Effect from global.css class */
 }
 
-.navbar-toggler {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
+.menu-toggle {
     display: none;
-}
-
-.navbar-toggler-icon {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: #333;
-    position: relative;
-}
-
-.navbar-toggler-icon::before,
-.navbar-toggler-icon::after {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: #333;
-    position: absolute;
-}
-
-.navbar-toggler-icon::before {
-    top: -8px;
-}
-
-.navbar-toggler-icon::after {
-    top: 8px;
-}
-
-@media (max-width: 768px) {
-    .navbar-toggler {
-        display: block;
-    }
-    
-    .main-content-area .top-row {
-        justify-content: space-between;
-        padding: 0 1rem;
-    }
-}
-
-    .main-content-area .top-row ::deep a, .main-content-area .top-row ::deep .btn-link {
-        color: #333;
-    }
-
-/* --- SHARED PAGE STYLES --- */
-.page-header {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    background: #667eea;
-    color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    /* Sticky Top fix */
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.btn-back {
+    /* Hidden on desktop */
     background: none;
     border: none;
-    color: white;
-    font-size: 18px;
-    margin-right: 15px;
     cursor: pointer;
+    padding: var(--spacing-xs);
+    flex-direction: column;
+    gap: 4px;
 }
 
-.page-content-container {
-    padding: 20px;
-    padding-bottom: 100px;
-    flex: 1;
-    overflow-y: auto;
+.icon-bar {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-gray-700);
+    border-radius: 2px;
 }
 
-/* Expense Specific */
-.expense-card {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    border-left: 5px solid #667eea;
+.header-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-gray-900);
 }
 
-    .main-content-area .top-row ::deep a:hover, .main-content-area .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .main-content-area .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-.nav-menu {
-    padding: 1rem;
-}
-
-.user-profile {
+.header-actions {
     display: flex;
     align-items: center;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
 }
 
-.profile-image img {
-    width: 50px;
-    height: 50px;
+.user-avatar-small {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    margin-right: 1rem;
-}
-
-.profile-placeholder {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #667eea;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: bold;
-    margin-right: 1rem;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    border: 2px solid var(--color-white);
+    box-shadow: var(--shadow-sm);
 }
 
-.profile-info h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: rgb(5, 5, 5);
+.content-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    scroll-behavior: smooth;
 }
 
-.profile-info p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: rgba(42, 41, 41, 0.7);
-}
-
-.btn-logout {
-    background: none;
-    border: none;
+/* --- MOBILE RESPONSIVENESS --- */
+.layout-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    text-align: left;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: var(--z-drawer-backdrop);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base);
 }
 
-/* Enhanced animations and transitions */
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
+.layout-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-.slide-in-up {
-    animation: slideInUp 0.4s ease-out;
-}
-
-.slide-in-down {
-    animation: slideInDown 0.4s ease-out;
-}
-
-.scale-in {
-    animation: scaleIn 0.3s ease-out;
-}
-
-.bounce-in {
-    animation: bounceIn 0.6s ease-out;
-}
-
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+@media (max-width: 1024px) {
+    .modern-sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-xl);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .modern-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .header-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
-@keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
+@media (max-width: 768px) {
+    .content-body {
+        padding: var(--spacing-sm);
+        /* Reduced from md/lg to maximize space */
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
+    .modern-header {
+        height: 60px;
+        padding: 0 var(--spacing-md);
+        /* Ensure header stays on top */
+        position: sticky;
+        top: 0;
+        background-color: var(--color-gray-50);
+        /* Match layout bg if transparent */
     }
 }
 
-@keyframes bounceIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.3);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-    70% {
-        transform: scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+/* Loading State (Keep existing or update) */
+.loading-container {
+    position: fixed;
+    inset: 0;
+    background: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-toast);
 }
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Loading skeleton styles */
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-.skeleton-text {
-    height: 1em;
-    margin-bottom: 0.5em;
-    border-radius: 4px;
-}
-
-.skeleton-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.skeleton-button {
-    height: 40px;
-    border-radius: 6px;
-    width: 120px;
-}
-
-/* Success/Error states */
-.success-message {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin: 10px 0;
-    animation: slideInDown 0.3s ease-out;
-}
-
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin: 10px 0;
-    animation: slideInDown 0.3s ease-out;
-}
-
-.warning-message {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin: 10px 0;
-    animation: slideInDown 0.3s ease-out;
-}
-
-.info-message {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin: 10px 0;
-    animation: slideInDown 0.3s ease-out;
-}
-

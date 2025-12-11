@@ -1,0 +1,68 @@
+@page "/suggestion"
+@using MauiHybridApp.ViewModels
+@inject SuggestionViewModel ViewModel
+@inject NavigationManager Navigation
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Suggestion Corner</h1>
+    </div>
+
+    @if (ViewModel.IsBusy)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading suggestions...</p>
+        </div>
+    }
+    else if (ViewModel.Suggestions != null && ViewModel.Suggestions.Any())
+    {
+        <div class="suggestion-list">
+            @foreach (var item in ViewModel.Suggestions)
+            {
+                <div class="suggestion-card">
+                    <div class="suggestion-header">
+                        <span class="suggestion-category">@item.Category</span>
+                        <span class="suggestion-date">@item.CreateDateDisplay</span>
+                    </div>
+                    <div class="suggestion-detail">
+                        @item.SuggestionDetail
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <p>No suggestions found.</p>
+        </div>
+    }
+
+    <div class="fab-container">
+        <button class="fab" @onclick="@(() => ViewModel.CreateNewCommand.Execute(null))">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

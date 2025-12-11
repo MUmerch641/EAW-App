@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             x:Class="EatWork.Mobile.Views.Requests.LeaveRequest.LeaveTypeListPage"
+             Style="{DynamicResource ContentPage}">
+
+    <ContentPage.Content>
+        <AbsoluteLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                           Style="{StaticResource BusyIndicatorStyle}"
+                                           IsBusy="{Binding IsBusy}" />
+
+            <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                         AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                         IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+
+                <shared:NoItemsPartialPage DetailsText="No items available to display."
+                                           IsVisible="{Binding LeaveTypeList,Converter={utils:ListToBoolConverter}}" />
+            </StackLayout>
+
+            <Grid RowSpacing="0" ColumnSpacing="0"
+                  AbsoluteLayout.LayoutFlags="All"
+                  AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackLayout Grid.Row="0" Margin="10,10" Spacing="0">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Leave Types" HorizontalOptions="Start"
+                               FontSize="20"
+                               FontFamily="{DynamicResource Bold}"
+                               TextColor="{DynamicResource Gray-900}"
+                               Grid.Column="0" />
+
+                        <buttons:SfButton x:Name="SkipButton"
+                                          Grid.Column="1"
+                                          BackgroundColor="Transparent"
+                                          Command="{Binding CloseModalCommand}"
+                                          CornerRadius="20"
+                                          FontFamily="{DynamicResource SemiBold}"
+                                          HeightRequest="40"
+                                          HorizontalOptions="End"
+                                          Text="Close"
+                                          TextColor="{x:StaticResource HyperLink}"
+                                          VerticalOptions="StartAndExpand"
+                                          WidthRequest="80" />
+                    </Grid>
+
+                    <Grid RowSpacing="0" ColumnSpacing="0" Margin="0,20,0,0"
+                          IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+                        
+                        <shared:SelectableListView2 BindingContext="{Binding .}" ItemsSource="{Binding LeaveTypeList}" />
+                        
+                    </Grid>
+                </StackLayout>
+            </Grid>
+
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>

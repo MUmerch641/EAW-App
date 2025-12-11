@@ -3,56 +3,105 @@
 @inject INavigationService NavigationService
 @inject IJSRuntime JSRuntime
 
-<div class="app-container">
+<div class="modern-layout">
     @if (AuthState.IsAuthenticated)
     {
-        <!-- 1. SIDEBAR (Floating Drawer) -->
-        <!-- Note: onclick se sidebar band hoga agar user ghalti se sidebar par click kare (optional) -->
-        <div class="sidebar-drawer @(sidebarOpen ? "open" : "")">
-            <NavMenu />
-        </div>
+        <!-- Mobile Backdrop -->
+        <div class="layout-backdrop @(sidebarOpen ? "open" : "")" @onclick="ToggleSidebar"></div>
 
-        <!-- 2. OVERLAY BACKDROP (Jab sidebar khula ho to peeche wala area dim ho jaye) -->
-        @if (sidebarOpen)
-        {
-            <div class="drawer-backdrop" @onclick="ToggleSidebar"></div>
-        }
+        <!-- Sidebar Navigation -->
+        <aside class="modern-sidebar @(sidebarOpen ? "open" : "")">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <!-- Placeholder or Icon -->
+                    <div class="logo-circle">EW</div>
+                    <span class="brand-name">Everything<br/>at Work</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <NavMenu />
+            </div>
+        </aside>
 
-        <!-- 3. MAIN CONTENT (Full Screen Background) -->
-        <main class="main-view">
-            <!-- Header (Sticky Top) -->
-            <header class="top-bar">
-                <button class="menu-btn" @onclick="ToggleSidebar">
-                    <span class="navbar-toggler-icon"></span>
+        <!-- Main Content Area -->
+        <main class="modern-main">
+            <!-- Top Header -->
+            <header class="modern-header glass-panel">
+                <button class="menu-toggle" @onclick="ToggleSidebar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
-                <span class="app-title">Everything at Work</span>
+                
+                <div class="header-title">
+                     <!-- Title removed to avoid conflict with PageHeader -->
+                    <span class="page-title">Everything at Work</span> 
+                </div>
+
+                <div class="header-actions">
+                    <button class="icon-btn" @onclick="GoToNotifications" title="Notifications">
+                        <span class="fas fa-bell"></span>
+                    </button>
+                    <!-- Profile Icon -->
+                    <div class="user-avatar-small" @onclick="GoToProfile" style="cursor: pointer;">
+                        @GetInitials()
+                    </div>
+                </div>
             </header>
 
-            <!-- Page Content (Scrollable) -->
-            <div class="content-scroll-area">
-                @Body
+            <!-- Scrollable Content -->
+            <div class="content-body">
+                <div class="page-transition-wrapper">
+                    @Body
+                </div>
             </div>
         </main>
     }
     else
     {
-        <!-- Login Screen -->
-        <main class="main-view">
-            <div class="content-scroll-area full-height">
-                @Body
-            </div>
+        <!-- Login / Public Layout -->
+        <main class="public-layout">
+            @Body
         </main>
     }
 </div>
 
+@inject NavigationManager NavManager
+
 @code {
     private bool sidebarOpen = false;
+    private IDisposable? navigationHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Restore session if needed
+        await AuthState.InitializeAsync();
+        
+        // Subscribe to location changes to close sidebar on mobile navigation
+        navigationHandler = NavManager.RegisterLocationChangingHandler((context) =>
+        {
+            try
+            {
+                if (sidebarOpen)
+                {
+                    sidebarOpen = false;
+                    _ = InvokeAsync(StateHasChanged);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LAYOUT] Error in LocationChangingHandler: {ex.Message}");
+            }
+            return ValueTask.CompletedTask;
+        });
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Task.Delay(millisecondsDelay: 500);
+            await Task.Delay(500);
             await JSRuntime.InvokeVoidAsync("blazorHelpers.hideLoadingScreen");
         }
     }
@@ -61,5 +110,28 @@
     {
         sidebarOpen = !sidebarOpen;
         StateHasChanged();
+    }
+
+    private void GoToNotifications()
+    {
+        NavManager.NavigateTo("/task-notifications");
+    }
+
+    private void GoToProfile()
+    {
+        NavManager.NavigateTo("/profile");
+    }
+    
+    private string GetInitials()
+    {
+        if (AuthState.CurrentUser == null) return "?";
+        var name = AuthState.CurrentUser.FullName ?? AuthState.CurrentUser.Username;
+        if (string.IsNullOrEmpty(name)) return "?";
+        return name.Substring(0, 1).ToUpper();
+    }
+
+    public void Dispose()
+    {
+        navigationHandler?.Dispose();
     }
 }

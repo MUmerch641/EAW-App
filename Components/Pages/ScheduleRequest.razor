@@ -1,0 +1,97 @@
+@page "/schedule/request/{Type}"
+@using MauiHybridApp.ViewModels
+@inject ScheduleRequestViewModel ViewModel
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>@ViewModel.Title</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-content">
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert error">
+                <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+        {
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.StartDate" />
+        </div>
+
+        <div class="form-group">
+            <label>End Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.EndDate" />
+        </div>
+
+        @if (ViewModel.RequestType == "work-schedule")
+        {
+            <div class="form-group">
+                <label>New Schedule</label>
+                <input type="text" class="form-control" @bind="ViewModel.NewSchedule" placeholder="e.g. 09:00 AM - 06:00 PM" />
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <label>New Rest Day</label>
+                <input type="date" class="form-control" @bind="ViewModel.NewRestDay" />
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Reason</label>
+            <textarea class="form-control" rows="3" @bind="ViewModel.Reason" placeholder="Enter reason..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-small"></span> <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Request</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Type { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ViewModel.Initialize(Type);
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

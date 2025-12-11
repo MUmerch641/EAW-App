@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             x:Class="EatWork.Mobile.Views.IndividualObjectives.ObjectivesListPage"
+             Style="{DynamicResource ContentPage}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="HeaderStyle" BasedOn="{StaticResource PriceLabelStyle}" TargetType="Label">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.25, Default=-1}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="Margin" Value="0,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+            <StackLayout Margin="10,10">
+                <Grid ColumnDefinitions="*,80">
+                    <Label Text="Objectives" HorizontalOptions="Start"
+                           FontSize="20"
+                           FontFamily="{DynamicResource Bold}"
+                           TextColor="{DynamicResource Gray-900}"
+                           Grid.Column="0" />
+
+                    <button:SfButton x:Name="SkipButton"
+                                     Grid.Column="1"
+                                     BackgroundColor="Transparent"
+                                     Command="{Binding CloseModalCommand}"
+                                     CornerRadius="20"
+                                     FontFamily="{DynamicResource SemiBold}"
+                                     HeightRequest="40"
+                                     HorizontalOptions="End"
+                                     Text="Close"
+                                     TextColor="{x:StaticResource HyperLink}"
+                                     VerticalOptions="StartAndExpand"
+                                     WidthRequest="80" />
+                </Grid>
+
+                <AbsoluteLayout VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand">
+
+                    <Grid RowSpacing="0" ColumnSpacing="0"
+                          AbsoluteLayout.LayoutFlags="All"
+                          AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}"
+                          RowDefinitions="Auto">
+
+                        <StackLayout Grid.Row="0" Margin="0,0" Spacing="0"
+                                     IsVisible="{Binding Objectives,Converter={utils:ListToInverseBoolConverter}}">
+
+                            <Grid RowSpacing="0" ColumnSpacing="0" Margin="0,20,0,0">
+                                <StackLayout Margin="0,0"
+                                             BindableLayout.ItemsSource="{Binding Objectives}"
+                                             x:Name="Details">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <template:ObjectiveListTemplate />
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </Grid>
+                </AbsoluteLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

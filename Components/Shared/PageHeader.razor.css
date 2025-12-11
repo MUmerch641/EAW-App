@@ -1,0 +1,99 @@
+/* Page Header Container */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+/* Header Left Section (Back Button + Titles) */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Back Button Styling */
+.btn-back {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-back:hover {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
+    border-color: var(--color-primary-100);
+    transform: translateX(-2px);
+}
+
+.btn-back i {
+    font-size: 1rem;
+}
+
+/* Search Icon / Title Icon */
+.header-icon {
+    color: var(--color-primary);
+    opacity: 0.9;
+}
+
+/* Titles Container */
+.header-titles {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Main Title */
+.page-header h1 {
+    font-size: 1.5rem;
+    /* 24px */
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin: 0;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.02em;
+}
+
+/* Subtitle */
+.subtitle {
+    margin: 4px 0 0 0;
+    font-size: 0.875rem;
+    /* 14px */
+    color: var(--color-gray-500);
+    font-weight: 500;
+}
+
+/* Header Actions (Right Side) */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .page-header {
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        /* Allow wrapping on very small screens if needed */
+        gap: var(--spacing-md);
+    }
+
+    .page-header h1 {
+        font-size: 1.25rem;
+    }
+}

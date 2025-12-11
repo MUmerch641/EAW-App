@@ -8,6 +8,6 @@ public class LeaveApiResponse
     public string? ValidationMessage { get; set; }
     public List<string>? ValidationMessages { get; set; }
     
-    // 🔥 YE ADD KARO: Agar ye null nahi hai, matlab Success hai
+    // ADDED: If this is not null, it means Success
     public object? Model { get; set; } 
 }

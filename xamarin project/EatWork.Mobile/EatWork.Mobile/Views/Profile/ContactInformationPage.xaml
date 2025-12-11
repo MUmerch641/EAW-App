@@ -1,0 +1,854 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.MyProfile.ContactInformationPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <converter:TitleView Title="Contact Details"
+                                 TitleColor="{StaticResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource BackButtonIcon}" />
+                </converter:TitleView.LeadingView>
+            </converter:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <ScrollView HorizontalScrollBarVisibility="Never"
+                        VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   AbsoluteLayout.LayoutBounds="0.5,0.2,-1,-1"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   Style="{StaticResource BusyIndicatorStyle}" />
+
+                    <StackLayout Padding="0,0,0,0"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 BackgroundColor="{StaticResource Gray-100}"
+                                 IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}"
+                                 Spacing="0">
+                        <Grid Style="{StaticResource GridContentHeaderStyle}">
+                            <Label Grid.Column="0"
+                                   FontFamily="{DynamicResource SemiBold}"
+                                   FontSize="16"
+                                   LineHeight="{OnPlatform Android=1.25,
+                                                           Default=-1}"
+                                   Style="{StaticResource PriceLabelStyle}"
+                                   Text="City Address"
+                                   TextColor="{DynamicResource Gray-900}" />
+
+                            <BoxView Grid.Row="1"
+                                     HeightRequest="1"
+                                     Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="House No., Street Name:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddress1}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Subdivision:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddress2}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Barangay:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddressBarangay}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Municipality/City:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddressCity}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Province:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddresProvince}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Zip Code:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.CityAddresZipCode}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource Gray-100}"
+                                 HeightRequest="25"
+                                 Style="{StaticResource SeparatorStyle}" />
+
+                        <Grid Style="{StaticResource GridContentHeaderStyle}">
+                            <Label Grid.Column="0"
+                                   FontFamily="{DynamicResource SemiBold}"
+                                   FontSize="16"
+                                   LineHeight="{OnPlatform Android=1.25,
+                                                           Default=-1}"
+                                   Style="{StaticResource PriceLabelStyle}"
+                                   Text="Provincial Address"
+                                   TextColor="{DynamicResource Gray-900}" />
+
+                            <BoxView Grid.Row="1"
+                                     HeightRequest="1"
+                                     Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="House No., Street Name:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialAddress1}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Subdivision:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialAddress2}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Barangay:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialBarangay}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Municipality/City:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialCityMunipality}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Province:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialProvice}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Zip Code:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.ProvincialZipCode}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource Gray-100}"
+                                 HeightRequest="25"
+                                 Style="{StaticResource SeparatorStyle}" />
+
+                        <Grid Style="{StaticResource GridContentHeaderStyle}">
+                            <Label Grid.Column="0"
+                                   FontFamily="{DynamicResource SemiBold}"
+                                   FontSize="16"
+                                   LineHeight="{OnPlatform Android=1.25,
+                                                           Default=-1}"
+                                   Style="{StaticResource PriceLabelStyle}"
+                                   Text="Contact Details"
+                                   TextColor="{DynamicResource Gray-900}" />
+
+                            <BoxView Grid.Row="1"
+                                     HeightRequest="1"
+                                     Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Phone Number:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.PhoneNumber}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Mobile Number:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.MobileNumber}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Email Address:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.EmailAddress}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Google Mail:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.GoogleMail}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid Margin="0,0"
+                                  ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       Text="Yahoo Mail:" />
+
+                                <Label Grid.Column="2"
+                                       Margin="0,10"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Profile.YahooMail}" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource Gray-100}"
+                                 HeightRequest="25"
+                                 Style="{StaticResource SeparatorStyle}" />
+
+                        <Grid Style="{StaticResource GridContentHeaderStyle}">
+                            <Label Grid.Column="0"
+                                   FontFamily="{DynamicResource SemiBold}"
+                                   FontSize="16"
+                                   LineHeight="{OnPlatform Android=1.25,
+                                                           Default=-1}"
+                                   Style="{StaticResource PriceLabelStyle}"
+                                   Text="Social Accounts"
+                                   TextColor="{DynamicResource Gray-900}" />
+
+                            <BoxView Grid.Row="1"
+                                     HeightRequest="1"
+                                     Style="{StaticResource SeparatorStyle}" />
+                        </Grid>
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  Padding="16,16"
+                                  ColumnSpacing="0"
+                                  RowSpacing="10">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="0"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-facebook" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.Facebook}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="1"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-twitter-square" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.Twitter}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="2"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-skype" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.Skype}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+
+                        <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  Padding="16,16"
+                                  ColumnSpacing="0"
+                                  RowSpacing="10">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="0"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-linkedin" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.LinkedIn}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="1"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-instagram" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.Instagram}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="2"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-youtube" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.Youtube}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+
+                        <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                            <Grid Margin="0,0"
+                                  Padding="16,16"
+                                  ColumnSpacing="0"
+                                  RowSpacing="10">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackLayout Grid.Row="0"
+                                             Grid.Column="0"
+                                             BackgroundColor="{DynamicResource Gray-White}">
+                                    <Grid RowSpacing="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <iconize:IconLabel Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Margin="16,0,0,0"
+                                                           FontSize="30"
+                                                           Style="{StaticResource IconizeLabelStyle}"
+                                                           Text="fab-google-plus" />
+
+                                        <Label Grid.Row="1"
+                                               Grid.RowSpan="4"
+                                               Margin="0,0,0,0"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="WordWrap"
+                                               Text="{Binding Profile.GooglePlus}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+
+                        <!--<StackLayout BackgroundColor="{DynamicResource Gray-White}">
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-facebook"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.Facebook}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-twitter-square"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.Twitter}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-skype"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.Skype}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-linkedin"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.LinkedIn}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-instagram"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.Instagram}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-youtube"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.Youtube}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                             <Grid ColumnSpacing="0"
+                             RowSpacing="1"
+                             Margin="0,0"
+                             Style="{StaticResource GridEmployeeProfileDetails}">
+
+                             <iconize:IconLabel Grid.Column="0"
+                             Margin="16,0,0,0"
+                             Text="fab-google-plus"
+                             FontSize="25"
+                             Style="{StaticResource IconizeLabelStyle}" />
+
+                             <Label Grid.Column="2"
+                             Style="{StaticResource LabelStyleProfile}"
+                             Text="{Binding Profile.GooglePlus}"
+                             Margin="0,10" />
+                             </Grid>
+
+                             <BoxView Style="{StaticResource SeparatorStyle}" />
+                             </StackLayout>-->
+                    </StackLayout>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

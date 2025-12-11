@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage x:Class="EatWork.Mobile.Views.MainPage"
+            xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+            xmlns:local="clr-namespace:EatWork.Mobile.Views"
+            xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+            NavigationPage.HasNavigationBar="False">
+    <!--  ios:Page.UseSafeArea="true"  -->
+
+    <FlyoutPage.Flyout>
+        <local:MainMenuPage />
+    </FlyoutPage.Flyout>
+
+    <FlyoutPage.Detail>
+        <NavigationPage>
+            <!--<utils:CustomIconNavigationPage>-->
+            <x:Arguments>
+                <!--<local:HomePage />-->
+                <local:DashboardPage Title="Home" />
+            </x:Arguments>
+        </NavigationPage>
+
+        <!--</utils:CustomIconNavigationPage>-->
+        <!--<NavigationPage>
+             <x:Arguments>
+             <local:HomePage />
+             </x:Arguments>
+             </NavigationPage>-->
+    </FlyoutPage.Detail>
+</FlyoutPage>

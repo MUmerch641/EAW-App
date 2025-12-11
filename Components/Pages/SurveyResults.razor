@@ -1,0 +1,83 @@
+@page "/survey/results/{FormHeaderId:long}"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models.Questionnaire
+@inject SurveyViewModel ViewModel
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="GoBack">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Survey Results</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="results-content">
+        <div class="empty-state">
+            <i class="fas fa-chart-bar"></i>
+            <p>Chart visualization coming soon.</p>
+            <small>This feature will be implemented using a Blazor chart library.</small>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        padding: 1rem;
+        background-color: #f8f9fa;
+        height: 100vh;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .btn-icon {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: #3498db;
+        cursor: pointer;
+    }
+
+    .results-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60%;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #95a5a6;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #bdc3c7;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public long FormHeaderId { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/surveys");
+    }
+}

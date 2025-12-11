@@ -16,9 +16,9 @@ public interface ISignalRDataService
     Task StopConnectionAsync();
 
     /// <summary>
-    /// Check if the connection is active
+    /// Check if the connection is active  
     /// </summary>
-    bool IsConnected { get; }
+    bool IsConnected { get; } 
 
     /// <summary>
     /// Send a message to all connected clients
@@ -27,7 +27,7 @@ public interface ISignalRDataService
 
     /// <summary>
     /// Register a handler for incoming messages
-    /// </summary>
+    /// </summary>     
     void RegisterHandler<T>(string methodName, Action<T> handler);
 
     /// <summary>

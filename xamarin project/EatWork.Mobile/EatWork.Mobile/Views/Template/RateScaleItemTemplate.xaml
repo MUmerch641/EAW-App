@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EatWork.Mobile.Views.Template.RateScaleItemTemplate">
+    <StackLayout.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="HeaderStyle" BasedOn="{StaticResource PriceLabelStyle}" TargetType="Label">
+                <Setter Property="FontSize" Value="{DynamicResource Small}" />
+                <Setter Property="FontFamily" Value="{DynamicResource SemiBold}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.25, Default=-1}" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-White}" />
+                <Setter Property="Margin" Value="0,0" />
+            </Style>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <StackLayout Margin="0" Spacing="0">
+
+        <Grid Margin="0"
+              Padding="0,7"
+              ColumnSpacing="0"
+              RowSpacing="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{OnIdiom Desktop=0.7*, Tablet=1*, Phone=0.7*}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=0.7*, Tablet=1*, Phone=0.7*}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=0.7*, Tablet=1*, Phone=0.5*}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=5*, Tablet=1*, Phone=*}" />
+            </Grid.ColumnDefinitions>
+
+            <Label Margin="0,0,0,0"
+                   FontFamily="{DynamicResource Medium}"
+                   FontSize="14"
+                   Text="{Binding Min,StringFormat={StaticResource TwoDecimalPlacesFormat}}"
+                   TextColor="{DynamicResource Gray-900}"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="StartAndExpand"
+                   LineBreakMode="TailTruncation" />
+
+            <Label Margin="0,0,0,0"
+                   FontFamily="{DynamicResource Medium}"
+                   FontSize="14"
+                   Text="{Binding Max,StringFormat={StaticResource TwoDecimalPlacesFormat}}"
+                   TextColor="{DynamicResource Gray-900}"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="StartAndExpand"
+                   LineBreakMode="TailTruncation"
+                   Grid.Column="1" />
+
+            <Label Margin="0,0,0,0"
+                   FontFamily="{DynamicResource Medium}"
+                   FontSize="14"
+                   Text="{Binding Rating,StringFormat={StaticResource TwoDecimalPlacesFormat}}"
+                   TextColor="{DynamicResource Gray-900}"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="StartAndExpand"
+                   LineBreakMode="TailTruncation"
+                   Grid.Column="2" />
+
+            <Label Margin="0,0,0,0"
+                   FontFamily="{DynamicResource Medium}"
+                   FontSize="14"
+                   Text="{Binding Criteria}"
+                   TextColor="{DynamicResource Gray-900}"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="StartAndExpand"
+                   LineBreakMode="TailTruncation"
+                   TextType="Html"
+                   Grid.Column="3" />
+        </Grid>
+
+        <BoxView Grid.Row="1"
+                 Grid.ColumnSpan="4"
+                 Style="{StaticResource HorizontalSeparatorStyle}" />
+    </StackLayout>
+</StackLayout>

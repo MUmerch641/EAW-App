@@ -10,10 +10,22 @@
         <p class="text-muted">@ViewModel.CurrentDate</p>
     </div>
 
-    <!-- Loading State -->
+    <!-- Loading State (Skeleton) -->
     @if (ViewModel.IsBusy)
     {
-        <LoadingIndicator Message="@ViewModel.BusyText" />
+        <div class="dashboard-grid">
+            <!-- 4 Skeleton Cards -->
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="card stat-card" style="height: 140px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <SkeletonLoader Width="56px" Height="56px" Shape="rect" />
+                        <SkeletonLoader Width="40%" Height="30px" />
+                    </div>
+                    <SkeletonLoader Width="60%" Height="20px" />
+                </div>
+            }
+        </div>
     }
     
     <!-- Error State -->
@@ -27,75 +39,92 @@
     {
         <!-- Statistics Grid -->
         <div class="dashboard-grid">
-            <StatusCard 
-                Value="@ViewModel.TotalLeaveBalance"
-                Label="Total Leave Balance"
-                SubLabel="Vacation + Sick Leave"
-                Icon="calendar"
-                IconColor="bg-primary"
-                OnClick="@(() => ViewModel.NavigateToLeaveCommand.Execute(null))" />
-
-            <StatusCard 
-                Value="@ViewModel.AbsencesThisMonth"
-                Label="Absences"
-                SubLabel="This Month"
-                Icon="warning"
-                IconColor="bg-danger" />
-
-            <StatusCard 
-                Value="@ViewModel.TardinessThisMonth"
-                Label="Late Arrivals"
-                SubLabel="This Month"
-                Icon="timer"
-                IconColor="bg-warning" />
-
-            <StatusCard 
-                Value="@ViewModel.OvertimeThisMonth"
-                Label="Overtime Hours"
-                SubLabel="This Month"
-                Icon="clock"
-                IconColor="bg-success"
-                OnClick="@(() => ViewModel.NavigateToOvertimeCommand.Execute(null))" />
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions-section">
-            <h2>Quick Actions</h2>
-            <div class="quick-actions-grid">
-                <ActionButton 
-                    Text="Time Entry"
-                    Icon="clock"
-                    Variant="primary"
-                    OnClick="@(() => ViewModel.NavigateToTimeEntryCommand.Execute(null))" />
-
-                <ActionButton 
-                    Text="Request Leave"
+            <div class="stagger-1">
+                <StatusCard 
+                    Value="@ViewModel.TotalLeaveBalance"
+                    Label="Total Leave Balance"
+                    SubLabel="Vacation + Sick Leave"
                     Icon="calendar"
-                    Variant="success"
-                    OnClick="@(() => ViewModel.NavigateToLeaveCommand.Execute(null))" />
+                    IconColor="bg-primary"
+                    OnClick="@(() => ViewModel.NavigateToLeaveCommand.Execute(null))">
+                    <MiniChart Data="@ViewModel.VacationLeaveTrend" Color="#ffffff" IsArea="true" />
+                </StatusCard>
+            </div>
 
-                <ActionButton 
-                    Text="Overtime Request"
-                    Icon="plus"
-                    Variant="warning"
-                    OnClick="@(() => ViewModel.NavigateToOvertimeCommand.Execute(null))" />
+            <div class="stagger-2">
+                <StatusCard 
+                    Value="@ViewModel.AbsencesThisMonth"
+                    Label="Absences"
+                    SubLabel="This Month"
+                    Icon="warning"
+                    IconColor="bg-danger" />
+            </div>
 
-                <ActionButton 
-                    Text="View Attendance"
-                    Icon="list-rich"
-                    Variant="info"
-                    OnClick="@(() => ViewModel.NavigateToAttendanceCommand.Execute(null))" />
+            <div class="stagger-3">
+                <StatusCard 
+                    Value="@ViewModel.TardinessThisMonth"
+                    Label="Late Arrivals"
+                    SubLabel="This Month"
+                    Icon="stopwatch"
+                    IconColor="bg-warning">
+                    <MiniChart Data="@ViewModel.SickLeaveTrend" Color="#ffffff" IsArea="true" />
+                </StatusCard>
+            </div>
+
+            <div class="stagger-4">
+                <StatusCard 
+                    Value="@ViewModel.OvertimeThisMonth"
+                    Label="Overtime Hours"
+                    SubLabel="This Month"
+                    Icon="clock"
+                    IconColor="bg-success"
+                    OnClick="@(() => ViewModel.NavigateToOvertimeCommand.Execute(null))">
+                    <MiniChart Data="@ViewModel.OvertimeTrend" Color="#ffffff" IsArea="true" />
+                </StatusCard>
             </div>
         </div>
 
-        <!-- Refresh Button -->
-        <div class="refresh-section">
-            <ActionButton 
-                Text="Refresh Data"
-                Icon="reload"
-                Variant="secondary"
-                OnClick="@(() => ViewModel.RefreshCommand.Execute(null))"
-                IsDisabled="@ViewModel.IsBusy" />
+        <!-- Pulse Survey Section (Xamarin Gap Fill) -->
+        <div class="pulse-survey-section">
+            <div class="section-header">
+                <h3>Pulse Survey</h3>
+                <div class="separator"></div>
+            </div>
+            
+            @if (ViewModel.Surveys != null && ViewModel.Surveys.Any())
+            {
+                <div class="survey-list">
+                    @foreach (var survey in ViewModel.Surveys)
+                    {
+                        <div class="survey-item" @onclick="() => ViewModel.EditSurveyCommand.Execute(survey)">
+                            <div class="survey-icon-box">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="survey-content">
+                                <span class="survey-title">@survey.FormName</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                 <div class="empty-survey">
+                    <p>No surveys available to display.</p>
+                </div>
+            }
+        </div>
+
+        <!-- Quick Actions (Retained as fallback/desktop view) -->
+        <div class="quick-actions-section d-none d-md-block">
+             <!-- Desktop specific quick actions if needed -->
+        </div>
+
+        <!-- Floating Action Button (FAB) for Time Entry -->
+        <div class="fab-container">
+            <button class="fab-button" @onclick="@(() => ViewModel.NavigateToTimeEntryCommand.Execute(null))">
+                <i class="fas fa-clock"></i>
+            </button>
         </div>
     }
 </div>

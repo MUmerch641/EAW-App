@@ -3,6 +3,7 @@ using System.Windows.Input;
 using MauiHybridApp.Commands;
 using MauiHybridApp.Models;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using Microsoft.AspNetCore.Components;
 
 namespace MauiHybridApp.ViewModels;
@@ -13,7 +14,7 @@ namespace MauiHybridApp.ViewModels;
 public class PayslipsViewModel : BaseViewModel
 {
     private readonly IPayrollDataService _payrollService;
-    private readonly NavigationManager _navigationManager;
+    private readonly INavigationService _navigationService;
     
     private ObservableCollection<MyPayslipListModel> _payslips;
     private PayslipDetailModel? _selectedPayslipDetail;
@@ -22,16 +23,16 @@ public class PayslipsViewModel : BaseViewModel
 
     public PayslipsViewModel(
         IPayrollDataService payrollService,
-        NavigationManager navigationManager)
+        INavigationService navigationService)
     {
         _payrollService = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
-        _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         
         _payslips = new ObservableCollection<MyPayslipListModel>();
         
         ViewDetailCommand = new AsyncRelayCommand<MyPayslipListModel>(ViewPayslipDetailAsync);
         CloseModalCommand = new RelayCommand(CloseModal);
-        GoBackCommand = new RelayCommand(GoBack);
+        GoBackCommand = new AsyncRelayCommand(GoBackAsync);
     }
 
     #region Properties
@@ -75,7 +76,7 @@ public class PayslipsViewModel : BaseViewModel
 
     #region Methods
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
         await ExecuteBusyAsync(LoadPayslipsAsync, "Loading payslips...");
     }
@@ -86,6 +87,10 @@ public class PayslipsViewModel : BaseViewModel
         {
             var result = await _payrollService.GetPayslipsAsync();
             var payslipList = result.Cast<MyPayslipListModel>().ToList();
+            
+            // Sort descenting by date
+            payslipList = payslipList.OrderByDescending(x => x.IssuedDate).ToList();
+            
             Payslips = new ObservableCollection<MyPayslipListModel>(payslipList);
             ClearError();
         }
@@ -99,20 +104,12 @@ public class PayslipsViewModel : BaseViewModel
     {
         if (payslip == null) return;
 
-        try
+        var parameters = new Dictionary<string, object>
         {
-            SelectedPayslip = payslip;
-            IsDetailModalOpen = true;
-            
-            // Load detail
-            var result = await _payrollService.GetPayslipDetailAsync(payslip.PaysheetHeaderDetailId);
-            SelectedPayslipDetail = result as PayslipDetailModel;
-        }
-        catch (Exception ex)
-        {
-            HandleError(ex, "Unable to load payslip details.");
-            CloseModal();
-        }
+            { "PayslipId", payslip.PaysheetHeaderDetailId }
+        };
+
+        await _navigationService.NavigateToAsync("payslip-details", parameters);
     }
 
     private void CloseModal()
@@ -122,9 +119,9 @@ public class PayslipsViewModel : BaseViewModel
         SelectedPayslipDetail = null;
     }
 
-    private void GoBack()
+    private async Task GoBackAsync()
     {
-        _navigationManager.NavigateTo("/dashboard");
+        await _navigationService.NavigateBackAsync();
     }
 
     #endregion

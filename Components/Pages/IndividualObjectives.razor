@@ -1,0 +1,80 @@
+@page "/individual-objectives"
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
+@inject IndividualObjectivesViewModel ViewModel
+@implements IDisposable
+
+<div class="page-container">
+    <PageHeader 
+        Title="Individual Objectives" 
+        Subtitle="Manage your objectives" 
+        IconClass="fa-bullseye" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading objectives..." />
+    }
+    else if (ViewModel.ShowEmptyState)
+    {
+        <EmptyState 
+            Message="No objectives found" 
+            IconClass="fa-clipboard-list" />
+    }
+    else
+    {
+        <div class="evaluation-list">
+            @foreach (var item in ViewModel.Objectives)
+            {
+                <div class="evaluation-card" @onclick="() => ViewModel.ViewDetailCommand.Execute(item)">
+                    <div class="card-left">
+                        <span class="evaluation-type">@item.Header</span>
+                        <span class="period">@item.Period</span>
+                    </div>
+                    <div class="card-right">
+                        <span class="status-badge @GetStatusClass(item.Status)">@item.Status</span>
+                        <span class="due-date">Prepared: @item.DatePrepared_String</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    
+    <FloatingActionButton IconClass="fa-plus" OnClick="() => ViewModel.CreateNewCommand.Execute(null)" />
+</div>
+
+@code {
+    private PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+
+        await ViewModel.InitializeAsync();
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "draft" => "draft",
+            "submitted" => "submitted",
+            "approved" => "approved",
+            "rejected" => "rejected",
+            "for review" => "submitted",
+            "for approval" => "submitted",
+            _ => "draft"
+        };
+    }
+
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        ViewModel.Dispose();
+    }
+}

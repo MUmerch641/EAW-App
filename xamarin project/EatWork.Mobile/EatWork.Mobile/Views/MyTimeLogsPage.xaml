@@ -1,0 +1,417 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             x:Class="EatWork.Mobile.Views.MyTimeLogsPage"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="My Time Logs" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource HamburgerIcon}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Command="{Binding MenuButtonCommand}" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2" Spacing="0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             HorizontalOptions="CenterAndExpand"
+                             VerticalOptions="CenterAndExpand">
+
+                    <local:NoItemsPartialPage DetailsText="No items available to display."
+                                              IsVisible="{Binding ShowList, Converter={utils:InverseBoolConverter}}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+
+                    <local:NoItemsPartialPage DetailsText="Please try again with different keywords/criteria."
+                                              TitleText="No Result Found"
+                                              IsVisible="{Binding NoItems}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+                </StackLayout>
+
+                <Grid AbsoluteLayout.LayoutFlags="All"
+                      AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                      HorizontalOptions="FillAndExpand"
+                      VerticalOptions="FillAndExpand">
+
+                    <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                           VerticalOptions="CenterAndExpand"
+                                           HorizontalOptions="CenterAndExpand"
+                                           IsOpen="{Binding DisplayFilter}">
+                        <sfPopup:SfPopupLayout.PopupView>
+                            <sfPopup:PopupView HeaderTitle="Filters" HeightRequest ="550" WidthRequest="350"
+                                               AcceptButtonText="Filter"
+                                               AcceptCommand="{Binding FilterTypeCommand}"
+                                               DeclineButtonText="Reset"
+                                               AppearanceMode="TwoButton"
+                                               DeclineCommand="{Binding ResetFilteredTypeCommand}">
+                                <sfPopup:PopupView.ContentTemplate>
+                                    <DataTemplate>
+                                        <ScrollView>
+                                            <StackLayout BackgroundColor="{DynamicResource Gray-White}" Spacing="0" Padding="16,0">
+
+                                                <Label FontFamily="{DynamicResource Medium}"
+                                                       Margin="0,0,0,4"
+                                                       HeightRequest="18"
+                                                       FontSize="12"
+                                                       Text="Start Date"
+                                                       TextColor="{DynamicResource Gray-800}" />
+
+                                                <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                           Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                           Hint="Start Date "
+                                                                           EnableFloating="False">
+
+                                                    <utils:NullableDatePicker x:Name="StartDate"
+                                                                              Style="{StaticResource DatePickerStyle}"
+                                                                              NullableDate="{Binding Holder.StartDate, Mode=TwoWay}" />
+                                                    <control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                    </control:SfTextInputLayout.HintLabelStyle>
+                                                    <control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                    </control:SfTextInputLayout.ErrorLabelStyle>
+                                                    <control:SfTextInputLayout.LeadingView>
+                                                        <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                                    </control:SfTextInputLayout.LeadingView>
+                                                </control:SfTextInputLayout>
+
+                                                <Label FontFamily="{DynamicResource Medium}"
+                                                       Margin="0,10,0,4"
+                                                       HeightRequest="18"
+                                                       FontSize="12"
+                                                       Text="End Date"
+                                                       TextColor="{DynamicResource Gray-800}" />
+
+                                                <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                                                           Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                           Hint="End Date"
+                                                                           EnableFloating="False">
+
+                                                    <utils:NullableDatePicker x:Name="EndDate"
+                                                                              Style="{StaticResource DatePickerStyle}"
+                                                                              NullableDate="{Binding Holder.EndDate, Mode=TwoWay}" />
+
+                                                    <control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                    </control:SfTextInputLayout.HintLabelStyle>
+                                                    <control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:LabelStyle FontSize="{StaticResource Smaller}" FontFamily="{DynamicResource Regular}" />
+                                                    </control:SfTextInputLayout.ErrorLabelStyle>
+                                                    <control:SfTextInputLayout.LeadingView>
+                                                        <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                                    </control:SfTextInputLayout.LeadingView>
+                                                </control:SfTextInputLayout>
+
+                                                <Label FontFamily="{DynamicResource Medium}"
+                                                       Margin="0,10,0,4"
+                                                       HeightRequest="18"
+                                                       FontSize="12"
+                                                       Text="Status"
+                                                       TextColor="{DynamicResource Gray-800}" />
+
+                                                <StackLayout x:Name="SelectableNameList"
+                                                             BindableLayout.ItemsSource="{Binding Holder.Status}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid RowSpacing="0" ColumnSpacing="0">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+
+                                                                <buttons:SfCheckBox Grid.Row="0"
+                                                                                    HeightRequest="48"
+                                                                                    Text="{Binding DisplayText}"
+                                                                                    Margin="0,0,1,0"
+                                                                                    HorizontalOptions="Start"
+                                                                                    VerticalOptions="Center"
+                                                                                    TextColor="{DynamicResource Gray-900}"
+                                                                                    IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                                                    CornerRadius="2"
+                                                                                    FontFamily="{DynamicResource Medium}"
+                                                                                    UncheckedColor="{DynamicResource Gray-300}"
+                                                                                    FontSize="{DynamicResource Small}">
+
+                                                                    <buttons:SfCheckBox.Behaviors>
+                                                                        <utils:SfCheckBoxCommandBehavior EventName="StateChanged"
+                                                                                                         Command="{Binding Path=BindingContext.SelectedStatusCommand, Source={x:Reference SelectableNameList}}"
+                                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                                         CommandParameter="{Binding .}" />
+                                                                    </buttons:SfCheckBox.Behaviors>
+                                                                </buttons:SfCheckBox>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </ScrollView>
+                                    </DataTemplate>
+                                </sfPopup:PopupView.ContentTemplate>
+
+                                <sfPopup:PopupView.PopupStyle>
+                                    <sfPopup:PopupStyle HeaderFontAttribute="Bold"
+                                                        HeaderFontFamily="{StaticResource Medium}"
+                                                        AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                        DeclineButtonTextColor="{StaticResource Error}" />
+                                </sfPopup:PopupView.PopupStyle>
+                            </sfPopup:PopupView>
+                        </sfPopup:SfPopupLayout.PopupView>
+                    </sfPopup:SfPopupLayout>
+
+                    <StackLayout Padding="16" Spacing="16"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 IsVisible="{Binding ShowList}">
+
+                        <StackLayout IsVisible="True">
+                            <syncfusion:SfListView x:Name="MyTimeLogsListView"
+                                                   ItemsSource="{Binding Holder.MyTimeLogsList}"
+                                                   SelectionMode="None"
+                                                   ItemSpacing="0,10"
+                                                   HeaderSize="{OnPlatform Android=50,iOS=60, UWP=60}"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   IsScrollBarVisible="False"
+                                                   AutoFitMode="Height"
+                                                   IsStickyHeader="True"
+                                                   IsStickyGroupHeader="False"
+                                                   HeaderTemplate="{StaticResource HeaderTemplateWithTransactionType}"
+                                                   LoadMoreOption="AutoOnScroll"
+                                                   LoadMoreCommand="{Binding LoadItemsCommand}"
+                                                   LoadMoreCommandParameter="{Binding Source={x:Reference Name=MyTimeLogsListView}}"
+                                                   TapCommand="{Binding ViewItemCommand}">
+
+                                <syncfusion:SfListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <ViewCell.View>
+                                                <Grid Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="2">
+
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                        <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                        <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <utils:CustomShadowFrame Grid.Row="0"
+                                                                             Grid.Column="1"
+                                                                             Margin="{OnPlatform Android='0,0',iOS='0,2,0,0'}"
+                                                                             Padding="10,10"
+                                                                             BackgroundColor="{StaticResource Gray-White}"
+                                                                             BorderColor="{StaticResource Gray-White}"
+                                                                             BorderWidth="1"
+                                                                             CornerRadius="4"
+                                                                             HasShadow="True"
+                                                                             HorizontalOptions="FillAndExpand"
+                                                                             Radius="4"
+                                                                             ShadowOffSetHeight="4"
+                                                                             ShadowOffsetWidth="0"
+                                                                             ShadowOpacity="0.12">
+
+                                                        <StackLayout VerticalOptions="StartAndExpand">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="*" />
+                                                                </Grid.RowDefinitions>
+                                                                <StackLayout Padding="0,0">
+                                                                    <iconize:IconImage Icon="{StaticResource DateIcon}"
+                                                                                       HeightRequest="17"
+                                                                                       WidthRequest="17"
+                                                                                       IconColor="{DynamicResource Gray-700}"
+                                                                                       HorizontalOptions="StartAndExpand"
+                                                                                       VerticalOptions="Center" />
+                                                                </StackLayout>
+                                                                <StackLayout Padding="30,0,0,0">
+                                                                    <Label Text="{Binding WorkDateDisplay}"
+                                                                           FontSize="Small"
+                                                                           TextColor="{DynamicResource Warning}"
+                                                                           FontAttributes="Bold"
+                                                                           HorizontalOptions="StartAndExpand"
+                                                                           FontFamily="{DynamicResource Medium}"
+                                                                           VerticalOptions="Center" />
+                                                                </StackLayout>
+
+                                                                <StackLayout Padding="0,0,0,0" HorizontalOptions="End">
+                                                                    <iconize:IconImage Icon="{StaticResource EditICon}"
+                                                                                       HeightRequest="17"
+                                                                                       WidthRequest="17"
+                                                                                       IconColor="{DynamicResource Gray-700}"
+                                                                                       HorizontalOptions="StartAndExpand"
+                                                                                       VerticalOptions="Center">
+                                                                        <iconize:IconImage.GestureRecognizers>
+                                                                            <TapGestureRecognizer Command="{Binding Path=BindingContext.EditItemCommand, Source={x:Reference MyTimeLogsListView}}"
+                                                                                                  CommandParameter="{Binding TimeEntryLogId}" />
+                                                                        </iconize:IconImage.GestureRecognizers>
+                                                                    </iconize:IconImage>
+                                                                </StackLayout>
+                                                            </Grid>
+
+                                                            <Label BackgroundColor="{DynamicResource Gray-300}"
+                                                                   HeightRequest="1" HorizontalOptions="FillAndExpand"
+                                                                   VerticalOptions="Center" />
+                                                            <StackLayout Spacing="5" VerticalOptions="StartAndExpand">
+                                                                <Grid ColumnSpacing="0"
+                                                                      RowSpacing="1"
+                                                                      Margin="0,0"
+                                                                      Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Margin="0,0"
+                                                                           FontFamily="{DynamicResource Medium}">
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="{Binding Type}" />
+                                                                                <Span Text=":" />
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+
+                                                                    <iconize:IconImage Icon="{StaticResource TimeIcon}"
+                                                                                       HeightRequest="17"
+                                                                                       WidthRequest="17"
+                                                                                       IconColor="Gray"
+                                                                                       HorizontalOptions="StartAndExpand"
+                                                                                       VerticalOptions="Center"
+                                                                                       Margin="0,0,0,0"
+                                                                                       Grid.Column="1" />
+
+                                                                    <Label Grid.Column="1"
+                                                                           Style="{StaticResource LabelStyleMySchedule}"
+                                                                           FontFamily="{DynamicResource Medium}"
+                                                                           Text="{Binding TimeEntry,StringFormat='{0:h:mm tt}'}"
+                                                                           Padding="30,0,0,0" />
+                                                                </Grid>
+
+                                                                <Grid ColumnSpacing="0"
+                                                                      RowSpacing="1"
+                                                                      Margin="0,0"
+                                                                      Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Margin="0,0"
+                                                                           FontFamily="{DynamicResource Medium}">
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="Source" />
+                                                                                <Span Text=":" />
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+
+                                                                    <Label Grid.Column="1"
+                                                                           Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Text="{Binding Source}"
+                                                                           Margin="0,0"
+                                                                           FontFamily="{DynamicResource Medium}" />
+                                                                </Grid>
+
+                                                                <Grid ColumnSpacing="0"
+                                                                      RowSpacing="1"
+                                                                      Margin="0,0"
+                                                                      Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                    <Label Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Margin="0,0"
+                                                                           FontFamily="{DynamicResource Medium}">
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="Status" />
+                                                                                <Span Text=":" />
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+
+                                                                    <border:SfBorder Grid.Row="0"
+                                                                                     Grid.Column="1"
+                                                                                     Padding="0,0"
+                                                                                     BorderColor="{DynamicResource Transparent}"
+                                                                                     HasShadow="False"
+                                                                                     HeightRequest="24"
+                                                                                     HorizontalOptions="Start"
+                                                                                     WidthRequest="200"
+                                                                                     CornerRadius="12">
+                                                                        <border:SfBorder.Content>
+                                                                            <Grid>
+                                                                                <BoxView BackgroundColor="{Binding Status, Converter={utils:StatusColorConverter}}"
+                                                                                         Style="{DynamicResource StatusBoxViewStyle}" />
+
+                                                                                <Label FontFamily="{DynamicResource SemiBold}"
+                                                                                       FontSize="{StaticResource Smaller}"
+                                                                                       HorizontalOptions="CenterAndExpand"
+                                                                                       Text="{Binding Status}"
+                                                                                       LineBreakMode="TailTruncation"
+                                                                                       TextColor="{Binding Status, Converter={utils:StatusColorConverter}}"
+                                                                                       VerticalOptions="Start" />
+                                                                            </Grid>
+                                                                        </border:SfBorder.Content>
+                                                                    </border:SfBorder>
+
+                                                                    <!--<Label FontFamily="{DynamicResource SemiBold}"
+                                                                         FontSize="{StaticResource Smaller}"
+                                                                         HorizontalOptions="StartAndExpand"
+                                                                         Text="{Binding Status}"
+                                                                         LineBreakMode="TailTruncation"
+                                                                         TextColor="{Binding Status, Converter={utils:StatusColorConverter}}"
+                                                                         VerticalOptions="Start"
+                                                                         Grid.Column="1" />-->
+                                                                </Grid>
+                                                            </StackLayout>
+                                                        </StackLayout>
+                                                    </utils:CustomShadowFrame>
+                                                </Grid>
+                                            </ViewCell.View>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </syncfusion:SfListView.ItemTemplate>
+                            </syncfusion:SfListView>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+
+                <!--FAB-->
+                <iconize:IconButton Style="{DynamicResource FABStyle}"
+                                    Command="{Binding AddNewCommand}"
+                                    IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}" />
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

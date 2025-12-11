@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Template.FileAttachmentListViewTemplate">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="IconImageApproval" TargetType="iconize:IconImage">
+                <Setter Property="IconColor" Value="{DynamicResource PrimaryColor}" />
+                <Setter Property="HeightRequest" Value="15" />
+                <Setter Property="WidthRequest" Value="15" />
+            </Style>
+
+            <Style x:Key="CardsFileAttachment" TargetType="cards:SfCardView">
+                <Setter Property="HeightRequest" Value="30" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+
+            <Style x:Key="ButtonCancelStyle" TargetType="buttons:SfButton" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+                <Setter Property="VerticalOptions" Value="EndAndExpand" />
+                <Setter Property="WidthRequest" Value="245" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+
+            <Style x:Key="DescriptionLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="FontFamily" Value="{DynamicResource Medium}" />
+                <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+
+    <!--FILE ATTACHMENTS-->
+    <listView:SfListView Margin="0,0"
+                         Padding="0"
+                         AutoFitMode="DynamicHeight"
+                         ColumnSpacing="0"
+                         HeightRequest="100"
+                         HorizontalOptions="FillAndExpand"
+                         IsScrollBarVisible="False"
+                         ItemSpacing="0"
+                         ItemsSource="{Binding Holder.FileAttachments}"
+                         Orientation="Horizontal"
+                         RowSpacing="0"
+                         SelectionBackgroundColor="Transparent"
+                         IsVisible="{Binding Holder.FileAttachments,Converter={utils:ListToInverseBoolConverter}}"
+                         x:Name="Attachments">
+
+        <listView:SfListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <ViewCell.View>
+                        <StackLayout Margin="0,8,16,0" Spacing="0">
+                            <utils:CustomShadowFrame Margin="0"
+                                                     Padding="0"
+                                                     Style="{DynamicResource CustomFrameStyle}"
+                                                     BorderColor="{DynamicResource Gray}"
+                                                     WidthRequest="205">
+                                <Grid RowSpacing="0"
+                                      ColumnSpacing="0"
+                                      RowDefinitions="Auto,Auto"
+                                      ColumnDefinitions="Auto,100,Auto">
+
+                                    <iconize:IconLabel Grid.RowSpan="2"
+                                                       Margin="16"
+                                                       Text="{DynamicResource ReasonIcon}"
+                                                       TextColor="{DynamicResource Warning}"
+                                                       VerticalOptions="CenterAndExpand"
+                                                       FontSize="25" />
+
+                                    <Label Style="{StaticResource DescriptionLabelStyle}"
+                                           Text="{Binding FileName}"
+                                           Grid.Column="1"
+                                           Margin="0,0,0,0"
+                                           LineBreakMode="TailTruncation"
+                                           FontSize="16"
+                                           FontFamily="{DynamicResource Medium}"
+                                           HeightRequest="24"
+                                           VerticalOptions="Center"
+                                           Grid.RowSpan="2" />
+
+                                    <iconize:IconButton Grid.Column="3"
+                                                        Grid.RowSpan="2"
+                                                        Margin="5,0,15,0"
+                                                        TextColor="{DynamicResource Gray}"
+                                                        BackgroundColor="{DynamicResource Transparent}"
+                                                        HorizontalOptions="End"
+                                                        Text="{DynamicResource EllipsisVIcon}"
+                                                        VerticalOptions="Center"
+                                                        WidthRequest="38"
+                                                        HeightRequest="38"
+                                                        FontSize="18"
+                                                        Command="{Binding Path=BindingContext.FileChooseOptionCommand,Source={x:Reference Attachments}}"
+                                                        CommandParameter="{Binding .}" />
+                                </Grid>
+                            </utils:CustomShadowFrame>
+                        </StackLayout>
+                    </ViewCell.View>
+                </ViewCell>
+            </DataTemplate>
+        </listView:SfListView.ItemTemplate>
+    </listView:SfListView>
+</StackLayout>

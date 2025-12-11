@@ -1,0 +1,563 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+                    xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+                    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+                    xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+                    mc:Ignorable="d"
+                    x:Class="EatWork.Mobile.Views.Shared.ListHeaderPage">
+
+    <Style x:Key="btnStyle" TargetType="buttons:SfButton">
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="BorderColor" Value="Black" />
+        <Setter Property="BorderWidth" Value="0.5" />
+        <Setter Property="WidthRequest" Value="1000" />
+        <Setter Property="HeightRequest" Value="45" />
+        <Setter Property="VerticalOptions" Value="EndAndExpand" />
+    </Style>
+
+    <Style x:Key="searchLayoutStyle" TargetType="control:SfTextInputLayout">
+        <Setter Property="ContainerType" Value="Outlined" />
+        <Setter Property="OutlineCornerRadius" Value="25" />
+        <!--<Setter Property="FocusedColor" Value="#425A8E" />-->
+        <Setter Property="ReserveSpaceForAssistiveLabels" Value="False" />
+        <Setter Property="EnableFloating" Value="False" />
+        <Setter Property="FocusedColor" Value="{DynamicResource PrimaryColor}" />
+        <Setter Property="InputViewPadding" Value="{OnPlatform Android='0,0', iOS='0,5',UWP='0,5'}" />
+    </Style>
+
+    <!--  Common style for SfButtons  -->
+    <Style x:Key="SfButtonStyle" TargetType="buttons:SfButton">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{DynamicResource Gray-94}" />
+        <Setter Property="FontFamily" Value="Regular" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
+    <!--  Common style for labels  -->
+    <Style x:Key="LabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+        <Setter Property="FontFamily" Value="Regular" />
+        <Setter Property="FontSize" Value="{StaticResource Smaller}" />
+        <Setter Property="LineHeight" Value="{OnPlatform Android=1.5, Default=-1}" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Start" />
+    </Style>
+
+    <!--  Common style for option labels  -->
+    <Style
+        x:Key="OptionButtonLabelStyle"
+        BasedOn="{StaticResource LabelStyle}"
+        TargetType="Label">
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="SfButtonStyle2" TargetType="buttons:SfButton">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{DynamicResource Gray-700}" />
+        <Setter Property="FontFamily" Value="Regular" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
+    <DataTemplate x:Key="ListHeaderPageTemplate">
+        <FlexLayout Direction="Row"
+                    JustifyContent="SpaceEvenly"
+                    AlignItems="End"
+                    IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+
+            <buttons:SfButton Style="{StaticResource btnStyle}"
+                              Command="{Binding AddNewCommand}"
+                              HorizontalOptions="StartAndExpand"
+                              FontFamily="{DynamicResource Regular}">
+                <buttons:SfButton.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="EndAndExpand">
+                            <iconize:IconImage Icon="{StaticResource AddIcon}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               HorizontalOptions="Center"
+                                               IconColor="{DynamicResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Grid.Row="0" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand">
+                            <Label HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="Medium"
+                                   TextColor="{DynamicResource PrimaryColor}"
+                                   Text="New"
+                                   FontFamily="{DynamicResource Regular}" />
+                        </StackLayout>
+                    </Grid>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+
+            <buttons:SfButton Style="{StaticResource btnStyle}"
+                              Command="{Binding AddFilterCommand}"
+                              HorizontalOptions="StartAndExpand"
+                              FontFamily="{DynamicResource Regular}">
+                <buttons:SfButton.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="EndAndExpand">
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               HorizontalOptions="Center"
+                                               IconColor="{DynamicResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Grid.Row="0" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand">
+                            <Label HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="Medium"
+                                   TextColor="{DynamicResource PrimaryColor}"
+                                   Text="Filter"
+                                   FontFamily="{DynamicResource Regular}" />
+                        </StackLayout>
+                    </Grid>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+
+            <buttons:SfButton Style="{StaticResource btnStyle}"
+                              Command="{Binding AddFilterCommand}"
+                              HorizontalOptions="StartAndExpand"
+                              FontFamily="{StaticResource Calibri}">
+                <buttons:SfButton.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="EndAndExpand">
+                            <iconize:IconImage Icon="{StaticResource SortIcon}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               HorizontalOptions="Center"
+                                               IconColor="{DynamicResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Grid.Row="0" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand">
+                            <Label HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="Medium"
+                                   TextColor="{DynamicResource PrimaryColor}"
+                                   Text="Sort" />
+                        </StackLayout>
+                    </Grid>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+        </FlexLayout>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ListHeaderPageTemplateNoAddButton">
+        <FlexLayout Direction="Row"
+                    JustifyContent="SpaceEvenly"
+                    AlignItems="End">
+
+            <StackLayout IsVisible="{Binding ShowSearchField}">
+                <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                           Style="{StaticResource searchLayoutStyle}">
+                    <Entry FontSize="Small"
+                           Text="{Binding KeyWord,Mode=TwoWay}"
+                           IsTextPredictionEnabled="True"
+                           Placeholder="Search here"
+                           ReturnCommand="{Binding SearchCommand}" />
+
+                    <control:SfTextInputLayout.HintLabelStyle>
+                        <control:LabelStyle FontSize="12" FontFamily="{DynamicResource Regular}" />
+                    </control:SfTextInputLayout.HintLabelStyle>
+                    <control:SfTextInputLayout.LeadingView>
+                        <iconize:IconLabel Text="{StaticResource BackButtonIcon}" Style="{StaticResource IconizeIconStyle}">
+                            <iconize:IconLabel.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
+                            </iconize:IconLabel.GestureRecognizers>
+                        </iconize:IconLabel>
+                    </control:SfTextInputLayout.LeadingView>
+                    <control:SfTextInputLayout.TrailingView>
+                        <iconize:IconLabel Text="md-close" Style="{StaticResource IconizeIconStyle}">
+                            <iconize:IconLabel.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClearSearchTextCommand}" />
+                            </iconize:IconLabel.GestureRecognizers>
+                        </iconize:IconLabel>
+                    </control:SfTextInputLayout.TrailingView>
+                </control:SfTextInputLayout>
+            </StackLayout>
+
+            <buttons:SfButton Style="{StaticResource btnStyle}"
+                              Command="{Binding OpenSearchCommand}"
+                              HorizontalOptions="StartAndExpand"
+                              IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}"
+                              FontFamily="{DynamicResource Regular}">
+                <buttons:SfButton.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="EndAndExpand">
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               HorizontalOptions="Center"
+                                               IconColor="{DynamicResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Grid.Row="0" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand">
+                            <Label HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="Medium"
+                                   TextColor="{DynamicResource PrimaryColor}"
+                                   Text="Filter"
+                                   FontFamily="{DynamicResource Regular}" />
+                        </StackLayout>
+                    </Grid>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+
+            <buttons:SfButton Style="{StaticResource btnStyle}"
+                              Command="{Binding AddFilterCommand}"
+                              HorizontalOptions="StartAndExpand"
+                              IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}"
+                              FontFamily="{DynamicResource Regular}">
+                <buttons:SfButton.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="EndAndExpand">
+                            <iconize:IconImage Icon="{StaticResource SortIcon}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               HorizontalOptions="Center"
+                                               IconColor="{DynamicResource PrimaryColor}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Grid.Row="0" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand">
+                            <Label HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="Medium"
+                                   TextColor="{DynamicResource PrimaryColor}"
+                                   Text="Sort"
+                                   FontFamily="{DynamicResource Regular}" />
+                        </StackLayout>
+                    </Grid>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+        </FlexLayout>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CatalogDefaultHeaderTemplate">
+
+        <Grid Padding="0" Margin="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+            </Grid.ColumnDefinitions>
+
+            <StackLayout BackgroundColor="Transparent"
+                         HorizontalOptions="EndAndExpand"
+                         Orientation="Horizontal"
+                         Spacing="8"
+                         VerticalOptions="CenterAndExpand"
+                         Grid.Column="1">
+
+                <StackLayout IsVisible="{Binding ShowSearchField}" HorizontalOptions="StartAndExpand" Margin="10,0,0,0" x:Name="Search" WidthRequest="1000">
+                    <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                               Style="{StaticResource searchLayoutStyle}">
+                        <Entry FontSize="{StaticResource Smaller}"
+                               Text="{Binding KeyWord,Mode=TwoWay}"
+                               IsTextPredictionEnabled="True"
+                               Placeholder="search here.."
+                               HeightRequest="{OnPlatform Android=40,iOS=35,UWP=35}"
+                               WidthRequest="1000"
+                               HorizontalOptions="Center"
+                               FontFamily="{DynamicResource Regular}"
+                               ReturnCommand="{Binding SearchCommand}" />
+
+                        <control:SfTextInputLayout.HintLabelStyle>
+                            <control:LabelStyle FontSize="12" FontFamily="{DynamicResource Regular}" />
+                        </control:SfTextInputLayout.HintLabelStyle>
+                        <control:SfTextInputLayout.LeadingView>
+                            <iconize:IconLabel Text="{StaticResource BackButtonIcon}" Style="{StaticResource IconizeIconStyle}">
+                                <iconize:IconLabel.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
+                                </iconize:IconLabel.GestureRecognizers>
+                            </iconize:IconLabel>
+                        </control:SfTextInputLayout.LeadingView>
+                        <control:SfTextInputLayout.TrailingView>
+                            <iconize:IconLabel Text="{StaticResource CloseIcon}" Style="{StaticResource IconizeIconStyle}">
+                                <iconize:IconLabel.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ResetSearchCommand}" />
+                                </iconize:IconLabel.GestureRecognizers>
+                            </iconize:IconLabel>
+                        </control:SfTextInputLayout.TrailingView>
+                    </control:SfTextInputLayout>
+                </StackLayout>
+
+                <!--  Search Button  -->
+                <buttons:SfButton Margin="0"
+                                  Padding="0"
+                                  Command="{Binding SearchCommand}"
+                                  CornerRadius="4"
+                                  HeightRequest="32"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8"
+                                     VerticalOptions="Center">
+
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+
+                <!--  Filter Button  -->
+                <buttons:SfButton Margin="0"
+                                  Padding="0"
+                                  Command="{Binding OpenSearchCommand}"
+                                  CommandParameter="{x:Reference Search}"
+                                  CornerRadius="4"
+                                  HeightRequest="32"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8"
+                                     VerticalOptions="Center">
+
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   Style="{StaticResource OptionButtonLabelStyle}"
+                                   Text="Search"
+                                   VerticalTextAlignment="Center" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+
+                <!--  Sort Button  -->
+                <buttons:SfButton Command="{Binding SortCommand}"
+                                  CornerRadius="4"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8">
+
+                            <iconize:IconImage Icon="{StaticResource SortIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   Style="{StaticResource OptionButtonLabelStyle}"
+                                   Text="Sort" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+            </StackLayout>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="HeaderTemplateWithTransactionType">
+        <Grid Padding="0" Margin="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+            </Grid.ColumnDefinitions>
+
+            <StackLayout BackgroundColor="Transparent"
+                         HorizontalOptions="End"
+                         Orientation="Horizontal"
+                         Spacing="8"
+                         VerticalOptions="Center"
+                         Grid.Column="1">
+
+                <StackLayout IsVisible="{Binding ShowSearchField}" HorizontalOptions="Start" Margin="10,0,0,0" x:Name="Search">
+                    <control:SfTextInputLayout LeadingViewPosition="Inside"
+                                               Style="{StaticResource searchLayoutStyle}">
+                        <Entry FontSize="{StaticResource Smaller}"
+                               Text="{Binding KeyWord,Mode=TwoWay}"
+                               IsTextPredictionEnabled="True"
+                               Placeholder="search here.."
+                               HeightRequest="{OnPlatform Android=40,iOS=35,UWP=35}"
+                               WidthRequest="1000"
+                               HorizontalOptions="Center"
+                               FontFamily="{DynamicResource Regular}"
+                               ReturnCommand="{Binding SearchCommand}" />
+
+                        <control:SfTextInputLayout.HintLabelStyle>
+                            <control:LabelStyle FontSize="12" FontFamily="{DynamicResource Regular}" />
+                        </control:SfTextInputLayout.HintLabelStyle>
+                        <control:SfTextInputLayout.LeadingView>
+                            <iconize:IconLabel Text="{StaticResource BackButtonIcon}" Style="{StaticResource IconizeIconStyle}">
+                                <iconize:IconLabel.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
+                                </iconize:IconLabel.GestureRecognizers>
+                            </iconize:IconLabel>
+                        </control:SfTextInputLayout.LeadingView>
+                        <control:SfTextInputLayout.TrailingView>
+                            <iconize:IconLabel Text="{StaticResource CloseIcon}" Style="{StaticResource IconizeIconStyle}">
+                                <iconize:IconLabel.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ResetSearchCommand}" />
+                                </iconize:IconLabel.GestureRecognizers>
+                            </iconize:IconLabel>
+                        </control:SfTextInputLayout.TrailingView>
+                    </control:SfTextInputLayout>
+                </StackLayout>
+
+                <!--  Search Button  -->
+                <buttons:SfButton Margin="0"
+                                  Padding="0"
+                                  Command="{Binding SearchCommand}"
+                                  CornerRadius="4"
+                                  HeightRequest="32"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8"
+                                     VerticalOptions="Center">
+
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+
+                <!--  Filter Transaction Types  -->
+                <buttons:SfButton Margin="0"
+                                  Padding="0"
+                                  Command="{Binding OpenFilterCommand}"
+                                  CornerRadius="4"
+                                  HeightRequest="32"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8"
+                                     VerticalOptions="Center">
+
+                            <iconize:IconImage Icon="{StaticResource FilterIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   Style="{StaticResource OptionButtonLabelStyle}"
+                                   Text="Filter"
+                                   VerticalTextAlignment="Center" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+
+                <!--  Filter Button  -->
+                <buttons:SfButton Margin="0"
+                                  Padding="0"
+                                  Command="{Binding OpenSearchCommand}"
+                                  CommandParameter="{x:Reference Search}"
+                                  CornerRadius="4"
+                                  HeightRequest="32"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8"
+                                     VerticalOptions="Center">
+
+                            <iconize:IconImage Icon="{StaticResource SearchIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   Style="{StaticResource OptionButtonLabelStyle}"
+                                   Text="Search"
+                                   VerticalTextAlignment="Center" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+
+                <!--  Sort Button  -->
+                <buttons:SfButton Command="{Binding SortCommand}"
+                                  CornerRadius="4"
+                                  Style="{StaticResource SfButtonStyle2}"
+                                  IsVisible="{Binding ShowSearchField, Converter={converter:InverseBoolConverter}}">
+                    <buttons:SfButton.Content>
+                        <StackLayout Padding="8,5,8,6"
+                                     Orientation="Horizontal"
+                                     Spacing="8">
+
+                            <iconize:IconImage Icon="{StaticResource SortIcon}"
+                                               HeightRequest="15"
+                                               WidthRequest="15"
+                                               HorizontalOptions="Center"
+                                               IconColor="{StaticResource Gray-700}"
+                                               VerticalOptions="Center" />
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   Style="{StaticResource OptionButtonLabelStyle}"
+                                   Text="Sort" />
+                        </StackLayout>
+                    </buttons:SfButton.Content>
+                </buttons:SfButton>
+            </StackLayout>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

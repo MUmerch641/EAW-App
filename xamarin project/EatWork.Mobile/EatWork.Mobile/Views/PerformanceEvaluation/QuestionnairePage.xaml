@@ -1,0 +1,714 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:self="clr-namespace:EatWork.Mobile.Views.PerformanceEvaluation"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:rating="clr-namespace:Syncfusion.SfRating.XForms;assembly=Syncfusion.SfRating.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:expander="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.PerformanceEvaluation.QuestionnairePage"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Performance Evaluation" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource FileAttachmentIcon}"
+                                            Command="{Binding AttachFileCommand}"
+                                            Style="{StaticResource IconButtonStyle}" />
+
+                        <iconize:IconButton Text="{StaticResource CameraIcon}"
+                                            Command="{Binding TakePhotoCommand}"
+                                            Style="{StaticResource IconButtonStyle}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <!--PAGE CONTENT-->
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     Margin="0,0,0,0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <ScrollView HorizontalScrollBarVisibility="Never"
+                            VerticalScrollBarVisibility="Never"
+                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            VerticalOptions="StartAndExpand"
+                            Padding="0,0"
+                            Margin="0,16,0,0"
+                            IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+
+                    <Grid ColumnDefinitions="Auto, *"
+                          ColumnSpacing="0"
+                          RowDefinitions="Auto, Auto, Auto, *, Auto"
+                          RowSpacing="0"
+                          VerticalOptions="FillAndExpand"
+                          BackgroundColor="{DynamicResource Gray-Bg}">
+
+                        <!--HEADER-->
+                        <self:HeaderTemplate2 Margin="0,0" />
+
+                        <Grid Grid.Row="3" Margin="0,8"
+                              RowSpacing="2"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+                            <!--COMPETENCIES-->
+                            <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                     Margin="8,0,8,4"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     VerticalOptions="FillAndExpand"
+                                                     CornerRadius="0"
+                                                     Padding="0,0"
+                                                     Grid.Row="0">
+                                <expander:SfExpander HeaderBackgroundColor="#307ecc"
+                                                     HeaderIconPosition="End"
+                                                     IconColor="{DynamicResource Gray-White}"
+                                                     IsExpanded="True"
+                                                     DynamicSizeMode="Content">
+                                    <expander:SfExpander.Header>
+                                        <StackLayout Padding="10,12" Spacing="0">
+
+                                            <Label Style="{StaticResource HeaderStyle}"
+                                                   LineBreakMode="TailTruncation"
+                                                   Text="Criteria Type" />
+                                        </StackLayout>
+                                    </expander:SfExpander.Header>
+
+                                    <expander:SfExpander.Content>
+                                        <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
+                                                     Padding="0,0"
+                                                     BackgroundColor="{StaticResource CompentencyBg}">
+
+                                            <Grid ColumnDefinitions="*, Auto"
+                                                  RowDefinitions="Auto,Auto">
+
+                                                <StackLayout Spacing="2" Margin="8,8">
+                                                    <Label FontAttributes="Bold"
+                                                           FontFamily="{DynamicResource SemiBold}"
+                                                           FontSize="{DynamicResource Small}"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                                           Text="{Binding Holder.Competency}"
+                                                           TextColor="{StaticResource CompentencyText}" />
+
+                                                    <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                           Text="{Binding Holder.CompetencyDescription}"
+                                                           Margin="5,8,0,5"
+                                                           TextColor="{StaticResource CompentencyText}" />
+
+                                                    <StackLayout BindableLayout.ItemsSource="{Binding Holder.SeparatedCriterias}"
+                                                                 x:Name="Details">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackLayout Margin="8,0,0,0">
+                                                                    <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                           FontSize="{DynamicResource Smaller}"
+                                                                           TextColor="{StaticResource CompentencyText}"
+                                                                           TextType="Html"
+                                                                           FontFamily="{DynamicResource Medium}">
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="&#x2022; " FontFamily="{DynamicResource SemiBold}" TextColor="{DynamicResource Gray-900}"
+                                                                                      FontSize="20" />
+                                                                                <Span Text="{Binding Header}" />
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+
+                                                                    <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                           FontSize="{DynamicResource Smaller}"
+                                                                           TextColor="{StaticResource CompentencyText}"
+                                                                           Text="{Binding Detail}"
+                                                                           IsVisible="{Binding Detail,Converter={utils:EmptyStringToBoolConverter}}"
+                                                                           TextType="Html"
+                                                                           Margin="16,0,0,0">
+                                                                    </Label>
+                                                                </StackLayout>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </StackLayout>
+                                                </StackLayout>
+
+                                                <!--TARGET RATING-->
+                                                <StackLayout Grid.Column="1"
+                                                             Margin="0,20,10,20"
+                                                             HorizontalOptions="Center"
+                                                             IsVisible="{Binding Holder.HasTargetRating}">
+                                                    <border:SfBorder BackgroundColor="{DynamicResource Gray-Bg}"
+                                                                     BorderColor="{DynamicResource Success}"
+                                                                     BorderWidth="2"
+                                                                     CornerRadius="30"
+                                                                     HeightRequest="60"
+                                                                     HorizontalOptions="Center"
+                                                                     VerticalOptions="Center"
+                                                                     WidthRequest="60">
+                                                        <border:SfBorder.Content>
+                                                            <Label FontFamily="{DynamicResource Bold}"
+                                                                   FontSize="12"
+                                                                   HorizontalOptions="Center"
+                                                                   LineHeight="{OnPlatform Default=1.25,iOS=-1}"
+                                                                   Text="{Binding Holder.TargetRating}"
+                                                                   TextColor="{DynamicResource Success}"
+                                                                   VerticalOptions="Center" />
+                                                        </border:SfBorder.Content>
+                                                    </border:SfBorder>
+
+                                                    <StackLayout WidthRequest="60"
+                                                                 VerticalOptions="Center"
+                                                                 HorizontalOptions="Center">
+
+                                                        <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                               FontSize="{DynamicResource Tiny}"
+                                                               Text="Target Rating"
+                                                               VerticalOptions="Center"
+                                                               HorizontalOptions="Center"
+                                                               LineHeight="{OnPlatform Default=1.25,iOS=-1}"
+                                                               VerticalTextAlignment="Center"
+                                                               HorizontalTextAlignment="Center"
+                                                               TextColor="{StaticResource CompentencyText}" />
+                                                    </StackLayout>
+                                                </StackLayout>
+
+                                                <!--GUIDE QUESTIONS-->
+                                                <StackLayout Spacing="2" Margin="8,8"
+                                                             Grid.Row="1"
+                                                             Grid.ColumnSpan="2"
+                                                             IsVisible="{Binding Holder.CompQuestions,Converter={utils:ListToInverseBoolConverter}}">
+
+                                                    <Label FontAttributes="Bold"
+                                                           FontFamily="{DynamicResource SemiBold}"
+                                                           FontSize="{DynamicResource Small}"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                                           Text="Guide Questions"
+                                                           TextColor="{StaticResource CompentencyText}"
+                                                           Margin="0,0,0,8" />
+
+                                                    <StackLayout BindableLayout.ItemsSource="{Binding Holder.CompQuestions}">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                       Text="{Binding .}"
+                                                                       Margin="5,0,0,5"
+                                                                       TextColor="{StaticResource CompentencyText}" />
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </StackLayout>
+                                                </StackLayout>
+                                            </Grid>
+                                        </StackLayout>
+                                    </expander:SfExpander.Content>
+                                </expander:SfExpander>
+                            </utils:CustomShadowFrame>
+
+                            <!--VIOLATIONS-->
+                            <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                     Margin="8,0,8,4"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     VerticalOptions="FillAndExpand"
+                                                     CornerRadius="0"
+                                                     Padding="0,0"
+                                                     Grid.Row="1"
+                                                     BorderColor="{DynamicResource Error}">
+                                <expander:SfExpander HeaderBackgroundColor="{DynamicResource Error}"
+                                                     HeaderIconPosition="End"
+                                                     IconColor="{DynamicResource Gray-White}"
+                                                     IsExpanded="False"
+                                                     DynamicSizeMode="Content">
+                                    <expander:SfExpander.Header>
+                                        <StackLayout Padding="10,12" Spacing="0">
+
+                                            <Label Style="{StaticResource HeaderStyle}"
+                                                   LineBreakMode="TailTruncation"
+                                                   Text="Violations" />
+                                        </StackLayout>
+                                    </expander:SfExpander.Header>
+
+                                    <expander:SfExpander.Content>
+                                        <StackLayout>
+                                            <StackLayout BackgroundColor="Transparent"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center"
+                                                         Padding="20,20"
+                                                         IsVisible="{Binding Holder.Violations, Converter={utils:ListToBoolConverter}}">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage x:Name="ErrorImage1"
+                                                                      Margin="{x:OnIdiom Phone='0,0,0,0', Desktop='0',Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                      AndroidPhonePortrait=170,
+                                                                      AndroidPhoneLandscape=140,
+                                                                      iOSPhonePortrait=170,
+                                                                      iOSPhoneLandscape=140}"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      HorizontalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250, Desktop=300, Tablet=300}"
+                                                                      FadeAnimationEnabled="False" />
+
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="16"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalTextAlignment="Center"
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="Center"
+                                                       x:Name="ContentText1"
+                                                       Text="{Binding Holder.EmptyMessage}" />
+                                            </StackLayout>
+                                            <self:ViolationsTemplate IsVisible="{Binding Holder.Violations, Converter={utils:ListToInverseBoolConverter}}" />
+                                        </StackLayout>
+                                    </expander:SfExpander.Content>
+                                </expander:SfExpander>
+                            </utils:CustomShadowFrame>
+
+                            <!--JOTTER-->
+                            <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}"
+                                                     Margin="8,0,8,4"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     VerticalOptions="FillAndExpand"
+                                                     CornerRadius="0"
+                                                     Padding="0,0"
+                                                     Grid.Row="2">
+                                <expander:SfExpander HeaderBackgroundColor="#404040"
+                                                     HeaderIconPosition="End"
+                                                     IconColor="{DynamicResource Gray-White}"
+                                                     IsExpanded="False"
+                                                     DynamicSizeMode="Content">
+                                    <expander:SfExpander.Header>
+                                        <StackLayout Padding="10,12" Spacing="0">
+
+                                            <Label Style="{StaticResource HeaderStyle}"
+                                                   LineBreakMode="TailTruncation"
+                                                   Text="Jotter" />
+                                        </StackLayout>
+                                    </expander:SfExpander.Header>
+
+                                    <expander:SfExpander.Content>
+                                        <StackLayout>
+                                            <StackLayout BackgroundColor="Transparent"
+                                                         Spacing="0"
+                                                         VerticalOptions="Center"
+                                                         Padding="20,20"
+                                                         IsVisible="{Binding Holder.JotterSource, Converter={utils:ListToBoolConverter}}">
+                                                <!--  Image for display svg image  -->
+                                                <ffsvg:SvgCachedImage x:Name="ErrorImage"
+                                                                      Margin="{x:OnIdiom Phone='0,0,0,0', Desktop='0',Tablet='0'}"
+                                                                      BackgroundColor="Transparent"
+                                                                      HeightRequest="{core:OnPlatformOrientationDoubleValue Default=300,
+                                                                      AndroidPhonePortrait=170,
+                                                                      AndroidPhoneLandscape=140,
+                                                                      iOSPhonePortrait=170,
+                                                                      iOSPhoneLandscape=140}"
+                                                                      Source="NoItems.svg"
+                                                                      VerticalOptions="Center"
+                                                                      HorizontalOptions="Center"
+                                                                      WidthRequest="{x:OnIdiom Phone=250, Desktop=300, Tablet=300}"
+                                                                      FadeAnimationEnabled="False" />
+
+                                                <Label Margin="8,8,8,0"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="16"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       TextColor="{DynamicResource Gray-900}"
+                                                       VerticalTextAlignment="Center"
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="Center"
+                                                       x:Name="ContentText"
+                                                       Text="{Binding Holder.EmptyMessage}" />
+                                            </StackLayout>
+
+                                            <self:JotterTemplate IsVisible="{Binding Holder.JotterSource, Converter={utils:ListToInverseBoolConverter}}" />
+                                        </StackLayout>
+                                    </expander:SfExpander.Content>
+                                </expander:SfExpander>
+                            </utils:CustomShadowFrame>
+
+                            <!--SEPARATOR-->
+                            <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                                     Style="{StaticResource SeparatorStyle}"
+                                     BackgroundColor="{DynamicResource Gray-300}"
+                                     Grid.Row="3" />
+
+                            <!--RATING-->
+                            <Grid IsVisible="{Binding Holder.DisplayStarsById}"
+                                  RowDefinitions="*"
+                                  ColumnDefinitions="Auto,*"
+                                  Grid.Row="4"
+                                  Margin="8,8">
+
+                                <Label FontFamily="{DynamicResource SemiBold}"
+                                       FontSize="{DynamicResource Smaller}"
+                                       HorizontalOptions="StartAndExpand"
+                                       LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                       Text="Rating:"
+                                       TextColor="{DynamicResource Gray-700}"
+                                       Margin="0,0,10,0" />
+
+                                <rating:SfRating x:Name="rating"
+                                                 Grid.Column="1"
+                                                 Style="{DynamicResource RatingStyle}"
+                                                 ItemCount="{Binding Holder.RatingItemCount}"
+                                                 TooltipPlacement="BottomRight"
+                                                 Value="{Binding Holder.StarRatingValue,Mode=TwoWay}"
+                                                 Margin="10,0,0,0"
+                                                 IsEnabled="{Binding ForSubmission}">
+                                    <rating:SfRating.RatingSettings>
+                                        <rating:SfRatingSettings UnRatedFill="{DynamicResource Gray}"
+                                                                 RatedFill="{DynamicResource Warning}" />
+                                    </rating:SfRating.RatingSettings>
+
+                                    <rating:SfRating.Behaviors>
+                                        <utils:SfRatingCommandBehavior Command="{Binding RatingValueChangedCommand}"
+                                                                       EventName="ValueChanged"
+                                                                       Converter="{StaticResource EventArgs}" />
+                                    </rating:SfRating.Behaviors>
+                                </rating:SfRating>
+                            </Grid>
+
+                            <!--RATING BY OUTPUT-->
+                            <Grid IsVisible="{Binding Holder.DisplayStarsById,Converter={utils:InverseBoolConverter}}"
+                                  RowDefinitions="*"
+                                  ColumnDefinitions="*"
+                                  Grid.Row="4">
+
+                                <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                                           HasError="{Binding Holder.KPIOutput.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                           Hint="Output"
+                                                           Grid.Column="0"
+                                                           Margin="8,0,8,8">
+
+                                    <Entry Style="{DynamicResource TextBoxStyle}"
+                                           Text="{Binding Holder.KPIOutput.Value,Mode=TwoWay}"
+                                           Keyboard="Numeric"
+                                           IsEnabled="{Binding ForSubmission}">
+                                        <Entry.Behaviors>
+                                            <utils:EventToCommandBehavior EventName="Unfocused"
+                                                                          Command="{Binding UnfocusedOutputCommand}"
+                                                                          CommandParameter="{Binding Holder.KPIOutput.Value}" />
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                </control:SfTextInputLayout>
+
+                                <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                                           HasError="{Binding Holder.KPIRating.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                           Hint="Rating"
+                                                           Grid.Column="1"
+                                                           Margin="8,0,8,8">
+
+                                    <Entry Style="{DynamicResource TextBoxStyle}"
+                                           Text="{Binding Holder.KPIRating.Value,Mode=TwoWay}"
+                                           Keyboard="Numeric"
+                                           IsEnabled="False" />
+                                </control:SfTextInputLayout>
+                            </Grid>
+
+                            <!--WEIGHT-->
+                            <Grid IsVisible="{Binding Holder.WeightComputation}"
+                                  RowDefinitions="*"
+                                  ColumnDefinitions="*"
+                                  Grid.Row="5">
+
+                                <Grid ColumnSpacing="0"
+                                      RowSpacing="1"
+                                      Margin="8,8"
+                                      Style="{StaticResource GridMyScheduleDetails}"
+                                      ColumnDefinitions="35*, 65*"
+                                      IsVisible="{Binding Holder.WeightComputation}"
+                                      Grid.Column="0">
+
+                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                           FontSize="{DynamicResource Smaller}"
+                                           HorizontalOptions="StartAndExpand"
+                                           LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                           Text="Weight:"
+                                           TextColor="{DynamicResource Gray-700}" />
+
+                                    <border:SfBorder  Grid.Column="1"
+                                                      Padding="0"
+                                                      BorderColor="Transparent"
+                                                      HasShadow="False"
+                                                      HeightRequest="24"
+                                                      HorizontalOptions="Start"
+                                                      WidthRequest="120"
+                                                      CornerRadius="12">
+                                        <border:SfBorder.Content>
+                                            <Grid>
+                                                <BoxView BackgroundColor="{DynamicResource Warning}"
+                                                         Style="{DynamicResource StatusBoxViewStyle}" />
+
+                                                <Label FontFamily="{DynamicResource SemiBold}"
+                                                       FontSize="{StaticResource Tiny}"
+                                                       HorizontalOptions="CenterAndExpand"
+                                                       Text="{Binding Holder.WeightRating}"
+                                                       LineBreakMode="TailTruncation"
+                                                       TextColor="{DynamicResource Warning}"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                        </border:SfBorder.Content>
+                                    </border:SfBorder>
+                                </Grid>
+
+                                <Grid ColumnSpacing="0"
+                                      RowSpacing="1"
+                                      Margin="8,8"
+                                      Style="{StaticResource GridMyScheduleDetails}"
+                                      ColumnDefinitions="35*, 65*"
+                                      IsVisible="{Binding Holder.WeightComputation}"
+                                      Grid.Column="1">
+
+                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                           FontSize="{DynamicResource Smaller}"
+                                           HorizontalOptions="StartAndExpand"
+                                           LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                           Text="Score:"
+                                           TextColor="{DynamicResource Gray-700}" />
+
+                                    <border:SfBorder  Grid.Column="1"
+                                                      Padding="0"
+                                                      BorderColor="Transparent"
+                                                      HasShadow="False"
+                                                      HeightRequest="24"
+                                                      HorizontalOptions="Start"
+                                                      WidthRequest="120"
+                                                      CornerRadius="12">
+                                        <border:SfBorder.Content>
+                                            <Grid IsVisible="{Binding Holder.WeightedScore,Converter={utils:EmptyToBoolConverter}}">
+                                                <BoxView BackgroundColor="{DynamicResource Success}"
+                                                         Style="{DynamicResource StatusBoxViewStyle}" />
+
+                                                <Label FontFamily="{DynamicResource SemiBold}"
+                                                       FontSize="{StaticResource Tiny}"
+                                                       HorizontalOptions="CenterAndExpand"
+                                                       Text="{Binding Holder.WeightedScore}"
+                                                       LineBreakMode="TailTruncation"
+                                                       TextColor="{DynamicResource Success}"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                        </border:SfBorder.Content>
+                                    </border:SfBorder>
+                                </Grid>
+                            </Grid>
+
+                            <!--REMARKS-->
+                            <Grid Grid.Row="6" Margin="8,8">
+                                <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                           HasError="{Binding Holder.QuestionnaireRemarks.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                           Hint="Remarks ">
+                                    <Editor Text="{Binding Holder.QuestionnaireRemarks.Value, Mode=TwoWay}"
+                                            Style="{DynamicResource EditorStyle}"
+                                            IsEnabled="{Binding ForSubmission}"/>
+                                </control:SfTextInputLayout>
+                            </Grid>
+
+                            <!--RECOMMENDATIONS-->
+                            <Grid Grid.Row="7" Margin="8,8">
+                                <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                           HasError="{Binding Holder.QuestionnaireRecommendations.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                           Hint="Recommendations ">
+                                    <Editor Text="{Binding Holder.QuestionnaireRecommendations.Value, Mode=TwoWay}"
+                                            Style="{DynamicResource EditorStyle}"
+                                            IsEnabled="{Binding ForSubmission}" />
+                                </control:SfTextInputLayout>
+                            </Grid>
+
+                            <!--TRAININGS-->
+                            <Grid Grid.Row="8" Margin="8,8" IsVisible="{Binding Holder.ToggleTraining}">
+
+                                <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                           Hint="Suggested Trainings ">
+
+                                    <combobox:SfComboBox Style="{DynamicResource ComboBoxStyle}"
+                                                         x:Name="comboBox"
+                                                         DropDownItemHeight="50"
+                                                         DisplayMemberPath="DisplayText"
+                                                         MultiSelectMode="Token"
+                                                         DataSource="{Binding Holder.TrainingSource}"
+                                                         EnableAutoSize="True"
+                                                         SelectedItem="{Binding Holder.SelectedTrainings,Mode=TwoWay}"
+                                                         IsEnabled="{Binding ForSubmission}" />
+                                </control:SfTextInputLayout>
+                            </Grid>
+
+                            <!--FILE ATTACHMENTS-->
+                            <listView:SfListView Margin="8,0"
+                                                 Padding="0"
+                                                 AutoFitMode="DynamicHeight"
+                                                 ColumnSpacing="0"
+                                                 HeightRequest="100"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 IsScrollBarVisible="False"
+                                                 ItemSpacing="0"
+                                                 ItemsSource="{Binding Holder.UploadedFilesDisplay}"
+                                                 Orientation="Horizontal"
+                                                 RowSpacing="0"
+                                                 SelectionBackgroundColor="Transparent"
+                                                 IsVisible="{Binding Holder.UploadedFilesDisplay,Converter={utils:ListToInverseBoolConverter}}"
+                                                 Grid.Row="9"
+                                                 x:Name="Attachments">
+
+                                <listView:SfListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <ViewCell.View>
+                                                <StackLayout Margin="0,8,16,0" Spacing="0">
+                                                    <utils:CustomShadowFrame Margin="0"
+                                                                             Padding="0"
+                                                                             Style="{DynamicResource CustomFrameStyle}"
+                                                                             BorderColor="{DynamicResource Gray}"
+                                                                             WidthRequest="205">
+                                                        <Grid RowSpacing="0"
+                                                              ColumnSpacing="0"
+                                                              RowDefinitions="Auto,Auto"
+                                                              ColumnDefinitions="Auto,100,Auto">
+
+                                                            <iconize:IconLabel Grid.RowSpan="2"
+                                                                               Margin="16"
+                                                                               Text="{DynamicResource ReasonIcon}"
+                                                                               TextColor="{DynamicResource Warning}"
+                                                                               VerticalOptions="CenterAndExpand"
+                                                                               FontSize="25" />
+
+                                                            <Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                   Text="{Binding FileName}"
+                                                                   Grid.Column="1"
+                                                                   Margin="0,0,0,0"
+                                                                   LineBreakMode="TailTruncation"
+                                                                   FontSize="16"
+                                                                   FontFamily="{DynamicResource Medium}"
+                                                                   HeightRequest="24"
+                                                                   VerticalOptions="Center"
+                                                                   Grid.RowSpan="2" />
+
+                                                            <!--<Label Style="{StaticResource DescriptionLabelStyle}"
+                                                                 Text="{Binding FileSize}"
+                                                                 Grid.Row="1"
+                                                                 Grid.Column="1"
+                                                                 Margin="0,0,0,14"
+                                                                 LineBreakMode="TailTruncation"
+                                                                 FontSize="14"
+                                                                 FontFamily="{DynamicResource Medium}"
+                                                                 HeightRequest="21" />-->
+
+                                                            <iconize:IconButton Grid.Column="3"
+                                                                                Grid.RowSpan="2"
+                                                                                Margin="5,0,15,0"
+                                                                                TextColor="{DynamicResource Gray}"
+                                                                                BackgroundColor="{DynamicResource Transparent}"
+                                                                                HorizontalOptions="End"
+                                                                                Text="{DynamicResource EllipsisVIcon}"
+                                                                                VerticalOptions="Center"
+                                                                                WidthRequest="38"
+                                                                                HeightRequest="38"
+                                                                                FontSize="18"
+                                                                                Command="{Binding Path=BindingContext.FileChooseOptionCommand,Source={x:Reference Attachments}}"
+                                                                                CommandParameter="{Binding .}" />
+                                                        </Grid>
+                                                    </utils:CustomShadowFrame>
+                                                </StackLayout>
+                                            </ViewCell.View>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </listView:SfListView.ItemTemplate>
+                            </listView:SfListView>
+
+                            
+                        </Grid>
+                        
+                        <StackLayout Margin="0,40" Grid.Row="4" />
+                    </Grid>
+                </ScrollView>
+
+                <!--BUTTONS-->
+                <StackLayout x:Name="ScanView"
+                             AbsoluteLayout.LayoutBounds="0,1,1,0.10"
+                             AbsoluteLayout.LayoutFlags="All"
+                             BackgroundColor="{DynamicResource Gray-Bg}"
+                             IsVisible="{Binding IsBusy,Converter={utils:InverseBoolConverter}}">
+
+                    <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                             Style="{StaticResource SeparatorStyle}"
+                             BackgroundColor="{DynamicResource Gray-300}" />
+
+                    <Grid Margin="0,0"
+                          Padding="0"
+                          HorizontalOptions="CenterAndExpand"
+                          VerticalOptions="CenterAndExpand"
+                          ColumnDefinitions="*,*">
+
+                        <buttons:SfButton x:Name="BackButtonText"
+                                          Grid.Column="0"
+                                          Command="{Binding BackItemCommand}"
+                                          HorizontalOptions="CenterAndExpand"
+                                          VerticalOptions="EndAndExpand"
+                                          Margin="10,10"
+                                          WidthRequest="200"
+                                          HeightRequest="40"
+                                          FontSize="{DynamicResource Small}"
+                                          CornerRadius="20"
+                                          FontFamily="{DynamicResource SemiBold}"
+                                          Text="Back"
+                                          BackgroundColor="#e4e4e4"
+                                          TextColor="Black"
+                                          VerticalTextAlignment="Center" />
+
+                        <buttons:SfButton x:Name="NextButtonText"
+                                          Margin="10,10"
+                                          Grid.Column="1"
+                                          Command="{Binding MoveToNextCommand}"
+                                          Style="{StaticResource WalkthroughButtonStyle}"
+                                          Text="Next" />
+                    </Grid>
+                </StackLayout>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

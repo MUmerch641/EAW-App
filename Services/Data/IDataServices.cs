@@ -7,6 +7,9 @@ using MauiHybridApp.Models.Schedule;
 using MauiHybridApp.Models.Attendance;
 using MauiHybridApp.Models.Workflow;
 using MauiHybridApp.Models;
+using MauiHybridApp.Models.PerformanceEvaluation;
+using MauiHybridApp.Models.IndividualObjectives;
+using System.Collections.ObjectModel;
 
 namespace MauiHybridApp.Services.Data;
 
@@ -18,6 +21,10 @@ public interface IAuthenticationDataService
     Task<RegistrationResult> RegistrationAsync(RegistrationRequest request);
     Task<bool> ValidateTokenAsync(string token);
     Task<RefreshTokenResult> RefreshTokenAsync(string refreshToken);
+    Task<ClientSetupResponse> SetupClientAsync(ClientSetupRequest request);
+    Task<bool> HasClientSetupAsync();
+    Task<ClientSetupModel?> GetClientSetupAsync();
+    Task LogoutAsync();
 }
 
 // Main Page / Menu
@@ -37,6 +44,8 @@ public interface IDashboardDataService
 public interface ILeaveDataService
 {
     Task<List<LeaveRequestModel>> GetLeaveRequestsAsync();
+    // New Method for Dashboard Trends
+    Task<List<LeaveRequestModel>> GetLeaveHistoryAsync(DateTime startDate, DateTime endDate);
     Task<LeaveRequestModel?> GetLeaveRequestByIdAsync(long id);
     Task<SaveResult> SaveLeaveRequestAsync(LeaveRequestModel request);
     Task<SaveResult> SubmitLeaveRequestAsync(LeaveRequestModel request);
@@ -83,6 +92,7 @@ public class AttendanceSummaryModel
     public int PresentDays { get; set; }
     public int AbsentDays { get; set; }
     public int LateDays { get; set; }
+    public int UndertimeDays { get; set; }
     public decimal TotalHours { get; set; }
     public decimal AverageHoursPerDay { get; set; }
 }
@@ -97,7 +107,7 @@ public class UserProfileModel
     public string EmployeeId { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     
-    // Note: FirstName aur LastName alag se nahi hain, hum FullName use karenge
+    // Note: FirstName and LastName are not separate, we use FullName
     
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
@@ -177,6 +187,8 @@ public class RefreshTokenResult
 public interface IOvertimeDataService
 {
     Task<List<OvertimeModel>> GetOvertimeRequestsAsync();
+    // New Method for Dashboard Trends
+    Task<List<OvertimeModel>> GetOvertimeHistoryAsync(DateTime startDate, DateTime endDate);
     Task<OvertimeModel?> GetOvertimeRequestByIdAsync(long id);
     Task<SaveResult> SaveOvertimeRequestAsync(OvertimeModel request);
     Task<SaveResult> SubmitOvertimeRequestAsync(OvertimeModel request);
@@ -197,8 +209,9 @@ public interface IOfficialBusinessDataService
 // Time Entry
 public interface ITimeEntryDataService
 {
-    Task<List<TimeEntryLogItem>> GetTimeEntriesAsync();
+    Task<List<TimeEntryLogItem>> GetTimeEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, string? status = null);
     Task<SaveResult> CreateTimeEntryAsync(string type, double lat, double lng);
+    Task<OnlineTimeEntryHolder> InitFormAsync();
 }
 
 // Expense
@@ -214,7 +227,7 @@ public interface IExpenseDataService
 // Approvals
 public interface IApprovalDataService
 {
-    Task<List<MyApprovalListModel>> GetMyApprovalsAsync(); // Ye zaroori hai UI ke liye
+    Task<List<MyApprovalListModel>> GetMyApprovalsAsync(); // Required for UI
     Task<SaveResult> ApproveRequestAsync(long requestId, string comments);
     Task<SaveResult> DisapproveRequestAsync(long requestId, string comments);
     
@@ -251,11 +264,18 @@ public interface IPerformanceDataService
     Task<object> GetIndividualObjectivesAsync();
 }
 
+public interface IPerformanceEvaluationDataService
+{
+    Task<List<PEListDto>> GetListAsync();
+    Task<PEFormHolder> InitFormAsync(long id);
+    Task<PEFormHolder> SavePODetailsAsync(PEFormHolder holder);
+}
+
 // Employee Relations
 public interface IEmployeeRelationsDataService
 {
-    Task<List<object>> GetSuggestionsAsync();
-    Task<object> SubmitSuggestionAsync(object suggestion);
+    Task<List<SuggestionListModel>> GetSuggestionsAsync();
+    Task<bool> SubmitSuggestionAsync(SuggestionModel suggestion);
 }
 
 // Profile
@@ -278,11 +298,27 @@ public interface ICommonDataService
     Task<object> GetAppSettingsAsync();
 }
 
+
+
+
+
 // SignalR
-public interface ISignalRDataService
+// SignalR interface is defined in Services/SignalR/ISignalRDataService.cs
+
+// Individual Objectives
+public interface IIndividualObjectivesDataService
 {
-    Task StartConnectionAsync();
-    Task StopConnectionAsync();
-    event Action<string>? OnNotificationReceived;
+    Task<ListResponse<IndividualObjectivesDto>> GetListAsync(ObservableCollection<IndividualObjectivesDto> currentList, ListParam param);
+    long TotalListItem { get; set; }
 }
 
+public interface IIndividualObjectiveItemDataService
+{
+    Task<IndividualObjectiveItemHolder> InitForm(long id);
+    Task<IndividualObjectiveItemHolder> SubmitRequest(IndividualObjectiveItemHolder holder);
+    Task<ObjectiveDetailHolder> InitObjectiveDetailForm(long id, short effectiveYear);
+    Task<ObjectiveDetailHolder> SetValueObjectiveDetailForm(MauiHybridApp.Models.IndividualObjectives.ObjectiveDetailDto item, ObjectiveDetailHolder holder);
+    Task<KPISelectionResponse> RetrieveKPICriteria(long id, ObservableCollection<RateScaleDto> list);
+    Task<ObjectiveGroupingResponse> GroupObjectives(ObservableCollection<MauiHybridApp.Models.IndividualObjectives.ObjectiveDetailDto> items);
+    Task<IndividualObjectiveItemHolder> CancelRequest(IndividualObjectiveItemHolder holder);
+}

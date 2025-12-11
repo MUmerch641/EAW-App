@@ -1,0 +1,483 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             Title="Special Work Schedule Request"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Requests.SpecialWorkSchedulePage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Special Work Schedule Request"
+                             TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource FileAttachmentIcon}"
+                                            Command="{Binding ViewFileAttachmentCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+
+                        <iconize:IconButton Text="{StaticResource InfoIcon}"
+                                            Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0"
+                     VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never"
+                        VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}"
+                                                   IsBusy="{Binding IsBusy}"
+                                                   AbsoluteLayout.LayoutBounds="0.5,0.3,-1,-1" />
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="55" />-->
+                        </Grid.RowDefinitions>
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                               VerticalOptions="CenterAndExpand"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding ShowShiftList}">
+                            <sfPopup:SfPopupLayout.PopupView>
+
+                                <sfPopup:PopupView Style="{StaticResource SfPopupStyle}">
+
+                                    <sfPopup:PopupView.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackLayout>
+                                                <ContentView>
+                                                    <ContentView.Effects>
+                                                        <effect:SafeAreaPaddingEffect />
+                                                    </ContentView.Effects>
+
+                                                    <Grid Margin="10,10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="80" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Label Text="Shifts"
+                                                               HorizontalOptions="Start"
+                                                               FontSize="20"
+                                                               FontFamily="{DynamicResource Bold}"
+                                                               TextColor="{DynamicResource Gray-900}"
+                                                               Grid.Column="0" />
+
+                                                        <buttons:SfButton x:Name="SkipButton"
+                                                                          Grid.Column="1"
+                                                                          BackgroundColor="Transparent"
+                                                                          Command="{Binding SelectShiftCommand}"
+                                                                          CornerRadius="20"
+                                                                          FontFamily="{DynamicResource SemiBold}"
+                                                                          HeightRequest="40"
+                                                                          HorizontalOptions="End"
+                                                                          Text="Close"
+                                                                          TextColor="{x:StaticResource HyperLink}"
+                                                                          VerticalOptions="StartAndExpand"
+                                                                          WidthRequest="80" />
+                                                    </Grid>
+                                                </ContentView>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.HeaderTemplate>
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <template:ShiftListTemplate BindingContext="{Binding .}"
+                                                                        ItemsSource="{Binding ShiftList}" />
+                                            <!--<shared:SelectableListView2 ItemsSource="{Binding ShiftList}" BindingContext="{Binding .}" />-->
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}"
+                                                            AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <Grid Padding="15"
+                              RowSpacing="0"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+                                    <!--DATE-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               HasError="{Binding Holder.ErrorWorkDate,Mode=TwoWay}"
+                                                               Hint="Work Date  ">
+
+                                        <DatePicker Style="{StaticResource DatePickerStyle}"
+                                                    Date="{Binding Holder.WorkDate, Mode=TwoWay}"
+                                                    IsEnabled="{Binding Holder.IsEnabled}">
+                                            <DatePicker.Behaviors>
+                                                <utils:DatePickerCommandBehavior EventName="DateSelected"
+                                                                                 Command="{Binding GetDateScheduleCommand}"
+                                                                                 Converter="{StaticResource EventArgs}" />
+                                            </DatePicker.Behaviors>
+                                        </DatePicker>
+
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource DateIcon}"
+                                                               Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--REQUEST TYPE-->
+                                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                                               HasError="{Binding Holder.ErrorRequestType,Mode=TwoWay}"
+                                                               Hint="Request Type  ">
+
+                                        <Entry Text="{Binding Holder.RequestType, Mode=TwoWay}"
+                                               Style="{StaticResource TextBoxStyle}"
+                                               IsReadOnly="True" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--SHIFT-->
+                                    <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                                               Hint="Shift  "
+                                                               HasError="{Binding Holder.ErrorShift,Mode=TwoWay}">
+                                        <Entry Text="{Binding Holder.ShiftSelectedItem.Code, Mode=TwoWay}"
+                                               IsReadOnly="True"
+                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                               Style="{StaticResource TextBoxStyle}" />
+                                        <control:SfTextInputLayout.TrailingView>
+                                            <iconize:IconLabel Text="{StaticResource EllipsisIcon}"
+                                                               Style="{StaticResource IconizeIconStyle}"
+                                                               IsEnabled="{Binding Holder.IsEnabled}">
+                                                <iconize:IconLabel.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding SelectShiftCommand}" />
+                                                </iconize:IconLabel.GestureRecognizers>
+                                            </iconize:IconLabel>
+                                        </control:SfTextInputLayout.TrailingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--REQUESTED SCHEDULE-->
+                                    <Grid IsEnabled="{Binding Holder.IsEnabled}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label FontFamily="{DynamicResource Medium}"
+                                               Margin="0,0,0,0"
+                                               FontSize="{StaticResource Tiny}"
+                                               Text="Work Schedule"
+                                               Grid.Row="0"
+                                               TextColor="{DynamicResource Gray-800}" />
+
+                                        <StackLayout Grid.Row="1"
+                                                     Grid.Column="0">
+                                            <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       EnableFloating="False"
+                                                                       HasError="{Binding Holder.ErrorRequestedStartTime,Mode=TwoWay}"
+                                                                       Hint="Start Time">
+
+                                                <utils:NullableTimePicker x:Name="ScheduleStartTime"
+                                                                          NullableTime="{Binding Holder.ScheduleStartTime, Mode=TwoWay}"
+                                                                          EmptyStateText="{OnPlatform iOS='Start Time'}"
+                                                                          IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding StartTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.ScheduleStartTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}"
+                                                                       IsEnabled="{Binding Holder.EnableCustomSched}">
+                                                        <iconize:IconLabel.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EntryFocusCommand}"
+                                                                                  CommandParameter="{Reference ScheduleStartTime}" />
+                                                        </iconize:IconLabel.GestureRecognizers>
+                                                    </iconize:IconLabel>
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Row="1"
+                                                     Grid.Column="1">
+                                            <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       EnableFloating="False"
+                                                                       HasError="{Binding Holder.ErrorRequestedEndTime,Mode=TwoWay}"
+                                                                       Hint="End Time">
+
+                                                <utils:NullableTimePicker x:Name="ScheduleEndTime"
+                                                                          NullableTime="{Binding Holder.ScheduleEndTime, Mode=TwoWay}"
+                                                                          EmptyStateText="{OnPlatform iOS='End Time'}"
+                                                                          IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding EndTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.ScheduleEndTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}"
+                                                                       IsEnabled="{Binding Holder.EnableCustomSched}">
+                                                        <iconize:IconLabel.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EntryFocusCommand}"
+                                                                                  CommandParameter="{Reference ScheduleEndTime}" />
+                                                        </iconize:IconLabel.GestureRecognizers>
+                                                    </iconize:IconLabel>
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--WORKING HOURS-->
+                                    <StackLayout IsEnabled="{Binding Holder.IsEnabled}">
+                                        <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                   ErrorText="Specify no. of hours."
+                                                                   HasError="{Binding Holder.ErrorNoOfHours,Mode=TwoWay}"
+                                                                   Hint="Working Hours  ">
+                                            <numeric:SfNumericTextBox Value="{Binding Holder.SpecialWorkScheduleRequestModel.WorkingHours, Mode=TwoWay}"
+                                                                      x:Name="txtWorkingHours"
+                                                                      IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                      Style="{StaticResource SfNumericTextBoxStyle}" />
+
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Text="{StaticResource HourIcon}"
+                                                                   Style="{StaticResource IconizeIconStyle}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--LUNCH SCHEDULE-->
+                                    <Grid IsEnabled="{Binding Holder.IsEnabled}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label FontFamily="{DynamicResource Medium}"
+                                               Margin="0,0,0,0"
+                                               FontSize="{StaticResource Tiny}"
+                                               Text="Lunch Schedule"
+                                               Grid.Row="0"
+                                               TextColor="{DynamicResource Gray-800}" />
+
+                                        <StackLayout Grid.Row="1"
+                                                     Grid.Column="0">
+                                            <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       EnableFloating="False"
+                                                                       Hint="Start Time ">
+
+                                                <utils:NullableTimePicker x:Name="LunchStartTime"
+                                                                          NullableTime="{Binding Holder.LunchStartTime, Mode=TwoWay}"
+                                                                          EmptyStateText="{OnPlatform iOS='Start Time'}"
+                                                                          IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding LunchStartTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.LunchStartTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}"
+                                                                       IsEnabled="{Binding Holder.EnableCustomSched}">
+                                                        <iconize:IconLabel.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EntryFocusCommand}"
+                                                                                  CommandParameter="{Reference LunchStartTime}" />
+                                                        </iconize:IconLabel.GestureRecognizers>
+                                                    </iconize:IconLabel>
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Row="1"
+                                                     Grid.Column="1">
+                                            <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                       EnableFloating="False"
+                                                                       Hint="End Time ">
+
+                                                <utils:NullableTimePicker x:Name="LunchEndTime"
+                                                                          NullableTime="{Binding Holder.LunchEndTime, Mode=TwoWay}"
+                                                                          EmptyStateText="{OnPlatform iOS='End Time'}"
+                                                                          IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                          Style="{StaticResource TimePickerStyle}">
+                                                    <utils:NullableTimePicker.Behaviors>
+                                                        <utils:TimePickerCommandBehavior EventName="PropertyChanged"
+                                                                                         Converter="{StaticResource EventArgs}"
+                                                                                         Command="{Binding LunchEndTimeChangeCommand}"
+                                                                                         CommandParameter="{Binding Holder.LunchEndTime}" />
+                                                    </utils:NullableTimePicker.Behaviors>
+                                                </utils:NullableTimePicker>
+
+                                                <control:SfTextInputLayout.LeadingView>
+                                                    <iconize:IconLabel Text="{StaticResource TimeIcon}"
+                                                                       Style="{StaticResource IconizeIconStyle}"
+                                                                       IsEnabled="{Binding Holder.EnableCustomSched}">
+                                                        <iconize:IconLabel.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding EntryFocusCommand}"
+                                                                                  CommandParameter="{Reference LunchEndTime}" />
+                                                        </iconize:IconLabel.GestureRecognizers>
+                                                    </iconize:IconLabel>
+                                                </control:SfTextInputLayout.LeadingView>
+                                            </control:SfTextInputLayout>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--LUNCH DURATION-->
+                                    <StackLayout IsEnabled="{Binding Holder.IsEnabled}">
+                                        <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                   ErrorText="Specify no. of hours."
+                                                                   HasError="{Binding Holder.ErrorNoOfHours,Mode=TwoWay}"
+                                                                   Hint="Lunch Duration  ">
+                                            <numeric:SfNumericTextBox Value="{Binding Holder.SpecialWorkScheduleRequestModel.LunchDuration, Mode=TwoWay}"
+                                                                      x:Name="txtLunchDuration"
+                                                                      IsEnabled="{Binding Holder.EnableCustomSched}"
+                                                                      Style="{StaticResource SfNumericTextBoxStyle}" />
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Text="{StaticResource HourIcon}"
+                                                                   Style="{StaticResource IconizeIconStyle}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                            <control:SfTextInputLayout.TrailingView>
+                                                <Label Text="hrs"
+                                                       FontFamily="{DynamicResource Regular}" />
+                                            </control:SfTextInputLayout.TrailingView>
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--OFF-SET-->
+                                    <Grid IsVisible="{Binding Holder.IsOffsetEnabled}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="1" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="0"
+                                                     IsEnabled="{Binding Holder.IsEnabled}">
+                                            <buttons:SfSwitch VisualType="Cupertino"
+                                                              IsOn="{Binding Holder.IsOffSetting,Mode=TwoWay}">
+                                                <buttons:SfSwitch.Behaviors>
+                                                    <utils:SfSwitchCommandBehavior EventName="StateChanged"
+                                                                                   Converter="{StaticResource EventArgs}"
+                                                                                   Command="{Binding OffSettingCommand}" />
+                                                </buttons:SfSwitch.Behaviors>
+                                            </buttons:SfSwitch>
+                                        </StackLayout>
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="2">
+                                            <Label Text="For offsetting"
+                                                   HorizontalOptions="StartAndExpand"
+                                                   VerticalOptions="CenterAndExpand"
+                                                   TextColor="{StaticResource Gray-800}"
+                                                   FontSize="{StaticResource Tiny}"
+                                                   FontFamily="{DynamicResource Medium}" />
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--OFFSET EXP DATE-->
+                                    <StackLayout IsVisible="{Binding Holder.OffsetExpirationDateToggle}">
+                                        <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                                   Hint="Offset Expiration  "
+                                                                   IsVisible="{Binding Holder.IsOffSetting}">
+                                            <DatePicker Style="{StaticResource DatePickerStyle}"
+                                                        Date="{Binding Holder.OffSetExpirationDate, Mode=TwoWay}"
+                                                        IsEnabled="False" />
+
+                                            <control:SfTextInputLayout.LeadingView>
+                                                <iconize:IconLabel Text="{StaticResource DateIcon}"
+                                                                   Style="{StaticResource IconizeIconStyle}" />
+                                            </control:SfTextInputLayout.LeadingView>
+                                        </control:SfTextInputLayout>
+                                    </StackLayout>
+
+                                    <!--REASON-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                               HasError="{Binding Holder.ErrorReason,Mode=TwoWay}"
+                                                               Hint="Specify details  ">
+                                        <Editor Text="{Binding Holder.SpecialWorkScheduleRequestModel.Reason, Mode=TwoWay}"
+                                                Style="{DynamicResource EditorStyle}"
+                                                IsEnabled="{Binding Holder.IsEnabled}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--BUTTONS-->
+                                    <template:RequestFooterTemplate2 />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

@@ -2,6 +2,7 @@ using System.Windows.Input;
 using MauiHybridApp.Commands;
 using MauiHybridApp.Services;
 using MauiHybridApp.Services.Data;
+using MauiHybridApp.Services.Navigation;
 using Microsoft.AspNetCore.Components;
 using UserProfileModel = MauiHybridApp.Services.Data.UserProfileModel;
 
@@ -14,7 +15,7 @@ public class ProfileViewModel : BaseViewModel
 {
     private readonly IUserDataService _userService;
     private readonly IFileUploadService _fileUploadService;
-    private readonly NavigationManager _navigationManager;
+    private readonly INavigationService _navigationService;
     
     private UserProfileModel? _userProfile;
     private UserProfileModel? _originalProfile;
@@ -25,18 +26,18 @@ public class ProfileViewModel : BaseViewModel
     public ProfileViewModel(
         IUserDataService userService,
         IFileUploadService fileUploadService,
-        NavigationManager navigationManager)
+        INavigationService navigationService)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _fileUploadService = fileUploadService ?? throw new ArgumentNullException(nameof(fileUploadService));
-        _navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         
         // Initialize commands
         ToggleEditModeCommand = new RelayCommand(ToggleEditMode);
         SaveCommand = new AsyncRelayCommand(SaveProfileAsync, () => !IsSaving);
         CancelCommand = new RelayCommand(CancelEdit);
         ChangePhotoCommand = new AsyncRelayCommand(ChangePhotoAsync);
-        GoBackCommand = new RelayCommand(GoBack);
+        GoBackCommand = new AsyncRelayCommand(GoBackAsync);
     }
 
     #region Properties
@@ -58,14 +59,6 @@ public class ProfileViewModel : BaseViewModel
         get => _isSaving;
         private set => SetProperty(ref _isSaving, value);
     }
-
-    public string SuccessMessage
-    {
-        get => _successMessage;
-        private set => SetProperty(ref _successMessage, value);
-    }
-
-    public bool HasSuccessMessage => !string.IsNullOrEmpty(SuccessMessage);
 
     #endregion
 
@@ -167,6 +160,7 @@ public class ProfileViewModel : BaseViewModel
         {
             // File upload not fully implemented - skip for now
             SuccessMessage = "Photo upload feature coming soon";
+            await Task.CompletedTask;
         }
         catch (Exception ex)
         {
@@ -174,9 +168,9 @@ public class ProfileViewModel : BaseViewModel
         }
     }
 
-    private void GoBack()
+    private async Task GoBackAsync()
     {
-        _navigationManager.NavigateTo("/dashboard");
+        await _navigationService.NavigateBackAsync();
     }
 
     private UserProfileModel CloneProfile(UserProfileModel profile)

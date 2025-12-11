@@ -1,0 +1,122 @@
+.file-upload-container {
+    margin-bottom: 20px;
+}
+
+.file-upload-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.required {
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+.file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.file-upload-area.drag-over {
+    border-color: #667eea;
+    background: #e8eaf6;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-upload-button {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    background: #667eea;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.file-upload-button:hover {
+    background: #5568d3;
+}
+
+.file-upload-button .oi {
+    font-size: 24px;
+}
+
+.file-upload-help {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #666;
+}
+
+.uploaded-files-list {
+    margin-top: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.uploaded-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}
+
+.uploaded-file-item:last-child {
+    border-bottom: none;
+}
+
+.file-icon {
+    font-size: 20px;
+    color: #667eea;
+}
+
+.file-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #666;
+}
+
+.btn-remove {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #fee;
+}
+
+.file-upload-error {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 6px;
+}

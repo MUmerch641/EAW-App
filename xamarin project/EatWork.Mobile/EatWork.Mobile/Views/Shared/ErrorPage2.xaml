@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:button="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Shared.ErrorPage2"
+             BackgroundColor="{StaticResource Gray-White}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--<Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>-->
+
+            <StackLayout HorizontalOptions="Center"
+                         Spacing="0"
+                         VerticalOptions="Center">
+
+                <ffsvg:SvgCachedImage Margin="0,10,0,0"
+                                      HeightRequest="100"
+                                      WidthRequest="100"
+                                      Source="Error.svg"
+                                      x:Name="Image" />
+
+                <Label Margin="0,40,0,0"
+                       Style="{StaticResource LabelStyle2}"
+                       Text="FAILED"
+                       x:Name="Title" />
+
+                <Label Margin="17,8"
+                       Style="{StaticResource DescriptionLabelStyle}"
+                       Text="An error encountered. Please contact your System Administrator."
+                       TextType="Html"
+                       x:Name="Content" />
+            </StackLayout>
+
+            <button:SfButton Grid.Row="1"
+                             Text="CLOSE"
+                             x:Name="btnClose"
+                             Clicked="SfButton_Clicked"
+                             Style="{StaticResource WalkthroughButtonStyle}" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

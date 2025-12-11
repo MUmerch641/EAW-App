@@ -5,7 +5,7 @@ public class ProfileModel
     public long ProfileId { get; set; }
 
     
-    // --- Missing Fields Added (Jo Errors de rahe thay) ---
+    // --- Missing Fields Added (That were giving errors) ---
     public string? EmployeeNo { get; set; } 
     public string? Position { get; set; } 
     public string? Department { get; set; }
@@ -34,5 +34,5 @@ public class ProfileModel
     public string? EmergencyContactContactNumber { get; set; }
     
     // Others
-    public string? ProfilePhotoUrl { get; set; } // Agar API bhejti hai
+    public string? ProfilePhotoUrl { get; set; } // If API sends it
 }

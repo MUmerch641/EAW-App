@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:local="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.Survey.SurveyListPage"
+             Title="Surveys"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <Grid RowSpacing="0" Style="{DynamicResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+
+            <utils:TitleView Title="Pulse Survey" TitleColor="{StaticResource Gray-White}" x:Name="TitleView">
+                <utils:TitleView.LeadingView>
+
+                    <iconize:IconButton Text="{StaticResource HamburgerIcon}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Command="{Binding MenuButtonCommand}"
+                                        x:Name="MenuIcon" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2" Spacing="0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             HorizontalOptions="CenterAndExpand"
+                             VerticalOptions="CenterAndExpand">
+
+                    <local:NoItemsPartialPage DetailsText="No items available to display."
+                                              IsVisible="{Binding ShowList, Converter={utils:InverseBoolConverter}}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+
+                    <local:NoItemsPartialPage DetailsText="Please try again with different keywords/criteria."
+                                              TitleText="No Result Found"
+                                              IsVisible="{Binding NoItems}"
+                                              HorizontalOptions="CenterAndExpand"
+                                              VerticalOptions="CenterAndExpand"
+                                              Margin="0,0" />
+                </StackLayout>
+
+                <Grid AbsoluteLayout.LayoutFlags="All"
+                      AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                      HorizontalOptions="FillAndExpand"
+                      VerticalOptions="FillAndExpand"
+                      RowDefinitions="*">
+
+                    <StackLayout Padding="16"
+                                 Spacing="16"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 IsVisible="{Binding ShowList}">
+
+                        <syncfusion:SfListView x:Name="ListView"
+                                               AutoFitMode="Height"
+                                               SelectionMode="None"
+                                               IsScrollBarVisible="False"
+                                               ItemSpacing="0,10"
+                                               IsStickyHeader="True"
+                                               IsStickyGroupHeader="False"
+                                               HeaderTemplate="{DynamicResource CatalogDefaultHeaderTemplate}"
+                                               HeaderSize="{OnPlatform Android=50,iOS=60, UWP=60}"
+                                               ItemsSource="{Binding Holder.ItemSource}"
+                                               LoadMoreOption="AutoOnScroll"
+                                               LoadMoreCommand="{Binding LoadItemsCommand}"
+                                               LoadMoreCommandParameter="{Binding Source={x:Reference Name=ListView}}">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <utils:CustomShadowFrame Style="{DynamicResource CustomFrameStyle}" 
+                                                             Margin="1"
+                                                             BorderWidth="0"
+                                                             Padding="16,16,8,16"
+                                                             WidthRequest="343">
+                                        <Grid ColumnDefinitions="Auto, Auto, *"
+                                              ColumnSpacing="8"
+                                              RowDefinitions="*"
+                                              RowSpacing="8">
+
+                                            <iconize:IconImage Icon="{DynamicResource EditICon}"
+                                                               HeightRequest="15"
+                                                               WidthRequest="15"
+                                                               IconColor="{DynamicResource Gray-700}"
+                                                               HorizontalOptions="StartAndExpand"
+                                                               VerticalOptions="Center"
+                                                               Grid.Column="0"
+                                                               Margin="0,0,5,0">
+                                                <iconize:IconImage.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.EditItemCommand, Source={x:Reference ListView}}"
+                                                                          CommandParameter="{Binding TimeEntryLogId}" />
+                                                </iconize:IconImage.GestureRecognizers>
+                                            </iconize:IconImage>
+                                            
+                                            <iconize:IconImage Icon="{DynamicResource ChartIcon}"
+                                                               HeightRequest="15"
+                                                               WidthRequest="15"
+                                                               IconColor="{DynamicResource Gray-700}"
+                                                               HorizontalOptions="StartAndExpand"
+                                                               VerticalOptions="Center"
+                                                               Grid.Column="1"
+                                                               Margin="0,0,5,0">
+                                                <iconize:IconImage.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.EditItemCommand, Source={x:Reference ListView}}"
+                                                                          CommandParameter="{Binding TimeEntryLogId}" />
+                                                </iconize:IconImage.GestureRecognizers>
+                                            </iconize:IconImage>
+
+
+                                            <Label  HorizontalOptions="Start"
+                                                    LineBreakMode="NoWrap"
+                                                    MaxLines="2"
+                                                    LineHeight="{OnPlatform Default=-1, Android=1.5}"
+                                                    VerticalOptions="Center"
+                                                    FontFamily="{DynamicResource SemiBold}"
+                                                    TextColor="{DynamicResource Gray-900}"
+                                                    FontSize="14"
+                                                    Text="{Binding TitleQuestion}"
+                                                    Grid.Column="2"/>
+
+                                        </Grid>
+                                    </utils:CustomShadowFrame>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                            
+                        </syncfusion:SfListView>
+                    </StackLayout>
+                </Grid>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

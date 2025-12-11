@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary x:Class="EatWork.Mobile.Themes.LightTheme"
+                    xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Color x:Key="PrimaryColor">#2f72e4</Color>
+    <Color x:Key="PrimaryDarkColor">#1a5ac6</Color>
+    <Color x:Key="PrimaryDarkenColor">#174fb0</Color>
+    <Color x:Key="PrimaryLighterColor">#edcacd</Color>
+    <Color x:Key="PrimaryGradient">#00acff</Color>
+    <Color x:Key="PrimaryLight">#cdddf9</Color>
+    <Color x:Key="SecondaryGradient">#7644ad</Color>
+    <Color x:Key="Secondary">#d54381</Color>
+    <Color x:Key="PrimaryButtonColor">#27ae60</Color>
+    <Color x:Key="PrimaryButtonGradient">#27ae60</Color>
+    <Color x:Key="LoginGradientStart">#162140</Color>
+    <Color x:Key="LoginGradientEnd">#182848</Color>
+    <Color x:Key="LoginTextColor">#ffffff</Color>
+
+    <!--  DASHBOARD COLORS  -->
+    <Color x:Key="DashboardPrimaryTextHeader">#ffffff</Color>
+    <Color x:Key="DashboardPrimaryTextValue">#ffffff</Color>
+    <Color x:Key="DashboardSecondaryTextHeader">#333942</Color>
+    <Color x:Key="DashboardSecondaryTextValue">#333942</Color>
+    <Color x:Key="VLColorStart">#FF8C70</Color>
+    <Color x:Key="VLColorEnd">#fae188</Color>
+    <Color x:Key="SLColorStart">#ff7272</Color>
+    <Color x:Key="SLColorEnd">#f650c5</Color>
+    <Color x:Key="OTMTDColorStart">#5e7cea</Color>
+    <Color x:Key="OTMTDColorEnd">#1dcce3</Color>
+    <Color x:Key="OTYTDColorStart">#255ea6</Color>
+    <Color x:Key="OTYTDColorEnd">#b350d1</Color>
+    <Color x:Key="AbsencesMTDColor">#cf86ff</Color>
+    <Color x:Key="AbsencesYTDColor">#8691ff</Color>
+    <Color x:Key="TardinessMTDColor">#ff9686</Color>
+    <Color x:Key="TardinessYTDColor">#162140</Color>
+    <Color x:Key="DashboardSecondaryColor">#ffffff</Color>
+
+    <Color x:Key="Green">#7ed321</Color>
+    <Color x:Key="Red">#ff4a4a</Color>
+    <Color x:Key="Orange">#ff844a</Color>
+    <Color x:Key="Blue">#4acaff</Color>
+    <Color x:Key="HyperLink">#428bca</Color>
+    <Color x:Key="LightRed">#f54e5e</Color>
+    <Color x:Key="Warning">#ff6624</Color>
+
+    <Color x:Key="Gray-100">#f6f7f8</Color>
+    <Color x:Key="Gray-200">#ebecef</Color>
+    <Color x:Key="Gray-300">#ced2d9</Color>
+    <Color x:Key="Gray-400">#b2b8c2</Color>
+    <Color x:Key="Gray-500">#959eac</Color>
+    <Color x:Key="Gray-600">#788396</Color>
+    <Color x:Key="Gray-700">#606a7b</Color>
+    <Color x:Key="Gray-800">#4a515e</Color>
+    <Color x:Key="Gray-900">#333942</Color>
+    <Color x:Key="Gray-Black">#000000</Color>
+    <Color x:Key="Gray-White">#ffffff</Color>
+    <Color x:Key="Gray-Bg">#ffffff</Color>
+    <Color x:Key="GrayShadowColor">#ffffff</Color>
+    <Color x:Key="GrayShadowBackgroundColor">#f6f7f8</Color>
+    <Color x:Key="White-Smoke">#F5F5F5</Color>
+
+    <!--<Color x:Key="NavigationPrimary">#2f72e4</Color>-->
+
+    <OnPlatform x:Key="SemiBold"
+                x:TypeArguments="x:String">
+        <OnPlatform.Platforms>
+            <On Platform="Android"
+                Value="Montserrat-SemiBold.ttf#Montserrat-SemiBold" />
+            <On Platform="iOS"
+                Value="Montserrat-SemiBold" />
+            <On Platform="UWP"
+                Value="Assets/Montserrat-SemiBold.ttf#Montserrat-SemiBold" />
+        </OnPlatform.Platforms>
+    </OnPlatform>
+
+    <OnPlatform x:Key="Regular"
+                x:TypeArguments="x:String">
+        <OnPlatform.Platforms>
+            <On Platform="Android"
+                Value="Montserrat-Regular.ttf#Montserrat-Regular" />
+            <On Platform="iOS"
+                Value="Montserrat-Regular" />
+            <On Platform="UWP"
+                Value="Assets/Montserrat-Regular.ttf#Montserrat-Regular" />
+        </OnPlatform.Platforms>
+    </OnPlatform>
+
+    <OnPlatform x:Key="Medium"
+                x:TypeArguments="x:String">
+        <OnPlatform.Platforms>
+            <On Platform="Android"
+                Value="Montserrat-Medium.ttf#Montserrat-Medium" />
+            <On Platform="iOS"
+                Value="Montserrat-Medium" />
+            <On Platform="UWP"
+                Value="Assets/Medium.ttf#Montserrat-Medium" />
+        </OnPlatform.Platforms>
+    </OnPlatform>
+
+    <OnPlatform x:Key="Bold"
+                x:TypeArguments="x:String">
+        <OnPlatform.Platforms>
+            <On Platform="Android"
+                Value="Montserrat-Bold.ttf#Montserrat-Bold" />
+            <On Platform="iOS"
+                Value="Montserrat-Bold" />
+            <On Platform="UWP"
+                Value="Assets/Montserrat-Bold.ttf#Montserrat-Bold" />
+        </OnPlatform.Platforms>
+    </OnPlatform>
+</ResourceDictionary>

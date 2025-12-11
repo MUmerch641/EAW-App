@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             x:Class="EatWork.Mobile.Views.SuggestionCorner.SuggestionFormPage"
+             Style="{DynamicResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Requests/Styles.xaml" />
+                <ResourceDictionary Source="../Template/Styles.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Suggestion Corner" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand">
+
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               Style="{StaticResource BusyIndicatorStyle}"
+                                               IsBusy="{Binding IsBusy}" />
+
+                <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      AbsoluteLayout.LayoutFlags="All"
+                      IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Padding="15"
+                          RowSpacing="0"
+                          ColumnSpacing="0"
+                          HorizontalOptions="CenterAndExpand"
+                          VerticalOptions="CenterAndExpand">
+
+                        <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 Style="{StaticResource CustomFrameStyle}">
+
+                            <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+                                <!--CATEGORY-->
+                                <control:SfTextInputLayout  Style="{StaticResource inputLayoutStyle}"
+                                                            HasError="{Binding Holder.Category.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                            ErrorText="{Binding Holder.Category.Message}"
+                                                            Hint="Category  ">
+                                    <combobox:SfComboBox DataSource="{Binding Holder.Categories}"
+                                                         DisplayMemberPath="Value"
+                                                         SelectedValuePath="Id"
+                                                         SelectedItem="{Binding Holder.SelectedCategory, Mode=TwoWay}"
+                                                         SelectedValue="{Binding Holder.SelectedCategory.Id, Mode=TwoWay}"
+                                                         Style="{StaticResource ComboBoxStyle}" />
+                                    <control:SfTextInputLayout.TrailingView>
+                                        <iconize:IconLabel Text="{StaticResource AddIcon2}"
+                                                           Style="{StaticResource IconizeIconStyle}"
+                                                           TextColor="{DynamicResource HyperLink}">
+                                            <iconize:IconLabel.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding ToggleSuggestionCategoryCommand}" />
+                                            </iconize:IconLabel.GestureRecognizers>
+                                        </iconize:IconLabel>
+                                    </control:SfTextInputLayout.TrailingView>
+                                </control:SfTextInputLayout>
+
+                                <!--SUGGESTION-->
+                                <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                           HasError="{Binding Holder.Suggestions.IsValid,Converter={utils:InverseBoolConverter}}"
+                                                           ErrorText="{Binding Holder.Suggestions.Message}"
+                                                           Hint="Enter your suggestion/s here "
+                                                           ShowCharCount="true"
+                                                           CharMaxLength="1000">
+                                    <Editor Style="{DynamicResource EditorStyle3}"
+                                            Text="{Binding Holder.Suggestions.Value}"
+                                            HeightRequest="200" />
+                                </control:SfTextInputLayout>
+
+                                <!--SEPARATOR-->
+                                <BoxView HeightRequest="{OnIdiom Default=1, Desktop=0}"
+                                         Style="{StaticResource SeparatorStyle}"
+                                         Margin="0,10,0,0" />
+
+                                <!--BUTTONS-->
+                                <FlexLayout Direction="Row"
+                                            VerticalOptions="End"
+                                            JustifyContent="SpaceEvenly">
+
+                                    <buttons:SfButton BackgroundColor="{StaticResource Transparent}"
+                                                      Command="{Binding ResetFormCommand}">
+                                        <buttons:SfButton.Content>
+                                            <Grid Margin="0,0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="54" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <iconize:IconButton Text="{StaticResource CloseIcon}"
+                                                                    Style="{StaticResource BtnRequestStyle}" />
+                                                <Label Text="Reset"
+                                                       Style="{StaticResource FooterButtonLabelStyle}" />
+                                            </Grid>
+                                        </buttons:SfButton.Content>
+                                    </buttons:SfButton>
+
+                                    <buttons:SfButton BackgroundColor="{StaticResource Transparent}"
+                                                      Command="{Binding SubmitCommand}">
+                                        <buttons:SfButton.Content>
+                                            <Grid Margin="0,0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="54" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <iconize:IconButton Text="{StaticResource SaveIcon}"
+                                                                    Style="{StaticResource BtnRequestStyle}" />
+                                                <Label Text="Save"
+                                                       Style="{StaticResource FooterButtonLabelStyle}" />
+                                            </Grid>
+                                        </buttons:SfButton.Content>
+                                    </buttons:SfButton>
+                                </FlexLayout>
+                            </StackLayout>
+                        </utils:CustomShadowFrame>
+                    </Grid>
+                </Grid>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

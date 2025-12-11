@@ -1,0 +1,158 @@
+@page "/travel/request/new"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@inject TravelRequestFormViewModel ViewModel
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="page-container">
+    <div class="page-header">
+        <button class="btn-icon" @onclick="@(() => ViewModel.CancelCommand.Execute(null))">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>New Travel Request</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-content">
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert error">
+                <i class="fas fa-exclamation-circle"></i> @ViewModel.ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+        {
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> @ViewModel.SuccessMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Request Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.RequestDate" />
+        </div>
+
+        <div class="form-group">
+            <label>Trip Type</label>
+            <select class="form-control" @bind="ViewModel.SelectedTripType">
+                <option value="">Select Trip Type</option>
+                @if (ViewModel.TripTypes != null)
+                {
+                    @foreach (var item in ViewModel.TripTypes)
+                    {
+                        <option value="@item">@item.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Details</label>
+            <textarea class="form-control" rows="2" @bind="ViewModel.Details" placeholder="Enter details..."></textarea>
+        </div>
+
+        <h3 class="section-title">First Trip</h3>
+
+        <div class="form-group">
+            <label>Origin</label>
+            <input list="origins" class="form-control" @bind="ViewModel.FirstOrigin" placeholder="Select or type origin" />
+        </div>
+
+        <div class="form-group">
+            <label>Destination</label>
+            <input list="destinations" class="form-control" @bind="ViewModel.FirstDestination" placeholder="Select or type destination" />
+        </div>
+
+        <div class="form-group">
+            <label>Departure Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.FirstDepartureDate" />
+        </div>
+
+        <div class="form-group">
+            <label>Departure Time</label>
+            <input type="time" class="form-control" @bind="ViewModel.FirstDepartureTime" />
+        </div>
+
+        <h3 class="section-title">Return Trip</h3>
+
+        <div class="form-group">
+            <label>Origin</label>
+            <input list="origins" class="form-control" @bind="ViewModel.SecondOrigin" placeholder="Select or type origin" />
+        </div>
+
+        <div class="form-group">
+            <label>Destination</label>
+            <input list="destinations" class="form-control" @bind="ViewModel.SecondDestination" placeholder="Select or type destination" />
+        </div>
+
+        <div class="form-group">
+            <label>Departure Date</label>
+            <input type="date" class="form-control" @bind="ViewModel.SecondDepartureDate" />
+        </div>
+
+        <div class="form-group">
+            <label>Departure Time</label>
+            <input type="time" class="form-control" @bind="ViewModel.SecondDepartureTime" />
+        </div>
+
+        <div class="form-group">
+            <label>Reason / Special Note</label>
+            <textarea class="form-control" rows="3" @bind="ViewModel.Reason" placeholder="Enter reason..."></textarea>
+        </div>
+
+        <datalist id="origins">
+            @if (ViewModel.Origins != null)
+            {
+                @foreach (var item in ViewModel.Origins)
+                {
+                    <option value="@item"></option>
+                }
+            }
+        </datalist>
+
+        <datalist id="destinations">
+            @if (ViewModel.Destinations != null)
+            {
+                @foreach (var item in ViewModel.Destinations)
+                {
+                    <option value="@item"></option>
+                }
+            }
+        </datalist>
+
+        <div class="action-buttons">
+            <button class="btn-submit" @onclick="@(() => ViewModel.SubmitCommand.Execute(null))" disabled="@ViewModel.IsBusy">
+                @if (ViewModel.IsBusy)
+                {
+                    <span class="spinner-small"></span> <span>Submitting...</span>
+                }
+                else
+                {
+                    <span>Submit Request</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        await ViewModel.InitializeAsync();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+    }
+}

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:core="clr-namespace:Syncfusion.XForms.Core;assembly=Syncfusion.Core.XForms"
+             xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:control="clr-namespace:EatWork.Mobile.Utils"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Template.EmployeeProfileCategoryTemplate1"
+             BackgroundColor="Transparent">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Profile/Styles.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+    <StackLayout BackgroundColor="{StaticResource Gray-White}" Spacing="0">
+        <StackLayout BindableLayout.ItemsSource="{Binding EmployeeProfileSubCategory}"
+                     Padding="0,0,0,0"
+                     BackgroundColor="{StaticResource Gray-100}"
+                     IsVisible="{Binding IsBusy, Converter={control:InverseBoolConverter}}"
+                     x:Name="ProfileCategory">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid ColumnSpacing="0"
+                          RowSpacing="1"
+                          Margin="0,0"
+                          BackgroundColor="{StaticResource Gray-100}"
+                          HeightRequest="65">
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Path=BindingContext.ViewItemCommand,Source={x:Reference ProfileCategory}}"
+                                                  CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="74*" />
+                            <ColumnDefinition Width="15*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--<ffsvg:SvgCachedImage x:Name="SvgImages"
+                                          Margin="{x:OnIdiom Phone='16,0,0,0', Desktop='0',Tablet='0'}"
+                                          BackgroundColor="{StaticResource Transparent}"
+                                          HeightRequest="{core:OnPlatformOrientationDoubleValue
+                                                               Default=100,
+                                                               AndroidPhonePortrait=100,
+                                                               AndroidPhoneLandscape=100,
+                                                               iOSPhonePortrait=100,
+                                                               iOSPhoneLandscape=100}"
+                                          Source="{Binding Icon}"
+                                          VerticalOptions="Center"
+                                          Grid.Column="0"
+                                          WidthRequest="{x:OnIdiom Phone=100, Desktop=100, Tablet=100}"
+                                          FadeAnimationEnabled="False"
+                                          DownsampleToViewSize="True" />-->
+
+                        <!--<iconize:IconImage Aspect="AspectFill"
+                                           Source="{Binding Icon}"
+                                           Icon="{Binding Icon}"
+                                           Grid.Row="0"
+                                           Margin="16,0,0,0"
+                                           VerticalOptions="Center"
+                                           IconColor="{DynamicResource PrimaryColor}"
+                                           Style="{StaticResource IconizeMenuImage}" />-->
+
+                        <Label Grid.Column="0"
+                               Grid.ColumnSpan="3"
+                               FontFamily="{DynamicResource SemiBold}"
+                               LineHeight="{OnPlatform Android=1.25, Default=-1}"
+                               Style="{StaticResource PriceLabelStyle}"
+                               Text="{Binding Title}"
+                               TextColor="{StaticResource Gray-900}"
+                               FontSize="16" />
+
+                        <iconize:IconLabel Text="fas-chevron-right"
+                                           Grid.Column="3"
+                                           FontSize="Small"
+                                           Style="{StaticResource IconizeLabelStyle}"
+                                           HorizontalOptions="End" />
+                    </Grid>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+    </StackLayout>
+</StackLayout>

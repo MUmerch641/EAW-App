@@ -4,7 +4,7 @@
 @inject OfficialBusinessViewModel ViewModel
 @implements IDisposable
 
-<div class="page-container">
+<div class="page-container scrollable">
     <PageHeader 
         Title="Official Business" 
         Subtitle="Submit official business request" 
@@ -28,67 +28,77 @@
             }
             
             <div class="form-section">
-                <h3 class="section-title">Official Business Details</h3>
-                
-                <FormGroup Label="Date" IsRequired="true">
-                    <input type="date" 
-                           class="form-control" 
-                           value="@ViewModel.OBRequest.OfficialBusinessDate.ToString("yyyy-MM-dd")"
-                           @onchange="@((e) => ViewModel.OBRequest.OfficialBusinessDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
-                </FormGroup>
-                
-                <div class="form-row">
-                    <FormGroup Label="Start Time" IsRequired="true">
-                        <input type="time" 
-                               class="form-control" 
-                               value="@(ViewModel.OBRequest.StartTime?.ToString("HH:mm") ?? "08:00")"
-                               @onchange="@((e) => ViewModel.OBRequest.StartTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                <!-- Using .card for container style is standard in our new design -->
+                <div class="card p-4">
+                    <h3 class="section-title mb-4">Official Business Details</h3>
+                    
+                    <FormGroup Label="Date" IsRequired="true">
+                        <input type="date" 
+                               class="modern-input" 
+                               value="@ViewModel.OBRequest.OfficialBusinessDate.ToString("yyyy-MM-dd")"
+                               @onchange="@((e) => ViewModel.OBRequest.OfficialBusinessDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
                     </FormGroup>
                     
-                    <FormGroup Label="End Time" IsRequired="true">
-                        <input type="time" 
-                               class="form-control" 
-                               value="@(ViewModel.OBRequest.EndTime?.ToString("HH:mm") ?? "17:00")"
-                               @onchange="@((e) => ViewModel.OBRequest.EndTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                    <div class="row">
+                        <div class="col-6">
+                            <FormGroup Label="Start Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@(ViewModel.OBRequest.StartTime?.ToString("HH:mm") ?? "08:00")"
+                                       @onchange="@((e) => ViewModel.OBRequest.StartTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+                        </div>
+                        <div class="col-6">
+                            <FormGroup Label="End Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@(ViewModel.OBRequest.EndTime?.ToString("HH:mm") ?? "17:00")"
+                                       @onchange="@((e) => ViewModel.OBRequest.EndTime = DateTime.Parse($"{ViewModel.OBRequest.OfficialBusinessDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card my-3 p-3 bg-light rounded text-center">
+                        <div class="info-item">
+                            <span class="info-label text-muted">Total Hours:</span>
+                            <span class="info-value fw-bold text-primary">@ViewModel.TotalHours.ToString("F2") hours</span>
+                        </div>
+                    </div>
+                    
+                    <FormGroup Label="Purpose/Reason" IsRequired="true">
+                        <textarea class="modern-input" 
+                                  rows="4" 
+                                  placeholder="Enter purpose of official business..."
+                                  @bind="ViewModel.OBRequest.Reason"></textarea>
                     </FormGroup>
-                </div>
+                    
+                    <FormGroup Label="Remarks">
+                        <textarea class="modern-input" 
+                                  rows="3" 
+                                  placeholder="Additional remarks (optional)..."
+                                  @bind="ViewModel.OBRequest.Remarks"></textarea>
+                    </FormGroup>
                 
-                <div class="info-card">
-                    <div class="info-item">
-                        <span class="info-label">Total Hours:</span>
-                        <span class="info-value">@ViewModel.TotalHours.ToString("F2") hours</span>
+
+                    <div class="form-actions mt-4 d-flex gap-2">
+                        <div class="flex-grow-1">
+                             <ActionButton 
+                                Text="Submit Request" 
+                                OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="true"
+                                IconClass="fa-paper-plane" />
+                        </div>
+                        <div class="flex-grow-1">
+                             <ActionButton 
+                                Text="Cancel" 
+                                OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="false"
+                                IconClass="fa-times" />
+                        </div>
                     </div>
                 </div>
-                
-                <FormGroup Label="Purpose/Reason" IsRequired="true">
-                    <textarea class="form-control" 
-                              rows="4" 
-                              placeholder="Enter purpose of official business..."
-                              @bind="ViewModel.OBRequest.Reason"></textarea>
-                </FormGroup>
-                
-                <FormGroup Label="Remarks">
-                    <textarea class="form-control" 
-                              rows="3" 
-                              placeholder="Additional remarks (optional)..."
-                              @bind="ViewModel.OBRequest.Remarks"></textarea>
-                </FormGroup>
-            </div>
-            
-            <div class="form-actions">
-                <ActionButton 
-                    Text="Submit Request" 
-                    OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
-                    IsDisabled="@ViewModel.IsBusy"
-                    IsPrimary="true"
-                    IconClass="fa-paper-plane" />
-                    
-                <ActionButton 
-                    Text="Cancel" 
-                    OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
-                    IsDisabled="@ViewModel.IsBusy"
-                    IsPrimary="false"
-                    IconClass="fa-times" />
             </div>
         </div>
     }

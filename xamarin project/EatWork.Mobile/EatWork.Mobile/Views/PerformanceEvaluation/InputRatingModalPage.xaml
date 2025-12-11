@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<utils:FormModal xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+                 xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+                 xmlns:numeric="clr-namespace:Syncfusion.SfNumericTextBox.XForms;assembly=Syncfusion.SfNumericTextBox.XForms"
+                 xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+                 xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+                 x:Class="EatWork.Mobile.Views.PerformanceEvaluation.InputRatingModalPage">
+
+    <utils:FormModal.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </utils:FormModal.Resources>
+
+    <utils:FormModal.Header>
+        <Grid ColumnSpacing="0"
+              BackgroundColor="{DynamicResource PrimaryColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Input Review/Rating"
+                   Grid.Column="0"
+                   Style="{DynamicResource ModalPageTitleStyle}" />
+
+            <iconize:IconLabel Grid.Column="1"
+                               Style="{DynamicResource IconizeIconStyle}"
+                               Text="{DynamicResource CloseIcon}"
+                               TextColor="{DynamicResource Gray-White}"
+                               Padding="15,10,0,10"
+                               FontSize="Large">
+                <iconize:IconLabel.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseModalCommand}" />
+                </iconize:IconLabel.GestureRecognizers>
+            </iconize:IconLabel>
+        </Grid>
+    </utils:FormModal.Header>
+
+    <utils:FormModal.Body>
+        <StackLayout Grid.Row="1">
+
+            <!--<control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                       Hint="Goal"
+                                       IsEnabled="False">
+
+                <Editor FontSize="{DynamicResource Small}"
+                        Text="{Binding Data.ObjectiveDetail}"
+                        FontFamily="{DynamicResource Regular}"
+                        IsTextPredictionEnabled="True"
+                        AutoSize="TextChanges"
+                        HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                        TextColor="{StaticResource Gray-800}" />
+            </control:SfTextInputLayout>
+
+            <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                       Hint="Objective"
+                                       IsEnabled="False">
+
+                <Editor FontSize="{DynamicResource Small}"
+                        Text="{Binding Data.ObjectiveDescription}"
+                        FontFamily="{DynamicResource Regular}"
+                        IsTextPredictionEnabled="True"
+                        AutoSize="TextChanges"
+                        HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                        TextColor="{StaticResource Gray-800}" />
+            </control:SfTextInputLayout>
+
+            <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                       Hint="Baseline"
+                                       IsEnabled="False">
+
+                <numeric:SfNumericTextBox Value="{Binding Data.BaseLine}"
+                                          Style="{StaticResource SfNumericTextBoxStyle}" />
+            </control:SfTextInputLayout>
+
+            <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                       Hint="Target"
+                                       IsEnabled="False">
+
+                <numeric:SfNumericTextBox Value="{Binding Data.Target}"
+                                          Style="{StaticResource SfNumericTextBoxStyle}" />
+            </control:SfTextInputLayout>-->
+
+            <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                       HasError="{Binding EmployeeReview.IsValid,Converter={utils:InverseBoolConverter}}"
+                                       ErrorText="{Binding EmployeeReview.Message}"
+                                       Hint="Review">
+
+                <Editor FontSize="{DynamicResource Small}"
+                        Text="{Binding EmployeeReview.Value}"
+                        FontFamily="{DynamicResource Regular}"
+                        IsTextPredictionEnabled="True"
+                        AutoSize="TextChanges"
+                        HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                        TextColor="{StaticResource Gray-800}" />
+            </control:SfTextInputLayout>
+
+            <control:SfTextInputLayout Style="{DynamicResource InputLayoutStyleEditor}"
+                                       HasError="{Binding Actual.IsValid,Converter={utils:InverseBoolConverter}}"
+                                       ErrorText="{Binding Actual.Message}"
+                                       Hint="Actual">
+
+                <Editor FontSize="{DynamicResource Small}"
+                        Text="{Binding Actual.Value}"
+                        FontFamily="{DynamicResource Regular}"
+                        IsTextPredictionEnabled="True"
+                        AutoSize="TextChanges"
+                        HeightRequest="{OnPlatform Android=40, iOS=35, UWP=35}"
+                        TextColor="{StaticResource Gray-800}" />
+            </control:SfTextInputLayout>
+
+            <control:SfTextInputLayout Style="{StaticResource inputLayoutStyle}"
+                                       HasError="{Binding EmployeeRating.IsValid,Converter={utils:InverseBoolConverter}}"
+                                       ErrorText="{Binding EmployeeRating.Message}"
+                                       Hint="Rating">
+
+                <numeric:SfNumericTextBox Value="{Binding EmployeeRating.Value, Mode=TwoWay}"
+                                          Style="{StaticResource SfNumericTextBoxStyle}" />
+            </control:SfTextInputLayout>
+
+            <FlexLayout Margin="0,10,0,0"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Direction="Row"
+                        JustifyContent="Center"
+                        AlignItems="Center">
+
+                <buttons:SfButton Text="Save"
+                                  Style="{StaticResource WalkthroughButtonStyle}"
+                                  Command="{Binding SaveRatingCommand}" />
+            </FlexLayout>
+        </StackLayout>
+    </utils:FormModal.Body>
+</utils:FormModal>

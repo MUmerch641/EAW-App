@@ -1,57 +1,77 @@
 @page "/expenses"
 @using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
 @inject MauiHybridApp.ViewModels.ExpensesViewModel ViewModel
 
-<PageHeader Title="My Expenses" />
-
-<div class="page-content-container">
+<div class="page-container scrollable">
+    <PageHeader Title="My Expenses" IconClass="fa-money-bill-wave" />
     
-    <!-- Form Section -->
-    <div class="card p-3 mb-4">
-        <h5>New Expense</h5>
-        <input type="date" class="form-control mb-2" @bind="ViewModel.NewExpense.ExpenseDate" />
-        <input type="number" class="form-control mb-2" placeholder="Amount" @bind="ViewModel.NewExpense.Amount" />
-        <input type="text" class="form-control mb-2" placeholder="Reason / Remarks" @bind="ViewModel.NewExpense.Remarks" />
+    <div class="expenses-container">
         
-        <button class="btn btn-primary w-100" @onclick="ViewModel.SubmitExpenseAsync" disabled="@ViewModel.IsLoading">
-            @(ViewModel.IsLoading ? "Submitting..." : "Submit Claim")
-        </button>
-        
-        @if (!string.IsNullOrEmpty(ViewModel.Message))
-        {
-            <div class="alert alert-info mt-2">@ViewModel.Message</div>
-        }
-    </div>
-
-    <!-- List Section -->
-    <h5>Recent History</h5>
-    @if (ViewModel.IsLoading && ViewModel.Expenses.Count == 0)
-    {
-        <p>Loading history...</p>
-    }
-    else if (ViewModel.Expenses.Count == 0)
-    {
-        <p class="text-muted">No expenses found.</p>
-    }
-    else
-    {
-        @foreach (var item in ViewModel.Expenses)
-        {
-            <div class="expense-card">
-                <div class="d-flex justify-content-between">
-                    <strong>@item.Remarks</strong>
-                    <span class="text-success fw-bold">@item.Amount.ToString("N2")</span>
+        <!-- Form Section -->
+        <div class="new-expense-card">
+            <h5 class="card-title">New Expense Claim</h5>
+            
+            <div class="form-group">
+                <input type="date" class="modern-input" @bind="ViewModel.NewExpense.ExpenseDate" />
+            </div>
+            
+            <div class="form-group">
+                <input type="number" class="modern-input" placeholder="Amount (e.g. 500.00)" @bind="ViewModel.NewExpense.Amount" />
+            </div>
+            
+            <div class="form-group">
+                <input type="text" class="modern-input" placeholder="Reason / Remarks" @bind="ViewModel.NewExpense.Remarks" />
+            </div>
+            
+            <button class="btn-submit" @onclick="ViewModel.SubmitExpenseAsync" disabled="@ViewModel.IsLoading">
+                @(ViewModel.IsLoading ? "Submitting..." : "Submit Claim")
+            </button>
+            
+            @if (!string.IsNullOrEmpty(ViewModel.Message))
+            {
+                <div class="alert-box">
+                    <i class="fas fa-info-circle"></i> @ViewModel.Message
                 </div>
-                <div class="text-muted small">@item.ExpenseDate.ToString("MMM dd, yyyy")</div>
+            }
+        </div>
+
+        <!-- List Section -->
+        <div class="section-header">Recent History</div>
+        
+        @if (ViewModel.IsLoading && ViewModel.Expenses.Count == 0)
+        {
+            <div class="loading-text">Loading history...</div>
+        }
+        else if (ViewModel.Expenses.Count == 0)
+        {
+            <div class="empty-state">
+                No recent expenses found.
             </div>
         }
-    }
+        else
+        {
+            <div class="expense-list">
+                @foreach (var item in ViewModel.Expenses)
+                {
+                    <div class="expense-card">
+                        <div class="expense-info">
+                            <span class="expense-remarks">@item.Remarks</span>
+                            <span class="expense-date">@item.ExpenseDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="expense-amount">
+                            @item.Amount.ToString("N2")
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        // Logic lives in the ViewModel
         await ViewModel.LoadExpensesAsync();
     }
 }

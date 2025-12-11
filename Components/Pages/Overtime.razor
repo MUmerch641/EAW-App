@@ -10,88 +10,132 @@
         Subtitle="Submit overtime hours" 
         IconClass="fa-clock" />
     
-    @if (ViewModel.IsBusy)
-    {
-        <LoadingIndicator Message="Loading..." />
-    }
-    else
-    {
-        <div class="form-container">
-            @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
-            {
-                <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
-            }
-            
-            @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
-            {
-                <AlertMessage Type="success" Message="@ViewModel.SuccessMessage" />
-            }
-            
-            <div class="form-section">
-                <h3 class="section-title">Overtime Details</h3>
+    <!-- Animated Content Wrapper -->
+    <div class="animate-fade-in-up">
+        @if (ViewModel.IsBusy)
+        {
+            <div class="p-4">
+                <SkeletonLoader height="50px" width="100%" class="mb-3" />
+                <SkeletonLoader height="300px" width="100%" />
+            </div>
+        }
+        else
+        {
+            <div class="form-container">
+                @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+                {
+                    <AlertMessage Type="error" Message="@ViewModel.ErrorMessage" />
+                }
                 
-                <FormGroup Label="Overtime Date" IsRequired="true">
-                    <input type="date" 
-                           class="form-control" 
-                           value="@ViewModel.OvertimeRequest.OvertimeDate.ToString("yyyy-MM-dd")"
-                           @onchange="@((e) => ViewModel.OvertimeRequest.OvertimeDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
-                </FormGroup>
+                @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+                {
+                    <AlertMessage Type="success" Message="@ViewModel.SuccessMessage" />
+                }
                 
-                <div class="form-row">
-                    <FormGroup Label="Start Time" IsRequired="true">
-                        <input type="time" 
-                               class="form-control" 
-                               value="@ViewModel.OvertimeRequest.StartTime.ToString("HH:mm")"
-                               @onchange="@((e) => ViewModel.OvertimeRequest.StartTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
-                    </FormGroup>
-                    
-                    <FormGroup Label="End Time" IsRequired="true">
-                        <input type="time" 
-                               class="form-control" 
-                               value="@ViewModel.OvertimeRequest.EndTime.ToString("HH:mm")"
-                               @onchange="@((e) => ViewModel.OvertimeRequest.EndTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
-                    </FormGroup>
-                </div>
-                
-                <div class="info-card">
-                    <div class="info-item">
-                        <span class="info-label">Total Hours:</span>
-                        <span class="info-value">@ViewModel.FormattedHours</span>
+                <div class="form-section">
+                    <!-- Main Card -->
+                    <div class="card p-4 shadow-sm border-0 border-radius-lg">
+                        <h3 class="section-title mb-4 text-primary fw-bold">
+                            <i class="fas fa-edit me-2"></i>New Request
+                        </h3>
+                        
+                        <FormGroup Label="Overtime Date" IsRequired="true">
+                            <input type="date" 
+                                   class="modern-input" 
+                                   value="@ViewModel.OvertimeRequest.OvertimeDate.ToString("yyyy-MM-dd")"
+                                   @onchange="@((e) => ViewModel.OvertimeRequest.OvertimeDate = DateTime.Parse(e.Value?.ToString() ?? DateTime.Today.ToString()))" />
+                        </FormGroup>
+                        
+                        <!-- Grid Layout for Time Inputs (CSS Grid instead of Bootstrap Row) -->
+                        <div class="grid-cols-2 gap-3 mb-3">
+                            <FormGroup Label="Start Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@ViewModel.OvertimeRequest.StartTime.ToString("HH:mm")"
+                                       @onchange="@((e) => ViewModel.OvertimeRequest.StartTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+
+                            <FormGroup Label="End Time" IsRequired="true">
+                                <input type="time" 
+                                       class="modern-input" 
+                                       value="@ViewModel.OvertimeRequest.EndTime.ToString("HH:mm")"
+                                       @onchange="@((e) => ViewModel.OvertimeRequest.EndTime = DateTime.Parse($"{ViewModel.OvertimeRequest.OvertimeDate:yyyy-MM-dd} {e.Value}"))" />
+                            </FormGroup>
+                        </div>
+                        
+                        <!-- Info Card using Flex -->
+                        <div class="info-card my-3 p-3 bg-light rounded d-flex justify-content-between align-items-center">
+                            <span class="info-label text-muted">Total Hours</span>
+                            <span class="info-value fw-bold text-primary fs-5">@ViewModel.FormattedHours</span>
+                        </div>
+                        
+                        <FormGroup Label="Reason" IsRequired="true">
+                            <textarea class="modern-input" 
+                                      rows="3" 
+                                      placeholder="Enter reason for overtime..."
+                                      @bind="ViewModel.OvertimeRequest.Reason"></textarea>
+                        </FormGroup>
+                        
+                        <FormGroup Label="Remarks">
+                            <textarea class="modern-input" 
+                                      rows="2" 
+                                      placeholder="Additional remarks (optional)..."
+                                      @bind="ViewModel.OvertimeRequest.Remarks"></textarea>
+                        </FormGroup>
+
+                        <!-- Action Buttons Grid -->
+                        <div class="grid-cols-2 gap-3 mt-4">
+                             <ActionButton 
+                                Text="Cancel" 
+                                OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="false"
+                                IconClass="fa-times" />
+
+                             <ActionButton 
+                                Text="Submit" 
+                                OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
+                                IsDisabled="@ViewModel.IsBusy"
+                                IsPrimary="true"
+                                IconClass="fa-paper-plane" />
+                        </div>
                     </div>
                 </div>
                 
-                <FormGroup Label="Reason" IsRequired="true">
-                    <textarea class="form-control" 
-                              rows="4" 
-                              placeholder="Enter reason for overtime request..."
-                              @bind="ViewModel.OvertimeRequest.Reason"></textarea>
-                </FormGroup>
-                
-                <FormGroup Label="Remarks">
-                    <textarea class="form-control" 
-                              rows="3" 
-                              placeholder="Additional remarks (optional)..."
-                              @bind="ViewModel.OvertimeRequest.Remarks"></textarea>
-                </FormGroup>
+                <!-- Recent History Section -->
+                <div class="mt-4">
+                     <h4 class="section-title mb-3 px-2">Recent Requests</h4>
+                     
+                     @if (ViewModel.RecentRequests != null && ViewModel.RecentRequests.Any())
+                     {
+                         <div class="history-list">
+                             @foreach (var item in ViewModel.RecentRequests.Take(3))
+                             {
+                                 <div class="card p-3 mb-2 shadow-sm border-0 d-flex justify-content-between align-items-center">
+                                     <div>
+                                         <div class="fw-bold text-dark">@item.OvertimeDate.ToString("MMM dd, yyyy")</div>
+                                         <div class="text-muted small">@item.StartTime.ToString("hh:mm tt") - @item.EndTime.ToString("hh:mm tt")</div>
+                                     </div>
+                                     <div class="text-end">
+                                          <!-- Status Badge could be a component, simple span for now -->
+                                          <span class="badge bg-secondary">@(item.StatusId == 1 ? "Pending" : item.StatusId == 2 ? "Approved" : "Draft")</span>
+                                          <div class="small fw-bold mt-1 text-primary">@((item.EndTime - item.StartTime).TotalHours.ToString("0.##")) hrs</div>
+                                     </div>
+                                 </div>
+                             }
+                         </div>
+                     }
+                     else
+                     {
+                         <div class="text-center p-4 text-muted">
+                             <i class="fas fa-history mb-2 fs-2 opacity-50"></i>
+                             <p>No recent overtime requests.</p>
+                         </div>
+                     }
+                </div>
             </div>
-            
-            <div class="form-actions">
-                <ActionButton 
-                    Text="Submit Request" 
-                    OnClick="@(() => ViewModel.SubmitCommand.Execute(null))" 
-                    IsDisabled="@ViewModel.IsBusy"
-                    IsPrimary="true"
-                    IconClass="fa-paper-plane" />
-                    
-                <ActionButton 
-                    Text="Cancel" 
-                    OnClick="@(() => ViewModel.GoBackCommand.Execute(null))" 
-                    IsDisabled="@ViewModel.IsBusy"
-                    IsPrimary="false"
-                    IconClass="fa-times" />
-            </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 @code {

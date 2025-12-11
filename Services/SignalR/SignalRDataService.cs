@@ -1,122 +1,78 @@
-using Microsoft.Extensions.Logging;
+using MauiHybridApp.Services.SignalR;
+using MauiHybridApp.Services.Data;
+using Microsoft.AspNetCore.SignalR.Client;
+using System;
+using System.Threading.Tasks;
 
-namespace MauiHybridApp.Services.SignalR;
-
-/// <summary>
-/// SignalR service implementation for real-time communication
-/// </summary>
-public class SignalRDataService : ISignalRDataService
+namespace MauiHybridApp.Services.SignalR
 {
-    private readonly ILogger<SignalRDataService> _logger;
-    private readonly Dictionary<string, List<Delegate>> _handlers;
-    private bool _isConnected;
-
-    public SignalRDataService(ILogger<SignalRDataService> logger)
+    public class SignalRDataService : ISignalRDataService
     {
-        _logger = logger;
-        _handlers = new Dictionary<string, List<Delegate>>();
-        _isConnected = false;
-    }
+        private HubConnection? _hubConnection;
+        public event Action<string>? OnNotificationReceived;
+        public event EventHandler<bool>? ConnectionStateChanged;
 
-    public bool IsConnected => _isConnected;
+        public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
 
-    public event EventHandler<bool>? ConnectionStateChanged;
-
-    public async Task StartConnectionAsync()
-    {
-        try
+        public async Task StartConnectionAsync()
         {
-            _logger.LogInformation("Starting SignalR connection...");
-            
-            // TODO: Implement actual SignalR connection logic
-            // For now, simulate a successful connection
-            await Task.Delay(100);
-            
-            _isConnected = true;
-            ConnectionStateChanged?.Invoke(this, true);
-            
-            _logger.LogInformation("SignalR connection started successfully");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to start SignalR connection");
-            _isConnected = false;
-            ConnectionStateChanged?.Invoke(this, false);
-            throw;
-        }
-    }
-
-    public async Task StopConnectionAsync()
-    {
-        try
-        {
-            _logger.LogInformation("Stopping SignalR connection...");
-            
-            // TODO: Implement actual SignalR disconnection logic
-            await Task.Delay(100);
-            
-            _isConnected = false;
-            ConnectionStateChanged?.Invoke(this, false);
-            
-            _logger.LogInformation("SignalR connection stopped");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error stopping SignalR connection");
-            throw;
-        }
-    }
-
-    public async Task SendMessageAsync(string method, object message)
-    {
-        if (!_isConnected)
-        {
-            _logger.LogWarning("Cannot send message - SignalR not connected");
-            return;
-        }
-
-        try
-        {
-            _logger.LogDebug("Sending SignalR message: {Method}", method);
-            
-            // TODO: Implement actual message sending logic
-            await Task.Delay(10);
-            
-            _logger.LogDebug("SignalR message sent successfully");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to send SignalR message: {Method}", method);
-            throw;
-        }
-    }
-
-    public void RegisterHandler<T>(string methodName, Action<T> handler)
-    {
-        if (!_handlers.ContainsKey(methodName))
-        {
-            _handlers[methodName] = new List<Delegate>();
-        }
-
-        _handlers[methodName].Add(handler);
-        _logger.LogDebug("Registered SignalR handler for method: {Method}", methodName);
-    }
-
-    // Simulate receiving a message (for testing purposes)
-    protected virtual void OnMessageReceived<T>(string methodName, T message)
-    {
-        if (_handlers.TryGetValue(methodName, out var handlers))
-        {
-            foreach (var handler in handlers.OfType<Action<T>>())
+            try
             {
-                try
+                _hubConnection = new HubConnectionBuilder()
+                    .WithUrl("https://api.everythingatwork.com/notificationHub")
+                    .WithAutomaticReconnect()
+                    .Build();
+
+                _hubConnection.On<string>("ReceiveNotification", (message) =>
                 {
-                    handler.Invoke(message);
-                }
-                catch (Exception ex)
+                    OnNotificationReceived?.Invoke(message);
+                });
+
+                _hubConnection.Closed += (error) => 
                 {
-                    _logger.LogError(ex, "Error in SignalR message handler for method: {Method}", methodName);
-                }
+                    ConnectionStateChanged?.Invoke(this, false);
+                    return Task.CompletedTask;
+                };
+                
+                _hubConnection.Reconnected += (connectionId) =>
+                {
+                    ConnectionStateChanged?.Invoke(this, true);
+                    return Task.CompletedTask;
+                };
+
+                await _hubConnection.StartAsync();
+                ConnectionStateChanged?.Invoke(this, true);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SignalR connection error: {ex.Message}");
+                ConnectionStateChanged?.Invoke(this, false);
+            }
+        }
+
+        public async Task StopConnectionAsync()
+        {
+            if (_hubConnection != null)
+            {
+                await _hubConnection.StopAsync();
+                await _hubConnection.DisposeAsync();
+                ConnectionStateChanged?.Invoke(this, false);
+            }
+        }
+
+        public async Task SendMessageAsync(string method, object message)
+        {
+            if (IsConnected && _hubConnection != null)
+            {
+                await _hubConnection.InvokeAsync(method, message);
+            }
+        }
+
+        public void RegisterHandler<T>(string methodName, Action<T> handler)
+        {
+            if (_hubConnection != null)
+            {
+                _hubConnection.On<T>(methodName, handler);
             }
         }
     }

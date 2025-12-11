@@ -1,0 +1,947 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="EatWork.Mobile.Views.MySchedulePage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
+             xmlns:shared="clr-namespace:EatWork.Mobile.Views.Shared"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             Title="My Schedule"
+             Style="{StaticResource ContentPageNoiOSSafeArea}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Shared/ListHeaderPage.xaml" />
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0"
+                                 Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="My Schedule"
+                             TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Command="{Binding MenuButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Text="{StaticResource HamburgerIcon}" />
+                </utils:TitleView.LeadingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2"
+                     Spacing="0">
+            <AbsoluteLayout HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+                <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                               IsBusy="{Binding IsBusy}"
+                                               Style="{StaticResource BusyIndicatorStyle}" />
+
+                <StackLayout AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                             AbsoluteLayout.LayoutFlags="PositionProportional"
+                             HorizontalOptions="CenterAndExpand"
+                             IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                             VerticalOptions="CenterAndExpand">
+
+                    <shared:NoItemsPartialPage Margin="0,0"
+                                               DetailsText="No items available to display."
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsVisible="{Binding ShowList, Converter={utils:InverseBoolConverter}}"
+                                               VerticalOptions="CenterAndExpand" />
+
+                    <shared:NoItemsPartialPage Margin="0,0"
+                                               DetailsText="Please try again with different keywords/criteria."
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsVisible="{Binding NoItems}"
+                                               TitleText="No Result Found"
+                                               VerticalOptions="CenterAndExpand" />
+                </StackLayout>
+
+                <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            HorizontalOptions="FillAndExpand"
+                            HorizontalScrollBarVisibility="Never"
+                            IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                            VerticalOptions="FillAndExpand"
+                            VerticalScrollBarVisibility="Never">
+
+                    <Grid HorizontalOptions="FillAndExpand"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}"
+                          VerticalOptions="FillAndExpand">
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayout"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding DisplayFilter}"
+                                               VerticalOptions="CenterAndExpand">
+                            <sfPopup:SfPopupLayout.PopupView>
+                                <sfPopup:PopupView AcceptButtonText="Filter"
+                                                   AcceptCommand="{Binding FilterTypeCommand}"
+                                                   AppearanceMode="TwoButton"
+                                                   DeclineButtonText="Reset"
+                                                   DeclineCommand="{Binding ResetFilteredTypeCommand}"
+                                                   HeaderTitle="Filters"
+                                                   HeightRequest="300">
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Padding="16,24"
+                                                         BackgroundColor="{DynamicResource Gray-100}"
+                                                         Spacing="0">
+                                                <Label Margin="0,0,0,4"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="12"
+                                                       HeightRequest="18"
+                                                       Text="Start Date"
+                                                       TextColor="{DynamicResource Gray-800}" />
+
+                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                           ErrorColor="{StaticResource Error}"
+                                                                           HasError="{Binding FormHelper.ErrorOBStartDate, Mode=TwoWay}"
+                                                                           Hint="Start Date "
+                                                                           LeadingViewPosition="Inside"
+                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+                                                    <DatePicker x:Name="StartDate"
+                                                                Date="{Binding StartDate, Mode=TwoWay}"
+                                                                Style="{StaticResource DatePickerStyle}" />
+                                                    <control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.HintLabelStyle>
+                                                    <control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.ErrorLabelStyle>
+                                                    <control:SfTextInputLayout.LeadingView>
+                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                           Text="{StaticResource DateIcon}" />
+                                                    </control:SfTextInputLayout.LeadingView>
+                                                </control:SfTextInputLayout>
+
+                                                <Label Margin="0,10,0,4"
+                                                       FontFamily="{DynamicResource Medium}"
+                                                       FontSize="12"
+                                                       HeightRequest="18"
+                                                       Text="End Date"
+                                                       TextColor="{DynamicResource Gray-800}" />
+
+                                                <control:SfTextInputLayout EnableFloating="False"
+                                                                           ErrorColor="{StaticResource Error}"
+                                                                           HasError="{Binding FormHelper.ErrorOBStartDate, Mode=TwoWay}"
+                                                                           Hint="End Date"
+                                                                           LeadingViewPosition="Inside"
+                                                                           Style="{StaticResource InputLayoutStyleWithIcon}">
+                                                    <DatePicker x:Name="EndDate"
+                                                                Date="{Binding EndDate, Mode=TwoWay}"
+                                                                Style="{StaticResource DatePickerStyle}" />
+                                                    <control:SfTextInputLayout.HintLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.HintLabelStyle>
+                                                    <control:SfTextInputLayout.ErrorLabelStyle>
+                                                        <control:LabelStyle FontFamily="{DynamicResource Regular}"
+                                                                            FontSize="{StaticResource Smaller}" />
+                                                    </control:SfTextInputLayout.ErrorLabelStyle>
+                                                    <control:SfTextInputLayout.LeadingView>
+                                                        <iconize:IconLabel Style="{StaticResource IconizeIconStyle}"
+                                                                           Text="{StaticResource DateIcon}" />
+                                                    </control:SfTextInputLayout.LeadingView>
+                                                </control:SfTextInputLayout>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}"
+                                                            HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <sfPopup:SfPopupLayout x:Name="popupLayoutEntryForm"
+                                               HorizontalOptions="CenterAndExpand"
+                                               IsOpen="{Binding DisplayRequestNavigator}"
+                                               VerticalOptions="CenterAndExpand">
+                            <sfPopup:SfPopupLayout.PopupView>
+                                <sfPopup:PopupView AcceptButtonText="Filter"
+                                                   AcceptCommand="{Binding FilterTypeCommand}"
+                                                   AppearanceMode="TwoButton"
+                                                   DeclineButtonText="Reset"
+                                                   DeclineCommand="{Binding ResetFilteredTypeCommand}"
+                                                   HeaderTitle="Request"
+                                                   HeightRequest="630"
+                                                   ShowFooter="False"
+                                                   WidthRequest="350">
+                                    <sfPopup:PopupView.ContentTemplate>
+                                        <DataTemplate>
+                                            <syncfusion:SfListView x:Name="RequestTypesListView"
+                                                                   AutoFitMode="Height"
+                                                                   IsScrollBarVisible="True"
+                                                                   IsStickyGroupHeader="False"
+                                                                   ItemSpacing="0"
+                                                                   ItemsSource="{Binding RequestTypes}"
+                                                                   SelectionGesture="Tap"
+                                                                   SelectionMode="Single"
+                                                                   Style="{StaticResource SfListViewStyle}"
+                                                                   TapCommand="{Binding CreateRequestCommand}">
+                                                <syncfusion:SfListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ViewCell>
+                                                            <ViewCell.View>
+                                                                <Grid ColumnSpacing="0"
+                                                                      RowSpacing="0">
+                                                                    <StackLayout Spacing="0">
+                                                                        <Grid ColumnSpacing="0"
+                                                                              HeightRequest="50"
+                                                                              RowSpacing="0">
+                                                                            <Grid.RowDefinitions>
+                                                                                <RowDefinition Height="Auto" />
+                                                                                <RowDefinition Height="Auto" />
+                                                                                <RowDefinition Height="Auto" />
+                                                                            </Grid.RowDefinitions>
+
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="50" />
+                                                                                <ColumnDefinition Width="*" />
+                                                                                <ColumnDefinition Width="*" />
+                                                                                <ColumnDefinition Width="50" />
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Label x:Name="DisplayText"
+                                                                                   Grid.Column="0"
+                                                                                   Grid.ColumnSpan="4"
+                                                                                   Margin="10,10"
+                                                                                   FontFamily="{DynamicResource Medium}"
+                                                                                   FontSize="16"
+                                                                                   HeightRequest="24"
+                                                                                   HorizontalOptions="FillAndExpand"
+                                                                                   LineBreakMode="TailTruncation"
+                                                                                   Text="{Binding DisplayText}"
+                                                                                   TextColor="{DynamicResource Gray-900}" />
+
+                                                                            <!--<iconize:IconButton Grid.Column="3"
+                                                                                 Grid.RowSpan="3"
+                                                                                 TextColor="{DynamicResource Gray-600}"
+                                                                                 BackgroundColor="{DynamicResource Transparent}"
+                                                                                 Command="{Binding Path=BindingContext.ItemSelected2Command, Source={x:Reference ListView}}"
+                                                                                 CommandParameter="{Binding .}"
+                                                                                 HorizontalOptions="End"
+                                                                                 VerticalOptions="Center"
+                                                                                 FontSize="25"
+                                                                                 WidthRequest="50"
+                                                                                 HeightRequest="50"
+                                                                                 Text="{StaticResource AddIcon}"
+                                                                                 x:Name="SelectButton" />-->
+
+                                                                            <!--  Seperator  -->
+                                                                            <BoxView Grid.Row="2"
+                                                                                     Grid.ColumnSpan="4"
+                                                                                     Style="{DynamicResource SeparatorStyle}" />
+                                                                        </Grid>
+                                                                    </StackLayout>
+                                                                </Grid>
+                                                            </ViewCell.View>
+                                                        </ViewCell>
+                                                    </DataTemplate>
+                                                </syncfusion:SfListView.ItemTemplate>
+                                            </syncfusion:SfListView>
+                                        </DataTemplate>
+                                    </sfPopup:PopupView.ContentTemplate>
+
+                                    <sfPopup:PopupView.PopupStyle>
+                                        <sfPopup:PopupStyle AcceptButtonTextColor="{DynamicResource PrimaryColor}"
+                                                            DeclineButtonTextColor="{StaticResource Error}"
+                                                            HeaderFontAttribute="Bold"
+                                                            HeaderFontFamily="{StaticResource Medium}" />
+                                    </sfPopup:PopupView.PopupStyle>
+                                </sfPopup:PopupView>
+                            </sfPopup:SfPopupLayout.PopupView>
+                        </sfPopup:SfPopupLayout>
+
+                        <StackLayout Padding="16"
+                                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                     AbsoluteLayout.LayoutFlags="All"
+                                     IsVisible="{Binding ShowList}"
+                                     Spacing="16">
+
+                            <StackLayout IsVisible="{Binding NoItems, Converter={utils:InverseBoolConverter}}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <StackLayout Padding="0,0">
+                                        <iconize:IconImage HeightRequest="17"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           Icon="{StaticResource DateIcon}"
+                                                           IconColor="Gray"
+                                                           VerticalOptions="Center"
+                                                           WidthRequest="17" />
+                                    </StackLayout>
+
+                                    <StackLayout Padding="30,0,0,0">
+                                        <Label FontFamily="{DynamicResource SemiBold}"
+                                               FontSize="13"
+                                               LineHeight="{OnPlatform Default=-1,
+                                                                       Android=1.25}"
+                                               TextColor="{DynamicResource Cancel}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <!--<Span Text="TODAY: " />
+                                                         <Span Text="{Binding CurrentDate,StringFormat='{0:MM/dd/yyyy}'}" />-->
+                                                    <Span Text="{Binding CurrentSchedule.WorkDateDisplay}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+
+                                    <StackLayout Padding="0,0,0,0"
+                                                 HorizontalOptions="End">
+                                        <iconize:IconImage HeightRequest="17"
+                                                           HorizontalOptions="StartAndExpand"
+                                                           Icon="{StaticResource EditICon2}"
+                                                           IconColor="{DynamicResource Gray-700}"
+                                                           VerticalOptions="Center"
+                                                           WidthRequest="17">
+                                            <iconize:IconImage.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding DisplayRequestOptionCommand}"
+                                                                      CommandParameter="{Binding CurrentSchedule.WorkDate}" />
+                                            </iconize:IconImage.GestureRecognizers>
+                                        </iconize:IconImage>
+                                    </StackLayout>
+                                </Grid>
+
+                                <!--<Label FontFamily="{DynamicResource SemiBold}"
+                                     FontSize="13"
+                                     LineHeight="{OnPlatform Default=-1,Android=1.25}"
+                                     TextColor="{DynamicResource Gray-800}">
+                                     <Label.FormattedText>
+                                     <FormattedString>
+                                     <Span Text="TODAY: " />
+                                     <Span Text="{Binding CurrentSchedule.WorkDateDisplay}" />
+                                     </FormattedString>
+                                     </Label.FormattedText>
+                                     </Label>-->
+                            </StackLayout>
+
+                            <StackLayout Margin="0"
+                                         Padding="0"
+                                         IsVisible="{Binding NoItems, Converter={utils:InverseBoolConverter}}"
+                                         Spacing="0">
+                                <cards:SfCardView CornerRadius="4"
+                                                  MinimumHeightRequest="160">
+                                    <cards:SfCardView.Content>
+                                        <Grid>
+                                            <gradient:SfGradientView>
+                                                <gradient:SfGradientView.BackgroundBrush>
+                                                    <gradient:SfLinearGradientBrush>
+                                                        <gradient:SfLinearGradientBrush.GradientStops>
+                                                            <!--<gradient:SfGradientStop Color="#5e7cea" Offset="0.0" />
+                                                                 <gradient:SfGradientStop Color="#1dcce3" Offset="1.0" />-->
+                                                            <gradient:SfGradientStop Offset="0.0"
+                                                                                     Color="#255ea6" />
+                                                            <gradient:SfGradientStop Offset="1.0"
+                                                                                     Color="#b350d1" />
+                                                        </gradient:SfLinearGradientBrush.GradientStops>
+                                                    </gradient:SfLinearGradientBrush>
+                                                </gradient:SfGradientView.BackgroundBrush>
+                                            </gradient:SfGradientView>
+
+                                            <StackLayout Margin="15"
+                                                         Spacing="5">
+
+                                                <Label Margin="0,32,0,8"
+                                                       FontFamily="{DynamicResource SemiBold}"
+                                                       FontSize="20"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"
+                                                       IsVisible="{Binding CurrentSchedule.HasSchedule, Converter={utils:InverseBoolConverter}}"
+                                                       LineHeight="{OnPlatform Android=1.25,
+                                                                               Default=-1}"
+                                                       Text="NO SCHEDULE"
+                                                       TextColor="{StaticResource Gray-White}"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center" />
+
+                                                <StackLayout IsVisible="{Binding CurrentSchedule.HasSchedule}">
+                                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                                           FontSize="16"
+                                                           LineHeight="{OnPlatform Default=-1,
+                                                                                   Android=1.25}"
+                                                           Text="{Binding CurrentSchedule.ShiftCode}"
+                                                           TextColor="{DynamicResource Gray-White}" />
+
+                                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                                           FontSize="16"
+                                                           LineHeight="{OnPlatform Default=-1,
+                                                                                   Android=1.25}"
+                                                           Text="{Binding CurrentSchedule.WorkSchedule}"
+                                                           TextColor="{DynamicResource Gray-White}" />
+
+                                                    <Grid IsVisible="{Binding CurrentSchedule.LunchSchedule}">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="49*" />
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="49*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackLayout Padding="0,0">
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Smaller}"
+                                                                   LineBreakMode="TailTruncation"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="Breaktime:"
+                                                                   TextColor="{DynamicResource Gray-White}" />
+                                                        </StackLayout>
+                                                        <StackLayout Grid.Column="2"
+                                                                     Padding="0,0">
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Smaller}"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="{Binding CurrentSchedule.LunchSchedule}"
+                                                                   TextColor="{DynamicResource Gray-White}" />
+                                                        </StackLayout>
+                                                    </Grid>
+
+                                                    <Label FontFamily="{DynamicResource Medium}"
+                                                           FontSize="16"
+                                                           IsVisible="{Binding CurrentSchedule.HolidayName, Converter={utils:EmptyToBoolConverter}}"
+                                                           LineHeight="{OnPlatform Default=-1,
+                                                                                   Android=1.25}"
+                                                           Text="{Binding CurrentSchedule.HolidayName}"
+                                                           TextColor="{DynamicResource Gray-White}" />
+
+                                                    <Grid IsVisible="{Binding CurrentSchedule.LeaveDescription, Converter={utils:EmptyToBoolConverter}}">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="49*" />
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="49*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackLayout Padding="0,0">
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Smaller}"
+                                                                   LineBreakMode="TailTruncation"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="{Binding CurrentSchedule.LeaveDescription}"
+                                                                   TextColor="{DynamicResource Gray-White}" />
+                                                        </StackLayout>
+                                                        <StackLayout Grid.Column="2"
+                                                                     Padding="0,0">
+                                                            <Label FontSize="{StaticResource Smaller}"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="{Binding CurrentSchedule.LunchSchedule}"
+                                                                   TextColor="{DynamicResource Gray-White}">
+                                                                <Label.FormattedText>
+                                                                    <FormattedString>
+                                                                        <Span Text="Apply to: " />
+                                                                        <Span FontFamily="{DynamicResource SemiBold}"
+                                                                              Text="{Binding CurrentSchedule.PartialApplyTo}" />
+                                                                    </FormattedString>
+                                                                </Label.FormattedText>
+                                                            </Label>
+                                                        </StackLayout>
+                                                    </Grid>
+
+                                                    <Grid IsVisible="{Binding CurrentSchedule.ActualTimeIn, Converter={utils:EmptyToBoolConverter}}">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="49*" />
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="49*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <iconize:IconImage HeightRequest="17"
+                                                                           HorizontalOptions="StartAndExpand"
+                                                                           Icon="{StaticResource TimeIcon}"
+                                                                           IconColor="{StaticResource Gray-White}"
+                                                                           VerticalOptions="Center"
+                                                                           WidthRequest="17" />
+
+                                                        <Label Padding="30,0,0,0"
+                                                               FontFamily="{DynamicResource Medium}"
+                                                               FontSize="{StaticResource Smaller}"
+                                                               LineBreakMode="TailTruncation"
+                                                               LineHeight="{OnPlatform Default=-1,
+                                                                                       Android=1.25}"
+                                                               Text="Time-in:"
+                                                               TextColor="{DynamicResource Gray-White}" />
+
+                                                        <StackLayout Grid.Column="2"
+                                                                     Padding="0,0">
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Smaller}"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="{Binding CurrentSchedule.ActualTimeIn}"
+                                                                   TextColor="{DynamicResource Gray-White}" />
+                                                        </StackLayout>
+                                                    </Grid>
+
+                                                    <Grid IsVisible="{Binding CurrentSchedule.ActualTimeOut, Converter={utils:EmptyToBoolConverter}}">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="49*" />
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="49*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <iconize:IconImage HeightRequest="17"
+                                                                           HorizontalOptions="StartAndExpand"
+                                                                           Icon="{StaticResource TimeIcon}"
+                                                                           IconColor="{StaticResource Gray-White}"
+                                                                           VerticalOptions="Center"
+                                                                           WidthRequest="17" />
+
+                                                        <Label Padding="30,0,0,0"
+                                                               FontFamily="{DynamicResource Medium}"
+                                                               FontSize="{StaticResource Smaller}"
+                                                               LineBreakMode="TailTruncation"
+                                                               LineHeight="{OnPlatform Default=-1,
+                                                                                       Android=1.25}"
+                                                               Text="Time-out:"
+                                                               TextColor="{DynamicResource Gray-White}" />
+
+                                                        <StackLayout Grid.Column="2"
+                                                                     Padding="0,0">
+                                                            <Label FontFamily="{DynamicResource Medium}"
+                                                                   FontSize="{StaticResource Smaller}"
+                                                                   LineHeight="{OnPlatform Default=-1,
+                                                                                           Android=1.25}"
+                                                                   Text="{Binding CurrentSchedule.ActualTimeOut}"
+                                                                   TextColor="{DynamicResource Gray-White}" />
+                                                        </StackLayout>
+                                                    </Grid>
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </Grid>
+                                    </cards:SfCardView.Content>
+                                </cards:SfCardView>
+                            </StackLayout>
+
+                            <Label FontFamily="{DynamicResource SemiBold}"
+                                   FontSize="13"
+                                   LineHeight="{OnPlatform Default=-1,
+                                                           Android=1.25}"
+                                   Text="SCHEDULES"
+                                   TextColor="{DynamicResource Gray-800}" />
+
+                            <StackLayout IsVisible="True">
+                                <syncfusion:SfListView x:Name="MyScheduleListView"
+                                                       AutoFitMode="Height"
+                                                       HeaderSize="{OnPlatform Android=50,
+                                                                               iOS=60,
+                                                                               UWP=60}"
+                                                       HeaderTemplate="{StaticResource HeaderTemplateWithTransactionType}"
+                                                       IsBusy="{Binding IsBusy}"
+                                                       IsScrollBarVisible="False"
+                                                       IsStickyGroupHeader="False"
+                                                       IsStickyHeader="True"
+                                                       ItemSpacing="0,10"
+                                                       ItemsSource="{Binding MySchedule}"
+                                                       LoadMoreCommand="{Binding LoadItemsCommand}"
+                                                       LoadMoreCommandParameter="{Binding Source={x:Reference Name=MyScheduleListView}}"
+                                                       LoadMoreOption="AutoOnScroll"
+                                                       SelectionMode="None">
+
+                                    <syncfusion:SfListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <ViewCell.View>
+                                                    <Grid Margin="0"
+                                                          Padding="0"
+                                                          ColumnSpacing="0"
+                                                          RowSpacing="2">
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                            <ColumnDefinition Width="{OnIdiom Desktop=3*, Tablet=4*, Phone=*}" />
+                                                            <ColumnDefinition Width="{OnIdiom Desktop=1*, Tablet=1*, Phone=1}" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <utils:CustomShadowFrame Grid.Row="0"
+                                                                                 Grid.Column="1"
+                                                                                 Margin="{OnPlatform Android='0,0',
+                                                                                                     iOS='0,2,0,0'}"
+                                                                                 Padding="10,10"
+                                                                                 BackgroundColor="{StaticResource Gray-White}"
+                                                                                 BorderColor="{StaticResource Gray-White}"
+                                                                                 BorderWidth="1"
+                                                                                 CornerRadius="4"
+                                                                                 HasShadow="True"
+                                                                                 HorizontalOptions="FillAndExpand"
+                                                                                 Radius="4"
+                                                                                 ShadowOffSetHeight="4"
+                                                                                 ShadowOffsetWidth="0"
+                                                                                 ShadowOpacity="0.12">
+
+                                                            <StackLayout VerticalOptions="StartAndExpand">
+                                                                <Grid>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="*" />
+                                                                    </Grid.RowDefinitions>
+                                                                    <StackLayout Padding="0,0">
+                                                                        <iconize:IconImage HeightRequest="17"
+                                                                                           HorizontalOptions="StartAndExpand"
+                                                                                           Icon="{StaticResource DateIcon}"
+                                                                                           IconColor="{DynamicResource Gray-700}"
+                                                                                           VerticalOptions="Center"
+                                                                                           WidthRequest="17" />
+                                                                    </StackLayout>
+                                                                    <StackLayout Padding="30,0,0,0">
+                                                                        <Label FontAttributes="Bold"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               FontSize="Small"
+                                                                               HorizontalOptions="StartAndExpand"
+                                                                               Text="{Binding WorkDateDisplay}"
+                                                                               TextColor="{Binding HolidayName, Converter={utils:EventDateColorConverter}}"
+                                                                               VerticalOptions="Center" />
+                                                                    </StackLayout>
+
+                                                                    <StackLayout Padding="0,0,0,0"
+                                                                                 HorizontalOptions="End">
+                                                                        <iconize:IconImage HeightRequest="17"
+                                                                                           HorizontalOptions="StartAndExpand"
+                                                                                           Icon="{StaticResource EditICon}"
+                                                                                           IconColor="{DynamicResource Gray-700}"
+                                                                                           VerticalOptions="Center"
+                                                                                           WidthRequest="17">
+                                                                            <iconize:IconImage.GestureRecognizers>
+                                                                                <TapGestureRecognizer Command="{Binding Path=BindingContext.DisplayRequestOptionCommand, Source={x:Reference MyScheduleListView}}"
+                                                                                                      CommandParameter="{Binding WorkDate}" />
+                                                                            </iconize:IconImage.GestureRecognizers>
+                                                                        </iconize:IconImage>
+                                                                    </StackLayout>
+                                                                </Grid>
+
+                                                                <Label BackgroundColor="{DynamicResource Gray-200}"
+                                                                       HeightRequest="1"
+                                                                       HorizontalOptions="FillAndExpand"
+                                                                       VerticalOptions="Center" />
+
+                                                                <Label Margin="0,10,0,8"
+                                                                       FontFamily="{DynamicResource SemiBold}"
+                                                                       FontSize="20"
+                                                                       HorizontalOptions="Center"
+                                                                       HorizontalTextAlignment="Center"
+                                                                       IsVisible="{Binding HasSchedule, Converter={utils:InverseBoolConverter}}"
+                                                                       LineHeight="{OnPlatform Android=1.25,
+                                                                                               Default=-1}"
+                                                                       Text="NO SCHEDULE"
+                                                                       TextColor="{StaticResource Gray-900}"
+                                                                       VerticalOptions="Center"
+                                                                       VerticalTextAlignment="Center" />
+
+                                                                <StackLayout IsVisible="{Binding HasSchedule}"
+                                                                             Spacing="5"
+                                                                             VerticalOptions="Start">
+                                                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                                                           FontSize="16"
+                                                                           IsVisible="{Binding IsHoliday}"
+                                                                           LineBreakMode="TailTruncation"
+                                                                           LineHeight="{OnPlatform Default=-1,
+                                                                                                   Android=1.25}"
+                                                                           Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Text="{Binding HolidayName}"
+                                                                           TextColor="#e61610" />
+
+                                                                    <Label FontSize="16"
+                                                                           IsVisible="{Binding IsRestday}"
+                                                                           LineBreakMode="TailTruncation"
+                                                                           Style="{StaticResource LabelStyleMySchedule}"
+                                                                           Text="Restday" />
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding WorkSchedule, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Margin="0,0"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}">
+                                                                            <Label.FormattedText>
+                                                                                <FormattedString>
+                                                                                    <Span Text="{Binding ShiftCode}" />
+                                                                                    <Span Text=":" />
+                                                                                </FormattedString>
+                                                                            </Label.FormattedText>
+                                                                        </Label>
+
+                                                                        <Label Grid.Column="1"
+                                                                               Margin="0,0"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding WorkSchedule}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding LunchSchedule, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="Breaktime:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding LunchSchedule}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding LeaveDescription, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="{Binding LeaveDescription}" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               IsVisible="{Binding PartialApplyTo, Converter={utils:EmptyToBoolConverter}}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}">
+                                                                            <Label.FormattedText>
+                                                                                <FormattedString>
+                                                                                    <Span Text="Apply to: " />
+                                                                                    <Span FontFamily="{DynamicResource SemiBold}"
+                                                                                          Text="{Binding PartialApplyTo}" />
+                                                                                </FormattedString>
+                                                                            </Label.FormattedText>
+                                                                        </Label>
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding PSOTDuration, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="OT Schedule:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding OTSchedule}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding OBDuration, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="OB Schedule:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding OBDuration}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding TODuration, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="TO Schedule:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding TODuration}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding UTDuration, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <Label Grid.Column="0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="UT Schedule:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding UTDuration}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding ActualTimeIn, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <iconize:IconImage HeightRequest="17"
+                                                                                           HorizontalOptions="StartAndExpand"
+                                                                                           Icon="{StaticResource TimeIcon}"
+                                                                                           IconColor="Gray"
+                                                                                           VerticalOptions="Center"
+                                                                                           WidthRequest="17" />
+
+                                                                        <Label Padding="30,0,0,0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="Time-in:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding ActualTimeIn}" />
+                                                                    </Grid>
+
+                                                                    <Grid Margin="0,0"
+                                                                          ColumnSpacing="0"
+                                                                          IsVisible="{Binding ActualTimeOut, Converter={utils:EmptyToBoolConverter}}"
+                                                                          RowSpacing="0"
+                                                                          Style="{StaticResource GridMyScheduleDetails}">
+
+                                                                        <iconize:IconImage HeightRequest="17"
+                                                                                           HorizontalOptions="StartAndExpand"
+                                                                                           Icon="{StaticResource TimeIcon}"
+                                                                                           IconColor="Gray"
+                                                                                           VerticalOptions="Center"
+                                                                                           WidthRequest="17" />
+
+                                                                        <Label Padding="30,0,0,0"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMyScheduleForLabel}"
+                                                                               Text="Time-out:" />
+
+                                                                        <Label Grid.Column="1"
+                                                                               FontFamily="{DynamicResource Medium}"
+                                                                               Style="{StaticResource LabelStyleMySchedule}"
+                                                                               Text="{Binding ActualTimeOut}" />
+                                                                    </Grid>
+                                                                </StackLayout>
+                                                            </StackLayout>
+                                                        </utils:CustomShadowFrame>
+                                                    </Grid>
+                                                </ViewCell.View>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </syncfusion:SfListView.ItemTemplate>
+                                </syncfusion:SfListView>
+                            </StackLayout>
+
+                            <!--<StackLayout BindableLayout.ItemsSource="{Binding MySchedule}" Spacing="16">
+                                 <BindableLayout.ItemTemplate>
+                                 <DataTemplate>
+                                 <Grid ColumnSpacing="16"
+                                 HeightRequest="110"
+                                 RowSpacing="0">
+
+                                 <Grid.RowDefinitions>
+                                 <RowDefinition Height="*" />
+                                 <RowDefinition Height="Auto" />
+                                 <RowDefinition Height="Auto" />
+                                 </Grid.RowDefinitions>
+
+                                 <Grid.ColumnDefinitions>
+                                 <ColumnDefinition Width="Auto" />
+                                 <ColumnDefinition Width="{OnPlatform Default=*,UWP=Auto}" />
+                                 <ColumnDefinition Width="Auto" />
+                                 </Grid.ColumnDefinitions>
+
+                                 <Image Grid.RowSpan="3"
+                                 Aspect="Fill"
+                                 BackgroundColor="{DynamicResource Gray-200}"
+                                 HeightRequest="110"
+                                 Source="{Binding ImagePath}"
+                                 VerticalOptions="Center"
+                                 WidthRequest="120" />
+
+                                 <Label Grid.Column="1"
+                                 Margin="0,8,0,0"
+                                 FontFamily="{DynamicResource SemiBold}"
+                                 FontSize="14"
+                                 LineBreakMode="TailTruncation"
+                                 LineHeight="{OnPlatform Default=-1,Android=1.25,iOS=1.25}"
+                                 MaxLines="2"
+                                 Text="NAME"
+                                 TextColor="{DynamicResource Gray-900}" />
+
+                                 <Label Grid.Row="1"
+                                 Grid.Column="1"
+                                 Margin="0,8,0,0"
+                                 FontFamily="{DynamicResource Medium}"
+                                 FontSize="12"
+                                 LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                 Text="AUTHOR"
+                                 TextColor="{DynamicResource Gray-900}" />
+
+                                 <Label Grid.Row="2"
+                                 Grid.Column="1"
+                                 Margin="0,2,0,8"
+                                 FontFamily="{DynamicResource Regular}"
+                                 FontSize="12"
+                                 LineHeight="{OnPlatform Default=-1,Android=1.5}"
+                                 TextColor="{DynamicResource Gray-700}">
+                                 <Label.FormattedText>
+                                 <FormattedString>
+                                 <Span Text="DATE" />
+                                 <Span Text=" | " />
+                                 <Span Text="TIME" />
+                                 </FormattedString>
+                                 </Label.FormattedText>
+                                 </Label>
+                                 </Grid>
+                                 </DataTemplate>
+                                 </BindableLayout.ItemTemplate>
+                                 </StackLayout>-->
+                        </StackLayout>
+                    </Grid>
+                </ScrollView>
+            </AbsoluteLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

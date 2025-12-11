@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:utils="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             xmlns:template="clr-namespace:EatWork.Mobile.Views.Template"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             xmlns:control="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+             mc:Ignorable="d"
+             Title="Time Entry Request"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             x:Class="EatWork.Mobile.Views.Requests.TimeEntryRequestPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <utils:CustomConverter x:Key="EventArgs" />
+            <utils:TextToBoolConverter x:Key="TextToBoolConverter" />
+        </ResourceDictionary>
+        <buttons:SfRadioGroupKey x:Key="TimeEntryType" />
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <utils:EventToCommandBehavior Command="{Binding PageAppearingCommand}"
+                                      EventName="Appearing" />
+        <utils:EventToCommandBehavior Command="{Binding PageDisappearingCommand}"
+                                      EventName="Disappearing" />
+    </ContentPage.Behaviors>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}" />
+
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <utils:TitleView Title="Time Entry Request" TitleColor="{StaticResource Gray-White}">
+                <utils:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}"
+                                        Style="{StaticResource IconButtonStyle}" />
+                </utils:TitleView.LeadingView>
+                <utils:TitleView.TrailingView>
+                    <StackLayout Orientation="Horizontal">
+                        <iconize:IconButton Text="{StaticResource FileAttachmentIcon}"
+                                            Command="{Binding ViewFileAttachmentCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+
+                        <iconize:IconButton Text="{StaticResource InfoIcon}"
+                                            Command="{Binding ViewTransactionHistoryCommand}"
+                                            Style="{StaticResource IconButtonStyle}"
+                                            IsVisible="{Binding Holder.IsEnabled,Converter={utils:InverseBoolConverter}}" />
+                    </StackLayout>
+                </utils:TitleView.TrailingView>
+            </utils:TitleView>
+        </ContentView>
+
+        <StackLayout Grid.Row="2" Spacing="0" VerticalOptions="CenterAndExpand">
+            <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout>
+
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyleForms}"
+                                                   IsBusy="{Binding IsBusy}" />
+
+                    <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"
+                          IsVisible="{Binding IsBusy, Converter={utils:InverseBoolConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="55" />-->
+                        </Grid.RowDefinitions>
+
+                        <Grid Padding="15"
+                              RowSpacing="0"
+                              ColumnSpacing="0"
+                              HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="CenterAndExpand">
+
+                            <utils:CustomShadowFrame Padding="0,0,0,0"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     Style="{StaticResource CustomFrameStyle}">
+
+                                <StackLayout Style="{StaticResource StackLayoutRequestForm}">
+                                    <!--TIME ENRTY DATE-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               HasError="{Binding Holder.ErrorTimeEntryDate,Mode=TwoWay}"
+                                                               Hint="Date  ">
+                                        <DatePicker Style="{StaticResource DatePickerStyle}"
+                                                    Date="{Binding Holder.LogDate, Mode=TwoWay}"
+                                                    IsEnabled="{Binding Holder.IsEnabled}" />
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource DateIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <!--TIME ENRTY TIME-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleWithIcon}"
+                                                               HasError="{Binding Holder.ErrorTimeEntryTime,Mode=TwoWay}"
+                                                               Hint="Time  "
+                                                               IsEnabled="{Binding Holder.EnabledTime}">
+                                        <TimePicker FontSize="{StaticResource Small}"
+                                                    Time="{Binding Holder.LogTime, Mode=TwoWay}"
+                                                    Format="t"
+                                                    FontFamily="{DynamicResource Regular}"
+                                                    HorizontalOptions="FillAndExpand"
+                                                    HeightRequest="45"
+                                                    IsEnabled="{Binding Holder.IsEnabled}">
+                                        </TimePicker>
+                                        <control:SfTextInputLayout.LeadingView>
+                                            <iconize:IconLabel Text="{StaticResource TimeIcon}" Style="{StaticResource IconizeIconStyle}" />
+                                        </control:SfTextInputLayout.LeadingView>
+                                    </control:SfTextInputLayout>
+
+                                    <Grid IsEnabled="{Binding Holder.IsEnabled}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label FontFamily="{DynamicResource Medium}"
+                                               Margin="0,0,0,0"
+                                               FontSize="{StaticResource Tiny}"
+                                               Text="Type"
+                                               Grid.Row="0"
+                                               TextColor="{DynamicResource Gray-800}" />
+
+                                        <buttons:SfRadioButton x:Name="timein"
+                                                               Text="Time In"
+                                                               GroupKey="{StaticResource TimeEntryType}"
+                                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                                               IsChecked="{Binding Holder.TimeInChecked}"
+                                                               Grid.Row="1" Grid.Column="0"
+                                                               Style="{DynamicResource RadioButtonStyle}" />
+
+                                        <buttons:SfRadioButton x:Name="timeout"
+                                                               Text="Time Out"
+                                                               GroupKey="{StaticResource TimeEntryType}"
+                                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                                               IsChecked="{Binding Holder.TimeOutChecked}"
+                                                               Grid.Row="1" Grid.Column="1"
+                                                               Style="{DynamicResource RadioButtonStyle}" />
+
+                                        <buttons:SfRadioButton x:Name="breakin"
+                                                               Text="Break In"
+                                                               GroupKey="{StaticResource TimeEntryType}"
+                                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                                               IsChecked="{Binding Holder.BreakInChecked}"
+                                                               Grid.Row="2" Grid.Column="0"
+                                                               Style="{DynamicResource RadioButtonStyle}" />
+
+                                        <buttons:SfRadioButton x:Name="breakout"
+                                                               Text="Break Out"
+                                                               GroupKey="{StaticResource TimeEntryType}"
+                                                               IsEnabled="{Binding Holder.IsEnabled}"
+                                                               IsChecked="{Binding Holder.BreakOutChecked}"
+                                                               Grid.Row="2" Grid.Column="1"
+                                                               Style="{DynamicResource RadioButtonStyle}" />
+                                    </Grid>
+                                    <!--DETAILS-->
+                                    <control:SfTextInputLayout Style="{StaticResource InputLayoutStyleEditor}"
+                                                               HasError="{Binding Holder.ErrorRemark,Mode=TwoWay}"
+                                                               Hint="Specify details  ">
+                                        <Editor Text="{Binding Holder.TimeEntryLogModel.Remark, Mode=TwoWay}"
+                                                IsEnabled="{Binding Holder.IsEnabled}"
+                                                Style="{DynamicResource EditorStyle}" />
+                                    </control:SfTextInputLayout>
+
+                                    <!--BUTTONS-->
+                                    <template:RequestFooterTemplate2 />
+                                </StackLayout>
+                            </utils:CustomShadowFrame>
+                        </Grid>
+                    </Grid>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

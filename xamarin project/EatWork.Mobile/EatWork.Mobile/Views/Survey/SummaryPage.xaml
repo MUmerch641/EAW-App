@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+             x:Class="EatWork.Mobile.Views.Survey.SummaryPage"
+             NavigationPage.HasNavigationBar="False"
+             x:Name="content">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ContentView.Content>
+        <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never"
+                    Margin="0,0,0,0">
+            <StackLayout x:Name="companyHistory"
+                     Margin="16,24"
+                     Spacing="0">
+
+                <StackLayout x:Name="SummaryList"
+                             Margin="0,0,0,0"
+                             Spacing="5"
+                             BindableLayout.ItemsSource="{Binding Holder.Answers}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <cards:SfCardView CornerRadius="4"
+                                              IndicatorColor="{DynamicResource Success}"
+                                              IndicatorPosition="Left"
+                                              IndicatorThickness="8"
+                                              BackgroundColor="{DynamicResource Gray-White}">
+                                <StackLayout x:Name="companyHistory"
+                                             Spacing="8"
+                                             Padding="16"
+                                             VerticalOptions="StartAndExpand"
+                                             HorizontalOptions="StartAndExpand">
+
+                                    <Label FontFamily="{DynamicResource SemiBold}"
+                                           FontSize="16"
+                                           LineBreakMode="TailTruncation"
+                                           LineHeight="{OnPlatform Default=1.25, iOS=-1}"
+                                           Text="{Binding QuestionHeader}"
+                                           TextColor="{DynamicResource Gray-800}" />
+
+                                    <Label FontFamily="{DynamicResource Medium}"
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           MaxLines="10"
+                                           Margin="0,2,0,0"
+                                           Text="{Binding QuestionDetail}"
+                                           HorizontalOptions="StartAndExpand"
+                                           VerticalOptions="StartAndExpand"
+                                           TextColor="{DynamicResource Gray-700}" />
+
+                                    <Label FontFamily="{DynamicResource Medium}"
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           MaxLines="10"
+                                           Margin="0,5,0,0"
+                                           HorizontalOptions="StartAndExpand"
+                                           VerticalOptions="StartAndExpand"
+                                           TextColor="{DynamicResource Gray-700}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <!--<Span Text="{Binding ControlName}" />-->
+                                                <Span Text="Answer: " />
+                                                <Span Text="{Binding Value}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </StackLayout>
+                            </cards:SfCardView>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentView.Content>
+</ContentView>

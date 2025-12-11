@@ -1,0 +1,109 @@
+@page "/transaction-history/{TransactionTypeId:long}/{TransactionId:long}"
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Models
+@using MauiHybridApp.Services.Navigation
+@inject WorkflowViewModel ViewModel
+@inject INavigationService NavigationService
+
+<div class="page-container p-0 bg-white h-100">
+    <div class="animate-fade-in-up h-100 d-flex flex-column">
+        <!-- Header -->
+        <div class="app-header bg-white text-dark p-3 shadow-sm sticky-top z-3 border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link text-dark p-0 me-3" @onclick="@(() => NavigationService.NavigateBackAsync())">
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                    <h5 class="mb-0 fw-bold">Transaction History</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Content -->
+        <div class="flex-grow-1 overflow-auto p-4">
+             @if (ViewModel.IsBusy && ViewModel.HistoryList.Count == 0)
+            {
+                 <div class="d-flex justify-content-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            }
+            else
+            {
+                <div class="timeline">
+                    @foreach (var history in ViewModel.HistoryList)
+                    {
+                        <div class="d-flex mb-4 position-relative">
+                            <!-- Line -->
+                            <div class="position-absolute h-100 border-start border-2 border-light-subtle" style="left: 20px; top: 20px; z-index: 0;"></div>
+                            
+                            <!-- Icon -->
+                            <div class="me-3 position-relative z-1">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm @GetIconColorClass(history.ActionPastTense)" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="@GetIconClass(history.ActionPastTense) text-white"></i>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-grow-1">
+                                <div class="card border-0 bg-light-subtle rounded-4 p-3 shadow-sm">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="badge bg-white text-dark border shadow-sm rounded-pill px-2">@history.ActionPastTense</span>
+                                        <small class="text-muted">@history.LogDate.ToString("MMM dd, yyyy h:mm tt")</small>
+                                    </div>
+                                    <div class="mb-1">
+                                        @((MarkupString)history.MessageTemplate)
+                                    </div>
+                                    @if(!string.IsNullOrEmpty(history.Remarks))
+                                    {
+                                        <div class="mt-2 p-2 bg-white rounded border border-light-subtle small text-secondary fst-italic">
+                                            "@history.Remarks"
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public long TransactionTypeId { get; set; }
+
+    [Parameter]
+    public long TransactionId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.LoadHistoryAsync(TransactionTypeId, TransactionId);
+    }
+    
+    private string GetIconClass(string action)
+    {
+        return action?.ToLower() switch
+        {
+            "filed" => "fas fa-file-alt",
+            "approved" => "fas fa-check",
+            "rejected" => "fas fa-times",
+            "cancelled" => "fas fa-ban",
+            "reviewed" => "fas fa-glasses",
+            _ => "fas fa-circle" // Default circle
+        };
+    }
+    
+    private string GetIconColorClass(string action)
+    {
+        return action?.ToLower() switch
+        {
+            "filed" => "bg-primary",
+            "approved" => "bg-success",
+            "rejected" => "bg-danger",
+            "cancelled" => "bg-secondary",
+             _ => "bg-info"
+        };
+    }
+}

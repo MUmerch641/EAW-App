@@ -6,7 +6,7 @@ public class LeaveRequestModel
 {
     public LeaveRequestModel()
     {
-        // Default Values set karo taake API ko NULL na mile
+        // Set Default Values so API doesn't get NULL
         PartialDayLeave = 0; 
         PartialDayApplyTo = 0; 
         Planned = 0;

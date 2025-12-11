@@ -1,0 +1,81 @@
+@page "/performance-evaluation"
+@using System.ComponentModel
+@using MauiHybridApp.ViewModels
+@using MauiHybridApp.Components.Shared
+@inject PerformanceEvaluationViewModel ViewModel
+@implements IDisposable
+
+<div class="page-container">
+    <PageHeader 
+        Title="Performance Evaluation" 
+        Subtitle="Manage your appraisals" 
+        IconClass="fa-chart-line" />
+    
+    @if (ViewModel.IsBusy)
+    {
+        <LoadingIndicator Message="Loading evaluations..." />
+    }
+    else if (ViewModel.ShowEmptyState)
+    {
+        <EmptyState 
+            Message="No evaluations found" 
+            IconClass="fa-clipboard-list" />
+    }
+    else
+    {
+        <div class="evaluation-list">
+            @foreach (var item in ViewModel.Evaluations)
+            {
+                <div class="evaluation-card" @onclick="() => ViewModel.ViewDetailCommand.Execute(item)">
+                    <div class="card-left">
+                        <span class="evaluation-type">@item.EvaluationType</span>
+                        <span class="period">@item.PeriodCovered</span>
+                    </div>
+                    <div class="card-right">
+                        <span class="status-badge @GetStatusClass(item.Status)">@item.Status</span>
+                        @if (item.DueDate.HasValue)
+                        {
+                            <span class="due-date">Due: @item.DueDate.Value.ToString("MMM dd")</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    
+    <FloatingActionButton IconClass="fa-plus" OnClick="() => ViewModel.CreateNewCommand.Execute(null)" />
+</div>
+
+@code {
+    private PropertyChangedEventHandler? _propertyChangedHandler;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _propertyChangedHandler = (sender, e) => _ = InvokeAsync(StateHasChanged);
+        ViewModel.PropertyChanged += _propertyChangedHandler;
+
+        await ViewModel.InitializeAsync();
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "draft" => "draft",
+            "submitted" => "submitted",
+            "approved" => "approved",
+            "rejected" => "rejected",
+            _ => "draft"
+        };
+    }
+
+    public void Dispose()
+    {
+        if (_propertyChangedHandler != null)
+        {
+            ViewModel.PropertyChanged -= _propertyChangedHandler;
+            _propertyChangedHandler = null;
+        }
+        ViewModel.Dispose();
+    }
+}

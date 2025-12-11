@@ -3,103 +3,223 @@
    Page-specific layouts and components
    ======================================== */
 
-/* Page Container */
+/* --- PAGE CONTAINER --- */
 .page-container {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: var(--color-gray-100);
+    width: 100%;
+    max-width: 1400px;
+    /* Max width for large screens */
+    margin: 0 auto;
 }
 
-.page-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--spacing-lg);
-}
-
-/* Dashboard Page */
+/* --- DASHBOARD PAGE --- */
 .dashboard-container {
-    padding: var(--spacing-lg);
+    padding-bottom: 80px;
+    /* Space for FAB */
+    position: relative;
+    min-height: 100vh;
 }
 
 .dashboard-header {
     margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
 .dashboard-header h1 {
     margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-2xl);
     font-weight: 700;
+    color: var(--color-gray-900);
 }
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    /* Smaller cards like Xamarin tiles */
+    gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Stat Card Specific Text Overrides for colored cards */
+.stat-card.vl-card .stat-content h3,
+.stat-card.vl-card .stat-content p,
+.stat-card.sl-card .stat-content h3,
+.stat-card.sl-card .stat-content p,
+.stat-card.ot-card .stat-content h3,
+.stat-card.ot-card .stat-content p {
+    color: var(--color-white);
+}
+
+/* --- PULSE SURVEY SECTION --- */
+.pulse-survey-section {
+    margin-top: var(--spacing-xl);
+    background-color: var(--color-white);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+    border-bottom: 1px solid var(--color-gray-200);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.section-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-gray-700);
+    margin: 0;
+}
+
+.survey-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--color-gray-50);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.survey-item:hover {
+    background-color: var(--color-gray-100);
+}
+
+.survey-icon-box {
+    width: 35px;
+    height: 35px;
+    background-color: var(--color-primary);
+    border-radius: 4px;
+    /* Square with slight radius */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-md);
+    color: white;
+}
+
+.survey-title {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+/* --- FLOATING ACTION BUTTON (FAB) --- */
+.fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    /* Xamarin usually bottom-right */
+    z-index: var(--z-sticky);
+}
+
+.fab-button {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    /* Uses Primary Blue/Indigo */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.fab-button:hover {
+    transform: scale(1.05);
+    background-color: var(--color-primary-dark);
+}
+
+.fab-button:active {
+    transform: scale(0.95);
 }
 
 .quick-actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-lg);
 }
 
-.section {
-    margin-bottom: var(--spacing-xl);
-}
-
-.section h2 {
-    margin-bottom: var(--spacing-md);
+.section-title {
+    margin-bottom: var(--spacing-lg);
     font-size: var(--font-size-xl);
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--color-gray-800);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
-/* Profile Page */
+/* --- PROFILE PAGE --- */
 .profile-photo-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: var(--spacing-xl);
     background-color: var(--color-white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     margin-bottom: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative background for profile */
+.profile-photo-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    z-index: 0;
 }
 
 .photo-container {
     position: relative;
     margin-bottom: var(--spacing-md);
+    margin-top: 40px;
+    /* Push down to overlap background */
+    z-index: 1;
 }
 
-.profile-photo {
-    width: 120px;
-    height: 120px;
+.profile-photo,
+.profile-photo-placeholder {
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
+    border: 5px solid var(--color-white);
+    box-shadow: var(--shadow-lg);
     object-fit: cover;
-    border: 4px solid var(--color-white);
-    box-shadow: var(--shadow-md);
 }
 
 .profile-photo-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: var(--color-gray-200);
-    color: var(--color-gray-500);
-    font-size: var(--font-size-4xl);
-    border: 4px solid var(--color-white);
-    box-shadow: var(--shadow-md);
+    background-color: var(--color-primary-100);
+    color: var(--color-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
 }
 
 .btn-change-photo {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 5px;
+    right: 5px;
     width: 40px;
     height: 40px;
     display: flex;
@@ -110,32 +230,30 @@
     border-radius: 50%;
     color: var(--color-white);
     cursor: pointer;
-    transition: background-color var(--transition-fast);
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-change-photo:hover {
     background-color: var(--color-primary-dark);
+    transform: scale(1.1);
 }
 
 .profile-name {
     text-align: center;
+    z-index: 1;
 }
 
 .profile-name h2 {
-    margin-bottom: var(--spacing-xs);
     font-size: var(--font-size-2xl);
     font-weight: 700;
+    margin-bottom: var(--spacing-xs);
 }
 
 .profile-name p {
-    margin: 0;
-    color: var(--color-gray-600);
     font-size: var(--font-size-base);
-}
-
-.profile-name .department {
-    font-size: var(--font-size-sm);
     color: var(--color-gray-500);
+    margin: 0;
 }
 
 .profile-sections {
@@ -146,23 +264,25 @@
 
 .profile-section {
     background-color: var(--color-white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-gray-100);
 }
 
 .profile-section h3 {
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-sm);
-    border-bottom: 2px solid var(--color-gray-200);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-100);
     font-size: var(--font-size-lg);
     font-weight: 600;
+    color: var(--color-gray-900);
 }
 
 .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
 }
 
 .info-item {
@@ -171,336 +291,80 @@
 }
 
 .info-item label {
-    margin-bottom: var(--spacing-xs);
     font-size: var(--font-size-xs);
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--color-gray-500);
-    letter-spacing: 0.5px;
+    color: var(--color-gray-400);
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
 }
 
 .info-item .value {
     font-size: var(--font-size-base);
+    font-weight: 500;
     color: var(--color-gray-900);
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px dashed var(--color-gray-200);
 }
 
-/* Time Entry Page */
+/* --- TIME ENTRY PAGE --- */
 .status-card {
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: var(--spacing-lg);
+    /* Using component style, just layout specifics here if needed */
     margin-bottom: var(--spacing-lg);
-}
-
-.status-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-gray-200);
-}
-
-.status-header h2 {
-    margin: 0;
-    font-size: var(--font-size-xl);
-    font-weight: 600;
 }
 
 .current-time {
-    font-size: var(--font-size-2xl);
-    font-weight: 700;
+    font-size: 3rem;
+    font-weight: 800;
     color: var(--color-primary);
+    font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
-}
-
-.status-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.status-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-sm) 0;
-}
-
-.status-item .label {
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
-    font-weight: 500;
-}
-
-.status-item .value {
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    color: var(--color-gray-900);
-}
-
-.status-item .status-in {
-    color: var(--color-success);
-}
-
-.status-item .status-out {
-    color: var(--color-gray-600);
-}
-
-.action-card {
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-}
-
-.location-info {
-    margin-bottom: var(--spacing-md);
-    padding: var(--spacing-md);
-    background-color: var(--color-gray-100);
-    border-radius: var(--radius-md);
-}
-
-.location-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-700);
+    letter-spacing: -0.05em;
 }
 
 .action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
-.btn-clock-in {
-    padding: var(--spacing-lg);
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    background-color: var(--color-success);
-    border: none;
-    border-radius: var(--radius-lg);
-    color: var(--color-white);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-}
-
-.btn-clock-in:hover:not(:disabled) {
-    background-color: #218838;
-    box-shadow: var(--shadow-md);
-}
-
-.btn-clock-out {
-    padding: var(--spacing-lg);
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    background-color: var(--color-danger);
-    border: none;
-    border-radius: var(--radius-lg);
-    color: var(--color-white);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-}
-
-.btn-clock-out:hover:not(:disabled) {
-    background-color: #c82333;
-    box-shadow: var(--shadow-md);
-}
-
-/* Form Pages (Leave, Overtime, etc.) */
-.form-card {
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-}
-
-.form-section {
-    margin-bottom: var(--spacing-xl);
-}
-
-.form-section:last-child {
-    margin-bottom: 0;
-}
-
-.form-section h3 {
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-sm);
-    border-bottom: 2px solid var(--color-gray-200);
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-}
-
+/* --- FORMS (Leave, Overtime) --- */
 .form-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-md);
-}
-
-.radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.radio-option {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-    border-radius: var(--radius-md);
-}
-
-.radio-option:hover {
-    background-color: var(--color-gray-100);
-}
-
-.radio-option input[type="radio"] {
-    cursor: pointer;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    cursor: pointer;
-}
-
-.checkbox-label input[type="checkbox"] {
-    cursor: pointer;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 .form-actions {
     display: flex;
-    gap: var(--spacing-md);
     justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
     padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-gray-200);
+    border-top: 1px solid var(--color-gray-100);
 }
 
-/* List Pages (Attendance, Approvals, etc.) */
-.list-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-}
-
-.list-item {
-    background-color: var(--color-white);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    padding: var(--spacing-md);
-    transition: all var(--transition-fast);
-    cursor: pointer;
-}
-
-.list-item:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.list-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-sm);
-}
-
-.list-item-title {
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    color: var(--color-gray-900);
-}
-
-.list-item-badge {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-    border-radius: var(--radius-sm);
-}
-
-.badge-pending {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.badge-approved {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.badge-rejected {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.list-item-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-}
-
-.list-item-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
-}
-
-/* Responsive Design */
+/* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
-    .page-content {
-        padding: var(--spacing-md);
-    }
-    
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    
-    .info-grid {
+
+    .quick-actions {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .action-buttons {
         grid-template-columns: 1fr;
     }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
+
     .form-actions {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
-    
+
     .form-actions button {
         width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .page-header h1 {
-        font-size: var(--font-size-xl);
-    }
-    
-    .dashboard-header h1 {
-        font-size: var(--font-size-2xl);
-    }
-    
-    .quick-actions {
-        grid-template-columns: 1fr;
     }
 }

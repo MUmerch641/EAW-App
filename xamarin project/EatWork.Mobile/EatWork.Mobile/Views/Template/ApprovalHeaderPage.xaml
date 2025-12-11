@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:avatar="clr-namespace:Syncfusion.XForms.AvatarView;assembly=Syncfusion.Core.XForms"
+             xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.Template.ApprovalHeaderPage">
+
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+    <converter:CustomShadowFrame Grid.Row="0"
+                                 Margin="0,0,0,0"
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalOptions="FillAndExpand"
+                                 Style="{StaticResource ShadowFrameStyle}">
+
+        <border:SfBorder  BorderColor="Transparent"
+                          BorderWidth="0"
+                          CornerRadius="0">
+
+            <StackLayout Spacing="0">
+                <Grid HeightRequest="80" HorizontalOptions="Fill">
+                    <gradient:SfGradientView>
+                        <gradient:SfGradientView.BackgroundBrush>
+                            <gradient:SfLinearGradientBrush>
+                                <gradient:SfLinearGradientBrush.GradientStops>
+                                    <gradient:SfGradientStop Color="{StaticResource PrimaryColor}" Offset="0.0" />
+                                    <gradient:SfGradientStop Color="{StaticResource PrimaryGradient}" Offset="1.0" />
+                                </gradient:SfLinearGradientBrush.GradientStops>
+                            </gradient:SfLinearGradientBrush>
+                        </gradient:SfGradientView.BackgroundBrush>
+                    </gradient:SfGradientView>
+
+                    <!--Header image path-->
+                    <!--
+                         <Image Aspect="Fill"
+                         BackgroundColor="{DynamicResource PrimaryColor}"
+                         HeightRequest="60"
+                         HorizontalOptions="Fill">
+                         
+                         <Image.Source>
+                         <UriImageSource Uri="{Binding HeaderImagePath}"
+                         CacheValidity="14"
+                         CachingEnabled="true" />
+                         </Image.Source>
+                         </Image>-->
+                </Grid>
+
+                <border:SfBorder Margin="0,-50,0,16"
+                                 BackgroundColor="{StaticResource Gray-100}"
+                                 BorderColor="{StaticResource Gray-White}"
+                                 BorderWidth="2"
+                                 CornerRadius="10"
+                                 HasShadow="True"
+                                 HeightRequest="100"
+                                 HorizontalOptions="CenterAndExpand"
+                                 WidthRequest="130">
+
+                    <!--Profile image-->
+                    <avatar:SfAvatarView ContentType="{Binding FormHelper.ImageSource,Converter={converter:ImageAvatarConverter}}"
+                                         AvatarName="{Binding FormHelper.EmployeeName}"
+                                         AvatarCharacter="Avatar17"
+                                         BackgroundColor="{StaticResource Gray-200}"
+                                         ImageSource="{Binding FormHelper.ImageSource}"
+                                         BorderColor="{DynamicResource PrimaryColor}"
+                                         InitialsType="DoubleCharacter"
+                                         FontAttributes="Bold"
+                                         HeightRequest="100"
+                                         WidthRequest="130"
+                                         CornerRadius="10"
+                                         HorizontalOptions="CenterAndExpand"
+                                         VerticalOptions="CenterAndExpand">
+                        <avatar:SfAvatarView.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewProfileCommand}" />
+                        </avatar:SfAvatarView.GestureRecognizers>
+                    </avatar:SfAvatarView>
+
+                    <!--<Image Aspect="Fill"
+                         HeightRequest="100"
+                         WidthRequest="130"
+                         Source="profile.jpg" />-->
+
+                    <!--Profile name-->
+                </border:SfBorder>
+
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="{Binding FormHelper.EmployeeName,Mode=OneWay}" Margin="0,0,0,5"/>
+
+                <StackLayout Margin="0,0,0,0"
+                             HorizontalOptions="CenterAndExpand"
+                             Orientation="Vertical"
+                             Spacing="5">
+                    <!--Employee No-->
+                    <Label Style="{StaticResource ContentLabelStyle}" Text="{Binding FormHelper.EmployeeNo,Mode=OneWay}" />
+
+                    <!--<BoxView Style="{StaticResource BoxViewStyle}" />-->
+
+                    <!--Position-->
+                    <Label Style="{StaticResource ContentLabelStyle}" Text="{Binding FormHelper.EmployeePosition,Mode=OneWay}" />
+
+                    <!--<BoxView Style="{StaticResource BoxViewStyle}" />-->
+
+                    <!--Department-->
+                    <Label Style="{StaticResource ContentLabelStyle}" Text="{Binding FormHelper.EmployeeDepartment,Mode=OneWay}" />
+                </StackLayout>
+
+                <!--<FlexLayout Margin="5,5,5,10"
+                     HorizontalOptions="CenterAndExpand"
+                     Direction="Row"
+                     JustifyContent="SpaceEvenly"
+                     AlignItems="End">-->
+
+                <!--<buttons:SfButton HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     BorderWidth="0"
+                     WidthRequest="70"
+                     HeightRequest="40"
+                     CornerRadius="20"
+                     Margin="0,0,2,0"
+                     BackgroundColor="{StaticResource Success}">
+                     <buttons:SfButton.Content>
+                     <iconize:IconImage Icon="fas-thumbs-up"
+                     HeightRequest="20"
+                     WidthRequest="20"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     IconColor="{StaticResource White-Smoke}" />
+                     </buttons:SfButton.Content>
+                     </buttons:SfButton>
+                     
+                     <buttons:SfButton HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     BorderWidth="0"
+                     WidthRequest="70"
+                     HeightRequest="40"
+                     CornerRadius="20"
+                     Margin="0,0,2,0"
+                     BackgroundColor="{StaticResource Success}">
+                     <buttons:SfButton.Content>
+                     <iconize:IconImage Icon="fas-times"
+                     HeightRequest="20"
+                     WidthRequest="20"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     IconColor="{StaticResource White-Smoke}" />
+                     </buttons:SfButton.Content>
+                     </buttons:SfButton>
+                     
+                     <buttons:SfButton HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     BorderWidth="0"
+                     WidthRequest="70"
+                     HeightRequest="40"
+                     CornerRadius="20"
+                     Margin="0,0,2,0"
+                     BackgroundColor="{StaticResource Success}">
+                     <buttons:SfButton.Content>
+                     <iconize:IconImage Icon="fas-thumbs-down"
+                     HeightRequest="20"
+                     WidthRequest="20"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     IconColor="{StaticResource White-Smoke}" />
+                     </buttons:SfButton.Content>
+                     </buttons:SfButton>-->
+
+                <!--COMMENTED 03.23.2019-->
+                <!--<buttons:SfButton Margin="0,0,2,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="1"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="APPROVE" />
+                     
+                     <buttons:SfButton Margin="0,0,2,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="2"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="CANCEL" />
+                     
+                     <buttons:SfButton Margin="0,0,0,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="3"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="DISAPPROVE" />-->
+                <!--ADDED 03.23.2020-->
+                <!--<control:SfTextInputLayout LeadingViewPosition="Inside"
+                     Style="{StaticResource inputLayoutStyle}"
+                     ErrorColor="{StaticResource Error}"
+                     HasError="{Binding FormHelper.ErrorLeaveType, Mode=TwoWay}"
+                     EnableFloating="False"
+                     WidthRequest="250"
+                     Hint="Action Type">
+                     
+                     <combobox:SfComboBox TextSize="14"
+                     BorderColor="White"
+                     DataSource="{Binding FormHelper.WorkflowActions}"
+                     DisplayMemberPath="ActionType"
+                     SelectedValuePath="ActionTriggeredId"
+                     HeightRequest="45"
+                     WidthRequest="250"
+                     DropDownItemFontFamily="{DynamicResource Regular}"
+                     SelectedItem="{Binding FormHelper.SelectedWorkflowAction,Mode=OneWayToSource}"
+                     FontFamily="{DynamicResource Regular}" />
+                     </control:SfTextInputLayout>
+                     
+                     <iconize:IconButton FontSize="20"
+                     Text="fas-check"
+                     TextColor="{StaticResource White-Smoke}"
+                     WidthRequest="48"
+                     HeightRequest="45"
+                     CornerRadius="80"
+                     BackgroundColor="{StaticResource Success}"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="" />
+                     
+                     <iconize:IconButton FontSize="20"
+                     Text="fas-info"
+                     TextColor="{StaticResource White-Smoke}"
+                     WidthRequest="48"
+                     HeightRequest="45"
+                     CornerRadius="80"
+                     BackgroundColor="#65bcda" />-->
+                <!--</FlexLayout>-->
+
+                <!--<StackLayout Margin="0,0,0,15"
+                     HorizontalOptions="CenterAndExpand"
+                     Orientation="Horizontal"
+                     Spacing="5"
+                     Padding="0">
+                     
+                     <buttons:SfButton Margin="0,0,0,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="1"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="APPROVE" />
+                     
+                     <buttons:SfButton Margin="0,0,0,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="2"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="CANCEL" />
+                     
+                     <buttons:SfButton Margin="0,0,0,0"
+                     Command="{Binding TransactionCommand}"
+                     CommandParameter="3"
+                     Style="{StaticResource SfGradientButtonStyle}"
+                     Text="DISAPPROVE" />
+                     </StackLayout>-->
+
+                <StackLayout HeightRequest="45" Margin="0,0,0,16">
+
+                    <FlexLayout Margin="5,5,5,10"
+                                HorizontalOptions="CenterAndExpand"
+                                Direction="Row"
+                                JustifyContent="SpaceEvenly"
+                                AlignItems="End"
+                                BindableLayout.ItemsSource="{Binding FormHelper.WorkflowActions}"
+                                x:Name="WFAction">
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <buttons:SfButton Command="{Binding Path=BindingContext.TransactionCommand, Source={x:Reference WFAction}}"
+                                                  CommandParameter="{Binding .}"
+                                                  Margin="2"
+                                                  Style="{StaticResource SfGradientButtonStyle2}"
+                                                  BackgroundColor="{Binding ActionType,Converter={converter:ActionTypeColorConverter}}"
+                                                  Text="{Binding ActionType}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </StackLayout>
+            </StackLayout>
+        </border:SfBorder>
+    </converter:CustomShadowFrame>
+</StackLayout>

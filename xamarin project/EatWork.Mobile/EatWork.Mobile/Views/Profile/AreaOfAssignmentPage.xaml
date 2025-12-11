@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:converter="clr-namespace:EatWork.Mobile.Utils"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:busyindicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" 
+             xmlns:effect="clr-namespace:EatWork.Mobile.Utils.Effects"
+             Style="{StaticResource ContentPageNoiOSSafeArea}"
+             mc:Ignorable="d"
+             x:Class="EatWork.Mobile.Views.MyProfile.AreaOfAssignmentPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Style="{StaticResource TitleViewContent}">
+
+        <gradient:SfGradientView Grid.Row="0" Style="{DynamicResource NavBarStyle}"/>
+        
+        <ContentView>
+            <ContentView.Effects>
+                <effect:SafeAreaPaddingEffect />
+            </ContentView.Effects>
+            <converter:TitleView Title="Area of Assignment" TitleColor="{StaticResource Gray-White}">
+                <converter:TitleView.LeadingView>
+                    <iconize:IconButton Text="{StaticResource BackButtonIcon}"
+                                        Command="{Binding BackButtonCommand}" 
+                                        Style="{StaticResource IconButtonStyle}"/>
+                </converter:TitleView.LeadingView>
+            </converter:TitleView>
+        </ContentView>
+
+        
+
+        <StackLayout Grid.Row="2" Spacing="0">
+            <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <AbsoluteLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+
+                    <busyindicator:SfBusyIndicator x:Name="busyindicator"
+                                                   Style="{StaticResource BusyIndicatorStyle}"
+                                                   IsBusy="{Binding IsBusy}" />
+
+                    <StackLayout Padding="0,0,0,0" BackgroundColor="{StaticResource Gray-100}" Spacing="0"
+                                 AbsoluteLayout.LayoutFlags="All"
+                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 IsVisible="{Binding IsBusy, Converter={converter:InverseBoolConverter}}">
+
+                        <StackLayout BackgroundColor="{DynamicResource Gray-White}">
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Company:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Company}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Branch:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Branch}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Department:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Department}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Office:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Office}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Unit:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Unit}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Division:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Division}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Group:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Group}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="District:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.District}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Location:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Location}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Project:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Project}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Cost Center:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.CostCenter}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Line:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Line}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+
+                            <Grid ColumnSpacing="0"
+                                  RowSpacing="1"
+                                  Margin="0,0"
+                                  Style="{StaticResource GridEmployeeProfileDetails}">
+
+                                <Label Grid.Column="0"
+                                       Margin="16,0,0,0"
+                                       Style="{StaticResource LabelStyleProfileForLabel}"
+                                       FontFamily="{DynamicResource Regular}"
+                                       Text="Team:" />
+
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource LabelStyleProfile}"
+                                       Text="{Binding Model.Team}"
+                                       Margin="0,10" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource SeparatorStyle}" />
+                        </StackLayout>
+                    </StackLayout>
+                </AbsoluteLayout>
+            </ScrollView>
+        </StackLayout>
+    </Grid>
+</ContentPage>
