@@ -20,15 +20,14 @@
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background-color: var(--color-white);
-    border: 1px solid var(--color-gray-200);
+    background-color: transparent;
+    border: none;
     color: var(--color-gray-600);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-back:hover {
@@ -57,9 +56,9 @@
 
 /* Main Title */
 .page-header h1 {
-    font-size: 1.5rem;
-    /* 24px */
-    font-weight: 700;
+    font-size: 1.75rem;
+    /* Increased from 1.5rem */
+    font-weight: 800;
     color: var(--color-gray-900);
     margin: 0;
     line-height: 1.2;
@@ -71,9 +70,10 @@
 /* Subtitle */
 .subtitle {
     margin: 4px 0 0 0;
-    font-size: 0.875rem;
-    /* 14px */
-    color: var(--color-gray-500);
+    font-size: 1rem;
+    /* Increased from 0.875rem */
+    color: var(--color-gray-600);
+    /* Slightly darker for better readability */
     font-weight: 500;
 }
 

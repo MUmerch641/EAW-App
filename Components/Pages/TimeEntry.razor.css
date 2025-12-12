@@ -8,8 +8,8 @@
 
 .page-header-container {
     padding: 15px 20px;
-    background: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: transparent;
+    border-bottom: none;
 }
 
 .animate-fade-in-up {

@@ -1,9 +1,10 @@
-@* Reusable Page Header Component *@
+@inject IJSRuntime JSRuntime
+
 <div class="page-header">
     <div class="header-left">
         @if (ShowBackButton)
         {
-            <button class="btn-back" @onclick="OnBackClick">
+            <button class="btn-back" @onclick="HandleBackClick">
                 <i class="fas fa-chevron-left"></i>
             </button>
         }
@@ -12,7 +13,7 @@
             <h1>
                 @if (!string.IsNullOrEmpty(IconClass))
                 {
-                    <i class="fa @IconClass me-2 header-icon"></i>
+                <i class="fas @IconClass me-2 header-icon"></i>
                 }
                 @Title
             </h1>
@@ -42,7 +43,7 @@
     public bool ShowBackButton { get; set; } = true;
 
     /// <summary>
-    /// Callback when back button is clicked
+    /// Callback when back button is clicked. If not set, defaults to history.back()
     /// </summary>
     [Parameter]
     public EventCallback OnBackClick { get; set; }
@@ -64,4 +65,16 @@
     /// </summary>
     [Parameter]
     public string? IconClass { get; set; }
+
+    private async Task HandleBackClick()
+    {
+        if (OnBackClick.HasDelegate)
+        {
+            await OnBackClick.InvokeAsync();
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("history.back");
+        }
+    }
 }
